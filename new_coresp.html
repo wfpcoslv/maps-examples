@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="./pure-min.css">
+
+<script type="text/javascript" language="JavaScript">
+var nutrimiles = null;
+
+function init() {
+  nutrimiles = new Nutrimiles();
+  
+  if(nutrimiles.status()!=1) {
+    // Critical error found, stop.
+    window.alert(lang.default_alert);
+    return;
+  }
+
+	console.log("NMI - new event...");
+
+/* from beneficiary.js
+	var BENEFICIARY_GROUP_ID = 1;
+	var BENEFICIARY_AGE = 5;
+*/
+
+	var htmlToDisplay = '';
+
+	// weight - all
+	htmlToDisplay += 
+    '<div class="pure-control-group"><label for="weight">'+lang.weight+
+    '</label><input id="weight" type="number" step="0.01"  placeholder="'+
+    lang.in_weight+'"></div>';
+    
+	switch(nutrimiles.beneficiary.group) {
+    case 1: // Mother
+      // height
+      htmlToDisplay += '<div class="pure-control-group"><label for="height">'+
+      lang.height+'</label><input id="height" type="number" placeholder="'+
+      lang.in_height+'"></div>';
+      
+      // Gestational age
+      htmlToDisplay += 
+      '<div class="pure-control-group"><label for="gestational_age">'+
+      lang.gest_age+'</label><input id="gestational_age" type="number" placeholder="'+lang.in_gest_age+
+      '"></div>';
+      
+      // Intrauterine growth
+      htmlToDisplay += '<div class="pure-control-group"><label for="intrauterine_growth">'+
+      lang.intra_growth+'</label><input id="intrauterine_growth" type="number" placeholder="'+
+      lang.in_intra_growth+'"></div>';
+      break;
+    case 2:
+      // Child under 5
+      if (nutrimiles.beneficiary.age > 720)
+      {
+        // Over 2
+        // Only Height
+        htmlToDisplay += '<div class="pure-control-group"><label for="height">'+
+        lang.height+'</label><input id="height" type="number" placeholder="'+
+        lang.in_height+'"></div>';
+      } else {
+        // child <= 2
+        // Lenght
+        htmlToDisplay += '<div class="pure-control-group"><label for="length">'+
+        lang.lenght+'</label><input id="length" type="number" placeholder="'+
+        lang.in_lenght+'"></div>';
+        // Circumference
+        htmlToDisplay += '<div class="pure-control-group"><label for="head_circumference">'+
+        lang.circum+'</label><input id="head_circumference" type="number" placeholder="'+
+        lang.in_circum+'"></div>';
+      }
+      break;
+	}
+
+	htmlToDisplay += '<div class="pure-controls"><input type="button" class="pure-button pure-button-primary" value="'+lang.add_entry+'" onClick="addEntry()"></button></div>';
+	
+	document.getElementById("questions").innerHTML = htmlToDisplay;
+}
+
+function addEntry() {
+	patientData = {
+    "weight": document.getElementById("weight").value,
+	  "age": nutrimiles.beneficiary.age
+	  };
+
+
+	if (nutrimiles.beneficiary.age > 720)
+	{
+		// height - > 2 years old
+		patientData.height = document.getElementById("height").value;
+	}
+	else
+	{
+		// length - child <= 2
+		patientData.length = document.getElementById("length").value;
+		patientData.head_circumference = document.getElementById("head_circumference").value;
+	}
+	if (nutrimiles.beneficiary.group == 1)
+	{
+		// mother
+		patientData.gestational_age = document.getElementById("gestational_age").value;
+		patientData.intrauterine_growth = document.getElementById("intrauterine_growth").value;
+	}
+	
+	newEvent = nutrimiles.prepareEvent(patientData)
+
+	// we add the event to the list, to help java code to recreate input.js
+	if(newEvent) {
+    nutrimiles.pushEvent(newEvent)
+
+    nutrimiles.submitJSON(JSON.stringify(newEvent), JSON.stringify(NUTRIMILES));
+	} else {
+    window.alert(lang.default_alert)
+	}
+}
+</script>
+</head>
+
+<script language="JavaScript" src="beneficiary.js"></script>
+<script language="JavaScript" src="input.js"></script>
+<script language="JavaScript" src="js/Nutrimiles.js"></script>
+<script language="JavaScript" src="js/lang.js"></script>
+<script language="JavaScript" src="js/lang_es.js"></script>
+
+<body onLoad="init()">
+		<form class="pure-form pure-form-aligned">
+					<fieldset id="questions">
+					</fieldset>
+			</form>
+
+</body>
+</html>

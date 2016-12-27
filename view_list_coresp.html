@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./pure-min.css">
+
+
+<script language="JavaScript">
+function init() {
+
+	var htmlToDisplay = '<tr>';
+
+	// weight - all
+	htmlToDisplay += '<th>Weight</th>';
+	if (BENEFICIARY_AGE > 2)
+	{
+		// height - > 2 years old
+		htmlToDisplay += '<th>Height</th>';
+	}
+	else
+	{
+		// length - child <= 2
+		htmlToDisplay += '<th>Length</th>';
+		htmlToDisplay += '<th>Head circumference</th>';
+	}
+	if (BENEFICIARY_GROUP_ID == 1)
+	{
+		// mother
+		htmlToDisplay += '<th>Gestational age</th>';
+		htmlToDisplay += '<th>Intrauterine growth</th>';
+	}
+	htmlToDisplay += '</tr>';
+	document.getElementById("historyTable").innerHTML = htmlToDisplay;
+
+
+	console.log(NUTRIMILES.event);
+	numVisits = NUTRIMILES.event.length;
+	document.getElementById("numVisits").innerText=numVisits;
+	table = document.getElementById("historyTable");
+	for (i=0;i<numVisits;i++) {
+		currentVisit = NUTRIMILES.event[i];
+		var row = table.insertRow(1);
+		// weight for all
+		row.insertCell(0).innerText = currentVisit.patientData.weight;
+		if (BENEFICIARY_AGE > 2)
+		{
+			row.insertCell(1).innerText = currentVisit.patientData.height;
+		}
+		else
+		{
+			// length - child <= 2
+			row.insertCell(1).innerText = currentVisit.patientData.length;
+			row.insertCell(2).innerText = currentVisit.patientData.head_circumference;
+		}
+		if (BENEFICIARY_GROUP_ID == 1)
+		{
+			// mother
+			row.insertCell(2).innerText = currentVisit.patientData.gestational_age;
+			row.insertCell(3).innerText = currentVisit.patientData.intrauterine_growth;
+		}
+
+		//bmi = Math.floor(weight/(height*height)*10000);
+		//row.insertCell(2).innerText=bmi;
+	}
+}
+</script>
+
+<script language="JavaScript" src="beneficiary.js"></script>
+<script language="JavaScript" src="input.js"></script>
+</head>
+<body onLoad="init()">
+Patient has visited the doctor <span id="numVisits">0</span> times before.<br>
+<table class="pure-table pure-table-bordered" id="historyTable">
+
+</table>
+</body>
+</html>
