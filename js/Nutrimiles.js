@@ -3,13 +3,14 @@
 function Nutrimiles() {
   this.beneficiary = {
   'group': BENEFICIARY_GROUP_ID,
-  'birthDate': '22/08/2013 00:00:00',
-  'age': BENEFICIARY_AGE
+  'birthDate': '2013-08-22T00:00:00.00Z',
+  'age': BENEFICIARY_AGE,
+  'sex': BENEFICIARY_SEX
   }
   
   this.userInfo = {
     'type': 1,
-    'userID': 1,
+    'userID': 2,
     'deviceID': 112233
   }
   

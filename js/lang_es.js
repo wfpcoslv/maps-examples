@@ -12,5 +12,10 @@ lang_es.in_height =      "en cm"
 lang_es.circum =         "Circunferencia craneana"
 lang_es.in_circum =      "en cm"
 lang_es.add_entry =      "Guardar en tarjeta"
+lang_es.scp_given =          "SCP entregado"
+lang_es.in_scp =             "unidades"
+lang_es.is_allowed_to_get =  "Este beneficiario puede recibir "
+lang_es.units_csp =          " unidades de CSP"
+lang_es.not_allowed =     "Este beneficiario no puede recibir más super-cereal."
 
 lang = lang_es
