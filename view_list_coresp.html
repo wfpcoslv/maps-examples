@@ -5,15 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="./pure-min.css">
 
-
 <!-- The order of inclusion of external JS files is important on this example //-->
 <script type="text/javascript" src="beneficiary.js"></script>
-<script type="text/javascript" src="input.js"></script>
 <script type="text/javascript" src="js/Nutrimiles.js"></script>
 <script type="text/javascript" src="js/lang.js"></script>
 <script type="text/javascript" src="js/lang_es.js"></script>
 <script type="text/javascript" src="js/jquery.min.js"></script>
-<script type="text/javascript" src="js/papaparse.min.js"></script>
+<!-- Nutritional information is loaded from JS files //-->
+<!-- Height for Age Girls Z Scores //-->
+<script type="text/javascript" src="data/lhfa_girls_z_exp.js"></script>
+<!-- Height for Age Boys Z Scores //-->
+<script type="text/javascript" src="data/lhfa_boys_z_exp.js"></script>
+<!-- Weight for Age Girls Z Scores //-->
+<script type="text/javascript" src="data/wfa_girls_z_exp.js"></script>
+<!-- Weight for Age Boys Z Scores //-->
+<script type="text/javascript" src="data/wfa_boys_z_exp.js"></script>
+<!-- Weight for Height Girls Z Scores //-->
+<script type="text/javascript" src="data/wfh_girls_z_exp.js"></script>
+<!-- Weight for Height Boys Z Scores //-->
+<script type="text/javascript" src="data/wfh_boys_z_exp.js"></script>
+<!-- Weight for Lenght Girls Z Scores //-->
+<script type="text/javascript" src="data/wfl_girls_z_exp.js"></script>
+<!-- Weight for Lenght Boys Z Scores //-->
+<script type="text/javascript" src="data/wfl_boys_z_exp.js"></script>
 
 <script type="text/javascript">
 var nutrimiles = null;
@@ -22,40 +36,24 @@ $(function() {
   init();
 });
 
-var tblBoys;
-var tblGirls;
-
-function calculateRation(events) {
-  var given_scp = 0;
-  var allowed_scp = 0;
-	for (i=0;i<events.length;i++) {
-    if(events[i].patientData.weight == 0) {
-      given_scp += events[i].patientData.scp_received
-    } else {
-      allowed_scp += 5; // User is allowed to get 5 units by visit
-    }
-	}
-	return allowed_scp - given_scp;
-}
-
 function init() {
 
-  nutrimiles = new Nutrimiles();
-  
-  tblBoys = Papa.parse('./data/lhfa_boys_z_exp.txt', {download: true});
-  tblGirls = Papa.parse('./data/lhfa_boys_z_exp.txt', {download: true});
-
+	if(nutrimiles == null)
+	{
+		nutrimiles = new Nutrimiles()
+	}
+	
   if(nutrimiles.status()!=1) {
     // Critical error found, stop.
     window.alert(lang.default_alert);
     return;
   }
-
+  
 	var htmlToDisplay = '';
 
-  if(nutrimiles.userInfo.userID == 2) { // Hardcoded Store id.
+  if(nutrimiles.getUserInformations().id == 2) { // Hardcoded Store id.
     
-    var allowedRations = calculateRation(nutrimiles.event)
+    var allowedRations = calculateRation(nutrimiles.getTransactions())
     // Units to register
     if(allowedRations > 0) {
       htmlToDisplay += '<p>'+lang.is_allowed_to_get+allowedRations
@@ -72,7 +70,7 @@ function init() {
     htmlToDisplay += '<th>'+lang.visit_date+'</th>';
     htmlToDisplay += '<th>'+lang.age_days+'</th>';
     htmlToDisplay += '<th>'+lang.weight+'</th>';
-    if (BENEFICIARY_AGE > 2)
+    if (age_days(nutrimiles.getBeneficiaryInformations().birth_date) > 720)
     {
       // height - > 2 years old
       htmlToDisplay += '<th>'+lang.height+'</th>';
@@ -81,9 +79,9 @@ function init() {
     {
       // length - child <= 2
       htmlToDisplay += '<th>'+lang.lenght+'</th>';
-      htmlToDisplay += '<th>'+lang.head_circum+'</th>';
+      htmlToDisplay += '<th>'+lang.circum+'</th>';
     }
-    if (BENEFICIARY_GROUP_ID == 1)
+    if (nutrimiles.getBeneficiaryInformations().group_id == 1)
     {
       // mother
       htmlToDisplay += '<th>'+lang.gest_age+'</th>';
@@ -93,47 +91,119 @@ function init() {
     htmlToDisplay += '</tr>';
     document.getElementById("historyTable").innerHTML = htmlToDisplay;
 
-    console.log(nutrimiles.event);
-    numVisits = nutrimiles.event.length;    
+    console.log(nutrimiles.getTransactions());
+    numVisits = nutrimiles.getTransactions().length;    
         
-    document.getElementById("msg").innerHTML = "Patient has visited the doctor "+numVisits+" times before.<br>"
+    document.getElementById("msg").innerHTML = "Patient has visited the doctor "+calculateVisits(nutrimiles.getTransactions())+" times before.<br>"
     
     table = document.getElementById("historyTable");
     
-    var birth_date = new Date(Date.parse(nutrimiles.beneficiary.birthDate));
+    var birth_date = new Date(nutrimiles.getBeneficiaryInformations.birth_date);
+    
+    var benef_info = nutrimiles.getBeneficiaryInformations();
     
     for (i=0;i<numVisits;i++) {
-      currentVisit = nutrimiles.event[i];
-      var row = table.insertRow(1);
-      var row_date = new Date(Date.parse(currentVisit.validationDate))
-      var age_days = Math.floor((row_date.getTime()-birth_date.getTime())/86400000)
-      
-      // weight for all
-      row.insertCell(0).innerText = row_date.getDate()+'/'
-        +(row_date.getMonth()+1)+'/'
-        +row_date.getFullYear();
-      row.insertCell(1).innerText = age_days;
-      row.insertCell(2).innerText = currentVisit.patientData.weight;
-      
-      if (BENEFICIARY_AGE > 2)
-      {
-        row.insertCell(3).innerText = currentVisit.patientData.height;
-      }
-      else
-      {
-        // length - child <= 2
-        row.insertCell(3).innerText = currentVisit.patientData.length;
-        row.insertCell(4).innerText = currentVisit.patientData.head_circumference;
-      }
-      if (BENEFICIARY_GROUP_ID == 1)
-      {
-        // mother
-        row.insertCell(4).innerText = currentVisit.patientData.gestational_age;
-        row.insertCell(5).innerText = currentVisit.patientData.intrauterine_growth;
-      }
+      currentVisit = nutrimiles.getTransactions()[i];
+      if(currentVisit.patientData.weight != 0) {
+        var row = table.insertRow(1);
+        var row_date = new Date(Date.parse(currentVisit.validationDate))
+        // weight for all
+        row.insertCell(0).innerText = row_date.getDate()+'/'
+          +(row_date.getMonth()+1)+'/'
+          +row_date.getFullYear();
+        row.insertCell(1).innerText = currentVisit.patientData.age;
+        row.insertCell(2).innerText = currentVisit.patientData.weight;
+        
+        if (currentVisit.patientData.age > 720)
+        {
+          row.insertCell(3).innerText = currentVisit.patientData.height;
+          switch(benef_info.gender) {
+            case 1: // Girls
+              row.insertCell(4).innerText = "T/E: "+calculate_z_deviation(
+                  currentVisit.patientData.height,
+                  lhfa_girls_z[currentVisit.patientData.age].SD0,
+                  lhfa_girls_z[currentVisit.patientData.age].SD1
+                )+ ", P/E: "+calculate_z_deviation(
+                  currentVisit.patientData.weight,
+                  wfa_girls_z[currentVisit.patientData.age].SD0,
+                  wfa_girls_z[currentVisit.patientData.age].SD1
+                )+ ", P/T: "+find_z_deviation_height(
+                  wfh_girls_z,
+                  currentVisit.patientData.height,
+                  currentVisit.patientData.weight
+                )
+              break;
+            case 2: // Boys
+              row.insertCell(4).innerText = "T/E: "+calculate_z_deviation(
+                  currentVisit.patientData.height,
+                  lhfa_boys_z[currentVisit.patientData.age].SD0,
+                  lhfa_boys_z[currentVisit.patientData.age].SD1
+                )+ ", P/E: "+calculate_z_deviation(
+                  currentVisit.patientData.weight,
+                  wfa_boys_z[currentVisit.patientData.age].SD0,
+                  wfa_boys_z[currentVisit.patientData.age].SD1
+                )+ ", P/T: "+find_z_deviation_height(
+                  wfh_boys_z,
+                  currentVisit.patientData.height,
+                  currentVisit.patientData.weight
+                )
+              break;
+          }
+        }
+        else
+        {
+          // length - child <= 2
+          row.insertCell(3).innerText = currentVisit.patientData.length;
+          row.insertCell(4).innerText = currentVisit.patientData.head_circumference;
+          // Look for the adecuate nutritional info.
+          switch(benef_info.gender) {
+            case 1: // Girls
+              row.insertCell(5).innerText = "T/E: "+calculate_z_deviation(
+                  currentVisit.patientData.length,
+                  lhfa_girls_z[currentVisit.patientData.age].SD0,
+                  lhfa_girls_z[currentVisit.patientData.age].SD1
+                )+ ", P/E: "+calculate_z_deviation(
+                  currentVisit.patientData.weight,
+                  wfa_girls_z[currentVisit.patientData.age].SD0,
+                  wfa_girls_z[currentVisit.patientData.age].SD1
+                )+ ", P/T: "+find_z_deviation_length(
+                  wfl_girls_z,
+                  currentVisit.patientData.length,
+                  currentVisit.patientData.weight
+                )
+              break;
+            case 2: // Boys
+              row.insertCell(5).innerText = "T/E: "+calculate_z_deviation(
+                  currentVisit.patientData.length,
+                  lhfa_boys_z[currentVisit.patientData.age].SD0,
+                  lhfa_boys_z[currentVisit.patientData.age].SD1
+                )+ ", P/E: "+calculate_z_deviation(
+                  currentVisit.patientData.weight,
+                  wfa_boys_z[currentVisit.patientData.age].SD0,
+                  wfa_boys_z[currentVisit.patientData.age].SD1
+                )+ ", P/T: "+find_z_deviation_length(
+                  wfl_boys_z,
+                  currentVisit.patientData.length,
+                  currentVisit.patientData.weight
+                )
+              break;
+          }
+        }
+        
+        if (nutrimiles.getBeneficiaryInformations().group_id == 1)
+        {
+          // mother
+          row.insertCell(4).innerText = currentVisit.patientData.gestational_age;
+          row.insertCell(5).innerText = currentVisit.patientData.intrauterine_growth;
 
-      //bmi = Math.floor(weight/(height*height)*10000);
-      //row.insertCell(2).innerText=bmi;
+          bmi = Math.floor(
+            currentVisit.patientData.weight/(
+              currentVisit.patientData.height*currentVisit.patientData.height
+              )*10000);
+          row.insertCell(6).innerText="BMI: "+bmi;
+        }
+
+      }
     }
 	
   }

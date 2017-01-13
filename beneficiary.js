@@ -5,8 +5,7 @@
  * 3: Other
  */
 BENEFICIARY_GROUP_ID = 2;
-BENEFICIARY_AGE = 1181;
-BENEFICIARY_SEX = 2; // Female - 1, Male - 2
+BENEFICIARY_AGE = 11570;
 
 // Other tests (Child under 2):
 //BENEFICIARY_GROUP_ID = 2;
