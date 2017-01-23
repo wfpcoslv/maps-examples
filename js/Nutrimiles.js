@@ -19,21 +19,23 @@ function Nutrimiles() {
 }
 
 Nutrimiles.prototype.createTransaction = function(newEvent) {
-  if(typeof createTransaction !== 'undefined') {
+  if(typeof NutrimilesAndroid.createTransaction !== 'undefined') {
     // Return API Call if available
-    return createTransaction(newEvent);
+    //window.alert("Call createTransaction");
+    return NutrimilesAndroid.createTransaction(JSON.stringify(newEvent));
   } else {
     //NutrimilesAndroid.createTransaction(newEvent);
+    //window.alert("Can't call createTransaction");
     console.log(JSON.stringify(newEvent));
   }
 }
 
 Nutrimiles.prototype.getUserInformations = function() {
-  if(typeof getUserInformations !== 'undefined') {
+  if(typeof NutrimilesAndroid.getUserInformations !== 'undefined') {
     // Return API Call if available
-    return getUserInformations();
+    return JSON.parse(NutrimilesAndroid.getUserInformations());
   } else {
-    return {  
+    return {
       "id": 1,
       "name":"Isabella",
       "lastName": "Salamanca",
@@ -45,24 +47,60 @@ Nutrimiles.prototype.getUserInformations = function() {
 }
 
 Nutrimiles.prototype.getBeneficiaryInformations = function()  {
-  if(typeof getBeneficiaryInformations  !== 'undefined') {
+  var data = null;
+  if(typeof NutrimilesAndroid.getBeneficiaryInformations  !== 'undefined') {
     // Return API Call if available
-    return getBeneficiaryInformations();
+    data = JSON.parse(NutrimilesAndroid.getBeneficiaryInformations());
   } else {
-    return {
-      "beneficiary_id": 65789641025451,
-      "birth_date": "1992-05-22",
-      "expiration_date": null,
-      "registration_date": "2015-04-02",
-      "gender": 1,
-      "id_document": "45547150048948541",
-      "name": "Villatoro",
-      "first_name": "Claudia",
-      "group_id": 1,
-      "nutrimiles_id": "6578964102545",
-      "version": 1
-      };
+    switch(TEST_CASE) {
+      case 1: // Mother
+        data = {
+                "beneficiary_id": 65789641025451,
+                "birth_date": "1992-05-22",
+                "expiration_date": null,
+                "registration_date": "2015-04-02",
+                "gender": 1,
+                "id_document": "45547150048948541",
+                "name": "Villatoro",
+                "first_name": "Claudia",
+                "group_id": 1,
+                "nutrimiles_id": "6578964102545",
+                "version": 1
+              };
+        break;
+      case 2: // Child over 2
+        data = {
+                "beneficiary_id": 55565454654656,
+                "birth_date": "2013-01-01",
+                "expiration_date": null,
+                "registration_date": "2013-01-01",
+                "gender": 2,
+                "id_document": "886599854321655",
+                "name": "Carlos",
+                "first_name": "Artiaga",
+                "group_id": 2,
+                "nutrimiles_id": "6578964102545",
+                "version": 1
+              };
+        break;
+      case 3: // Child under 2
+        data = {
+                "beneficiary_id": 12235668455984,
+                "birth_date": "2016-01-01",
+                "expiration_date": null,
+                "registration_date": "2016-01-01",
+                "gender": 1,
+                "id_document": "5565482265165",
+                "name": "Rosa",
+                "first_name": "Vides",
+                "group_id": 2,
+                "nutrimiles_id": "6578964102545",
+                "version": 1
+              };
+        break;
+    }
   }
+  return data;
 }
 
 Nutrimiles.prototype.getTransactions = function()  {

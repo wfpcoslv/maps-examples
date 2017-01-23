@@ -3,14 +3,14 @@ package nutrimiles;
 
 message Event {
 	message PatientData {
-		int32 weight = 1;
-		int32 age = 2;
-		int32 height = 3;
-		int32 headCircumference = 4;
-		int32 gestationalAge = 5;
-		int32 intrauterineGrowth = 6;
-		int32 length = 7;
-		int32 scp_given = 8;
+		int32 weight = 8;
+		int32 age = 9;
+		int32 height = 10;
+		int32 headCircumference = 11;
+		int32 gestationalAge = 12;
+		int32 intrauterineGrowth = 13;
+		int32 length = 14;
+		int32 scp_given = 15;
 	}
 
 	// fixed fields
