@@ -12,9 +12,18 @@ function Nutrimiles() {
   // by the API calls wrapped on the
   // Nutrimiles object it's not supposed
   // to access this data directly.
-  this.beneficiary = null
-  this.userInfo = null
-  this.event = []
+
+  this.beneficiary = function() {
+      return JSON.parse(NutrimilesAndroid.getBeneficiaryInformations())
+  }
+
+  this.events = function() {
+      return JSON.parse(NutrimilesAndroid.getTransactions())
+  }
+
+  this.userInfos = function(){
+      return JSON.parse(NutrimilesAndroid.getUserInformations())
+  }
   
 }
 
@@ -35,7 +44,7 @@ Nutrimiles.prototype.getUserInformations = function() {
     // Return API Call if available
     return JSON.parse(NutrimilesAndroid.getUserInformations());
   } else {
-    return {
+    return {  
       "id": 1,
       "name":"Isabella",
       "lastName": "Salamanca",
@@ -47,66 +56,30 @@ Nutrimiles.prototype.getUserInformations = function() {
 }
 
 Nutrimiles.prototype.getBeneficiaryInformations = function()  {
-  var data = null;
   if(typeof NutrimilesAndroid.getBeneficiaryInformations  !== 'undefined') {
     // Return API Call if available
-    data = JSON.parse(NutrimilesAndroid.getBeneficiaryInformations());
+    return JSON.parse(NutrimilesAndroid.getBeneficiaryInformations());
   } else {
-    switch(TEST_CASE) {
-      case 1: // Mother
-        data = {
-                "beneficiary_id": 65789641025451,
-                "birth_date": "1992-05-22",
-                "expiration_date": null,
-                "registration_date": "2015-04-02",
-                "gender": 1,
-                "id_document": "45547150048948541",
-                "name": "Villatoro",
-                "first_name": "Claudia",
-                "group_id": 1,
-                "nutrimiles_id": "6578964102545",
-                "version": 1
-              };
-        break;
-      case 2: // Child over 2
-        data = {
-                "beneficiary_id": 55565454654656,
-                "birth_date": "2013-01-01",
-                "expiration_date": null,
-                "registration_date": "2013-01-01",
-                "gender": 2,
-                "id_document": "886599854321655",
-                "name": "Carlos",
-                "first_name": "Artiaga",
-                "group_id": 2,
-                "nutrimiles_id": "6578964102545",
-                "version": 1
-              };
-        break;
-      case 3: // Child under 2
-        data = {
-                "beneficiary_id": 12235668455984,
-                "birth_date": "2016-01-01",
-                "expiration_date": null,
-                "registration_date": "2016-01-01",
-                "gender": 1,
-                "id_document": "5565482265165",
-                "name": "Rosa",
-                "first_name": "Vides",
-                "group_id": 2,
-                "nutrimiles_id": "6578964102545",
-                "version": 1
-              };
-        break;
-    }
+    return {
+      "beneficiary_id": 65789641025451,
+      "birth_date": "1992-05-22",
+      "expiration_date": null,
+      "registration_date": "2015-04-02",
+      "gender": 1,
+      "id_document": "45547150048948541",
+      "name": "Villatoro",
+      "first_name": "Claudia",
+      "group_id": 1,
+      "nutrimiles_id": "6578964102545",
+      "version": 1
+      };
   }
-  return data;
 }
 
 Nutrimiles.prototype.getTransactions = function()  {
-  if(typeof getTransactions  !== 'undefined') {
+  if(typeof NutrimilesAndroid.getTransactions  !== 'undefined') {
     // Return API Call if available
-    return getTransactions();
+    return JSON.parse(NutrimilesAndroid.getTransactions());
   } else {
     return [
     {
@@ -118,7 +91,7 @@ Nutrimiles.prototype.getTransactions = function()  {
         "latitude": 1,
         "longitude": 1
       },
-      "patientData": {
+      "data": {
         "weight": 3.7,
         "height": 52,
         "age": 16,
@@ -138,7 +111,7 @@ Nutrimiles.prototype.getTransactions = function()  {
         "latitude": 2,
         "longitude": 2
       },
-      "patientData": {
+      "data": {
         "weight": 7.0,
         "height": 56,
         "age": 111,
@@ -158,7 +131,7 @@ Nutrimiles.prototype.getTransactions = function()  {
         "latitude": 2,
         "longitude": 2
       },
-      "patientData": {
+      "data": {
         "weight": 0,
         "height": 0,
         "age": 0,
@@ -212,7 +185,7 @@ function defineLanguage(language)
 function calculateVisits(events) {
   var visits = 0;
 	for (i=0;i<events.length;i++) {
-    if(events[i].patientData.weight != 0) {
+    if(events[i].data.weight) {
       visits++;
     }
 	}
@@ -223,8 +196,8 @@ function calculateRation(events) {
   var given_scp = 0;
   var allowed_scp = 0;
 	for (i=0;i<events.length;i++) {
-    if(events[i].patientData.weight == 0) {
-      given_scp += events[i].patientData.scp_received
+    if(events[i].data.scpReceived) {
+      given_scp += events[i].data.scpReceived
     } else {
       allowed_scp += 5; // User is allowed to get 5 units by visit
     }

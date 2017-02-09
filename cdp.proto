@@ -3,24 +3,24 @@ package nutrimiles;
 
 message Event {
 	message PatientData {
-		int32 weight = 8;
-		int32 age = 9;
-		int32 height = 10;
-		int32 headCircumference = 11;
-		int32 gestationalAge = 12;
-		int32 intrauterineGrowth = 13;
-		int32 length = 14;
-		int32 scp_given = 15;
+		float     weight = 9001;
+		uint32    age = 9002;
+		float     height = 9003;
+		float     headCircumference = 9004;
+		uint32    gestationalAge = 9005;
+		float     intrauterineGrowth = 9006;
+		float     length = 9007;
+		uint32    scpReceived = 9008;
 	}
 
 	// fixed fields
-	uint32 timestamp = 1;
-	string location = 2;
+	uint32    timestamp = 9101;
+	string    location = 9102;
 
 	// variable fields
-	uint32 type = 3;
-	uint32 userID = 4;
-	uint32 deviceID = 5;
-	PatientData patientData = 6;
-	bool validated = 7;
+	uint32    id = 9103;
+	uint32    beneficiaryId = 9104;
+	uint32    transactionId = 9105;
+	string    date = 9106;
+	PatientData data = 9107;
 }

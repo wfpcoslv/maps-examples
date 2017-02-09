@@ -1,0 +1,21 @@
+
+§
+	cdp.proto
+nutrimiles"…
+Event
+	timestampG (R	timestamp
+locationG (	Rlocation
+idG (Rid%
+beneficiaryIdG (RbeneficiaryId%
+transactionId‘G (RtransactionId
+date’G (	Rdate2
+data“G (2.nutrimiles.Event.PatientDataRdata—
+PatientData
+weight©F (Rweight
+ageªF (Rage
+height«F (Rheight-
+headCircumference¬F (RheadCircumference'
+gestationalAge­F (RgestationalAge/
+intrauterineGrowth®F (RintrauterineGrowth
+length¯F (Rlength!
+scpReceived°F (RscpReceivedbproto3
