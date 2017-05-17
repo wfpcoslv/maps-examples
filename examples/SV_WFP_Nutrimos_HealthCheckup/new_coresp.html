@@ -1,3 +1,25 @@
+<!--
+Copyright (C) 2017 World Food Programme - All Rights Reserved.
+
+This file is part of "MAPS Co-responsibilities Examples".
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Implementation examples originally written by Mario Gómez.
+For more info about this examples contact at <mario.gomez@wfp.org>
+
+//-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -84,7 +106,7 @@ function init() {
         lang.intra_growth+'</label><input id="intrauterine_growth" type="number" step="any" placeholder="'+
         lang.in_intra_growth+'"></div>';
         break;
-      case 2:
+      case 2: case 3:
         // Child under 5
         if (age_days(nutrimiles.getBeneficiaryInformations().birth_date) > 720)
         {
@@ -106,6 +128,8 @@ function init() {
         }
         break;
     }
+    
+  htmlToDisplay += '<div class="pure-control-group"><label for="nextVisit">Próxima Visita</label><input data-role="date" data-inline="true" type="text"></div>';
   
   htmlToDisplay += '<div class="pure-controls"><input type="button" class="pure-button pure-button-primary" value="'+lang.add_entry+'" onClick="addEntry()"></button></div>';
   }
@@ -130,7 +154,7 @@ function addEntry() {
         patientData.gestationalAge = document.getElementById("gestational_age").value;
         patientData.intrauterineGrowth = document.getElementById("intrauterine_growth").value;
         break;
-      case 2:
+      case 2: case 3:
         // Child under 5
         if (age_days(nutrimiles.getBeneficiaryInformations().birth_date) > 720)
         {

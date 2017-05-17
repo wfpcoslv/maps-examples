@@ -9,7 +9,9 @@ function Language() {
   this.cancel =             "Cancel"
   this.weight =             "Weight"
   this.in_weight =          "in Kg"
-  this.lenght =             "Lenght"
+  this.length =             "Length"
+  this.in_length =          "in cm"
+  this.lenght =             "Length"
   this.in_lenght =          "in cm"
   this.height =             "Height"
   this.in_height =          "in cm"
@@ -28,6 +30,22 @@ function Language() {
   this.is_allowed_to_get =  "This beneficiary is allowed to get "
   this.units_csp =          " units of CSP"
   this.not_allowed =        "This beneficiary is not allowed to get more SCP"
+  this.age =                "Age"
+  this.gestationalAge =     "Gestational age"
+  this.intrauterineGrowth = "Intrauterine growth"
+  this.headCircumference =  "Head circumference"
+  this.scpReceived =        "SCP given"
+  this.nextVisit =          "Next visit"
+  this.gaveBirth =          "Gave birth"
+  this.childDeath =         "Child Death"
+};
+
+Language.prototype.translate = function(text) {
+  for(var name in this) {
+    if(name == text)
+      return this[name]
+  }
+  return text;
 };
 
 var lang = new Language();

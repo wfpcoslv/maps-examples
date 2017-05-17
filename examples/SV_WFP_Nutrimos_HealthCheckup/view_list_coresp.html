@@ -1,13 +1,37 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="./pure-min.css">
-<style type="text/css">
-body {
-  margin-top: 30px;
-}
+<!--
+Copyright (C) 2017 World Food Programme - All Rights Reserved.
+
+This file is part of "MAPS Co-responsibilities Examples".
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Implementation examples originally written by Mario G√≥mez.
+For more info about this examples contact at <mario.gomez@wfp.org>
+
+//-->
+<!DOCTYPE html> <!-- Se recomienda utilizar HTML5 //-->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./pure-min.css">
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.inline-png-1.4.5.min.css" />
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.theme-1.4.5.min.css" />
+    <style type="text/css">
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.icons-1.4.5.min.css" />
+    <style type="text/css">
+.ui-content, #header { margin-top: 100px; }
 #msg {
   font-size: 1.2em;
 }
@@ -15,35 +39,50 @@ body {
   font-size: 0.5em;
   font-color: rgb(25,25,125);
 }
-</style>
+#obj_dump {
+  word-wrap: break-word;
+}
+    </style>
 
-<!-- The order of inclusion of external JS files is important on this example //-->
-<script type="text/javascript" src="beneficiary.js"></script>
-<script type="text/javascript" src="js/Nutrimiles.js?rev=1"></script>
-<script type="text/javascript" src="js/lang.js"></script>
-<script type="text/javascript" src="js/lang_es.js"></script>
-<script type="text/javascript" src="js/jquery.min.js"></script>
-<!-- Nutritional information is loaded from JS files //-->
-<!-- Height for Age Girls Z Scores //-->
-<script type="text/javascript" src="data/lhfa_girls_z_exp.js"></script>
-<!-- Height for Age Boys Z Scores //-->
-<script type="text/javascript" src="data/lhfa_boys_z_exp.js"></script>
-<!-- Weight for Age Girls Z Scores //-->
-<script type="text/javascript" src="data/wfa_girls_z_exp.js"></script>
-<!-- Weight for Age Boys Z Scores //-->
-<script type="text/javascript" src="data/wfa_boys_z_exp.js"></script>
-<!-- Weight for Height Girls Z Scores //-->
-<script type="text/javascript" src="data/wfh_girls_z_exp.js"></script>
-<!-- Weight for Height Boys Z Scores //-->
-<script type="text/javascript" src="data/wfh_boys_z_exp.js"></script>
-<!-- Weight for Lenght Girls Z Scores //-->
-<script type="text/javascript" src="data/wfl_girls_z_exp.js"></script>
-<!-- Weight for Lenght Boys Z Scores //-->
-<script type="text/javascript" src="data/wfl_boys_z_exp.js"></script>
+    <!-- Para pruebas incluÌr siempre el archivo test_data.js //-->
+    <script type="text/javascript" src="test_data.js?rev=1"></script>
 
-<script type="text/javascript">
+    <!-- Preservar el orden de inclusiÛn de los
+         siguientes archivos de plataforma. //-->
+    <script type="text/javascript" src="js/Nutrimiles.js?rev=3"></script>
+    <script type="text/javascript" src="js/lang.js"></script>
+    <script type="text/javascript" src="js/lang_es.js"></script>
+
+    <!-- IncluÌr los archivos de soporte de Javascript //-->
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+    <!-- Los siguientes archivos contienen las tablas de consulta para
+         indicadores nutricionales de la OMS para niÒos y niÒas menores
+         a los 5 aÒos //-->
+    <!-- Height for Age Girls Z Scores //-->
+    <script type="text/javascript" src="data/lhfa_girls_z_exp.js"></script>
+    <!-- Height for Age Boys Z Scores //-->
+    <script type="text/javascript" src="data/lhfa_boys_z_exp.js"></script>
+    <!-- Weight for Age Girls Z Scores //-->
+    <script type="text/javascript" src="data/wfa_girls_z_exp.js"></script>
+    <!-- Weight for Age Boys Z Scores //-->
+    <script type="text/javascript" src="data/wfa_boys_z_exp.js"></script>
+    <!-- Weight for Height Girls Z Scores //-->
+    <script type="text/javascript" src="data/wfh_girls_z_exp.js"></script>
+    <!-- Weight for Height Boys Z Scores //-->
+    <script type="text/javascript" src="data/wfh_boys_z_exp.js"></script>
+    <!-- Weight for Lenght Girls Z Scores //-->
+    <script type="text/javascript" src="data/wfl_girls_z_exp.js"></script>
+    <!-- Weight for Lenght Boys Z Scores //-->
+    <script type="text/javascript" src="data/wfl_boys_z_exp.js"></script>
+
+    <script type="text/javascript">
 var nutrimiles = null;
 
+/** Coloque aquÌ todas las funciones utilitarias que desea llamar 
+  * unicamente dentro de esta vista
+  */
 function calculateRation(events) {
   var given_scp = 0;
   var allowed_scp = 0;
@@ -53,219 +92,168 @@ function calculateRation(events) {
     } else {
       allowed_scp += 5; // User is allowed to get 5 units by visit
     }
-	}
-	return allowed_scp - given_scp;
+  }
+  return allowed_scp - given_scp;
 }
 
+/**
+  * Coloque dentro de esta funciÛn todo lo que se debe ejecutar
+  * luego de la carga de esta p·gina.
+  */
 $(function() {
-  init();
-});
 
-function init() {
+  if(nutrimiles == null) // Chequeo de sanidad antes de iniciar
+  {
+    nutrimiles = new Nutrimiles()
+  }
 
-	if(nutrimiles == null)
-	{
-		nutrimiles = new Nutrimiles()
-	}
-	
   if(nutrimiles.status()!=1) {
     // Critical error found, stop.
     window.alert(lang.default_alert);
     return;
   }
 
-  //window.alert("Enter init. Transactions: " + JSON.stringify(nutrimiles.getTransactions()));
-  //window.alert("Enter init. Beneficiary: " + JSON.stringify(nutrimiles.getBeneficiaryInformations()));
-  //window.alert("Transactions number: " + calculateVisits(nutrimiles.getTransactions()));
-  //window.alert("User Informations: " + JSON.stringify(nutrimiles.getUserInformations()));
+  var htmlToDisplay = '';
+  var transactions = nutrimiles.getTransactions();
   
-	var htmlToDisplay = '';
-
-
-  //var subStringToSearch = "SCP99";
-  //var scp99 = nutrimiles.getUserInformations().id.match(subStringToSearch);
-  //if(scp99 !=null) {
-  //    alert("Contains Substring");
-  //}
-
-  //document.getElementById("obj_dump").innerHTML = JSON.stringify(nutrimiles.getTransactions())+JSON.stringify(nutrimiles.getBeneficiaryInformations())+"EOD";
+  $('#health_checkups').html('');
   
   if(nutrimiles.getUserInformations().firstname == "TIENDA") { // Hardcoded Store id.
-  //if(scp99!=null) {  
-    var transactions = nutrimiles.getTransactions();
+   // Info para tiendas.
     var allowedRations = calculateRation(transactions)
     // Units to register
     if(allowedRations > 0) {
-      htmlToDisplay += '<div id="msg">'+lang.is_allowed_to_get+allowedRations
-        +lang.units_csp+'</div>';
+      $('#text_header').html(lang.is_allowed_to_get+allowedRations
+        +lang.units_csp);
     } else {
-      htmlToDisplay += '<div id="msg">'+lang.not_allowed+'</div>';
+      $('#text_header').html(lang.not_allowed);
     }
-    
-    document.getElementById("msg").innerHTML = htmlToDisplay;
-  } else { 
-  
-    htmlToDisplay = '<tr>';
-    // weight - all
-    htmlToDisplay += '<th>'+lang.visit_date+'</th>';
-    htmlToDisplay += '<th>'+lang.age_days+'</th>';
-    htmlToDisplay += '<th>'+lang.weight+'</th>';
-    if (age_days(nutrimiles.getBeneficiaryInformations().birth_date) > 720)
-    {
-      // height - > 2 years old
-      htmlToDisplay += '<th>'+lang.height+'</th>';
-    }
-    else
-    {
-      // length - child <= 2
-      htmlToDisplay += '<th>'+lang.lenght+'</th>';
-      htmlToDisplay += '<th>'+lang.circum+'</th>';
-    }
-    if (nutrimiles.getBeneficiaryInformations().group_id == 1)
-    {
-      // mother
-      htmlToDisplay += '<th>'+lang.gest_age+'</th>';
-      htmlToDisplay += '<th>'+lang.intra_growth+'</th>';
-    }
-    htmlToDisplay += '<th>'+lang.nutritional_status+'</th>';
-    htmlToDisplay += '</tr>';
-    document.getElementById("historyTable").innerHTML = htmlToDisplay;
-
-    console.log(nutrimiles.getTransactions());
-    numVisits = nutrimiles.getTransactions().length;    
-        
-    document.getElementById("msg").innerHTML = "El paciente ha visitado al m√©dico "+calculateVisits(nutrimiles.getTransactions())+" veces.<br>"+
-    "<span class=\"tooltip\">(Deslice para ver m√°s indicadores)</span>"
-    
-    table = document.getElementById("historyTable");
-    
-    var birth_date = new Date(nutrimiles.getBeneficiaryInformations.birth_date);
-    
-    var benef_info = nutrimiles.getBeneficiaryInformations();
-    
-    //document.getElementById("obj_dump").innerHTML = "DATA: "+JSON.stringify(nutrimiles.getTransactions());
-    
-    var transactions = nutrimiles.getTransactions();
-    
-    for (i=0;i<numVisits;i++) {
+  } else {
+    for (i=0;i<transactions.length;i++) {
+      var data_header = 
       currentVisit = transactions[i];
       if(currentVisit.data.weight) {
-        var row = table.insertRow(1);
         var row_date = new Date(Date.parse(currentVisit.date))
-        // weight for all
-        row.insertCell(0).innerText = row_date.getDate()+'/'
-          +(row_date.getMonth()+1)+'/'
-          +row_date.getFullYear();
-        row.insertCell(1).innerText = currentVisit.data.age;
-        row.insertCell(2).innerText = currentVisit.data.weight;
-        
-        if (benef_info.group_id == 2) {
-          if (currentVisit.data.age > 720)
-          {
-            row.insertCell(3).innerText = currentVisit.data.height;
-            switch(benef_info.gender) {
-              case 1: // Girls
-                row.insertCell(4).innerText = "T/E: "+calculate_z_deviation(
-                    currentVisit.data.height,
-                    lhfa_girls_z[currentVisit.data.age].SD0,
-                    lhfa_girls_z[currentVisit.data.age].SD1
-                  )+ ", P/E: "+calculate_z_deviation(
-                    currentVisit.data.weight,
-                    wfa_girls_z[currentVisit.data.age].SD0,
-                    wfa_girls_z[currentVisit.data.age].SD1
-                  )+ ", P/T: "+find_z_deviation_height(
-                    wfh_girls_z,
-                    currentVisit.data.height,
-                    currentVisit.data.weight
-                  )
-                break;
-              case 0: // Boys
-                row.insertCell(4).innerText = "T/E: "+calculate_z_deviation(
-                    currentVisit.data.height,
-                    lhfa_boys_z[currentVisit.data.age].SD0,
-                    lhfa_boys_z[currentVisit.data.age].SD1
-                  )+ ", P/E: "+calculate_z_deviation(
-                    currentVisit.data.weight,
-                    wfa_boys_z[currentVisit.data.age].SD0,
-                    wfa_boys_z[currentVisit.data.age].SD1
-                  )+ ", P/T: "+find_z_deviation_height(
-                    wfh_boys_z,
-                    currentVisit.data.height,
-                    currentVisit.data.weight
-                  )
-                break;
-            }
-          }
-          else
-          {
-            // length - child <= 2
-            row.insertCell(3).innerText = currentVisit.data.length;
-            row.insertCell(4).innerText = currentVisit.data.headCircumference;
-            // Look for the adecuate nutritional info.
-            switch(benef_info.gender) {
-              case 1: // Girls
-                row.insertCell(5).innerText = "T/E: "+calculate_z_deviation(
-                    currentVisit.data.length,
-                    lhfa_girls_z[currentVisit.data.age].SD0,
-                    lhfa_girls_z[currentVisit.data.age].SD1
-                  )+ ", P/E: "+calculate_z_deviation(
-                    currentVisit.data.weight,
-                    wfa_girls_z[currentVisit.data.age].SD0,
-                    wfa_girls_z[currentVisit.data.age].SD1
-                  )+ ", P/T: "+find_z_deviation_length(
-                    wfl_girls_z,
-                    currentVisit.data.length,
-                    currentVisit.data.weight
-                  )
-                break;
-              case 0: // Boys
-                row.insertCell(5).innerText = "T/E: "+calculate_z_deviation(
-                    currentVisit.data.length,
-                    lhfa_boys_z[currentVisit.data.age].SD0,
-                    lhfa_boys_z[currentVisit.data.age].SD1
-                  )+ ", P/E: "+calculate_z_deviation(
-                    currentVisit.data.weight,
-                    wfa_boys_z[currentVisit.data.age].SD0,
-                    wfa_boys_z[currentVisit.data.age].SD1
-                  )+ ", P/T: "+find_z_deviation_length(
-                    wfl_boys_z,
-                    currentVisit.data.length,
-                    currentVisit.data.weight
-                  )
-                break;
-            }
-          }
-        }
-        
-        if (nutrimiles.getBeneficiaryInformations().group_id == 1)
-        {
-          // mother
-          row.insertCell(3).innerText = currentVisit.data.height;
-          row.insertCell(4).innerText = currentVisit.data.gestationalAge;
-          row.insertCell(5).innerText = currentVisit.data.intrauterineGrowth;
-
-          bmi = Math.floor(
-            currentVisit.data.weight/(
-              currentVisit.data.height*currentVisit.data.height
-              )*10000);
-          row.insertCell(6).innerText="BMI: "+bmi;
-        }
-
       }
+      var visit_content =
+        '<div data-role="collapsible"><h3>'+row_date.getFullYear()+"-"+
+        (row_date.getMonth()+1)+"-"+row_date.getDate()+'</h3>';
+      
+      for(var name in currentVisit.data) {
+        visit_content += '<strong>'+lang.translate(name)+'</strong>: '+currentVisit.data[name]+'<br />';
+      }
+      
+      var benef_info = nutrimiles.getBeneficiaryInformations();
+
+      if (benef_info.group_id == 2) { // Begin of CHILDS
+        if (currentVisit.data.age > 720)
+        {
+          switch(benef_info.gender) {
+            case 1: // Girls
+              visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
+                  currentVisit.data.height,
+                  lhfa_girls_z[currentVisit.data.age].SD0,
+                  lhfa_girls_z[currentVisit.data.age].SD1
+                )+"</br>";
+              visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
+                  currentVisit.data.weight,
+                  wfa_girls_z[currentVisit.data.age].SD0,
+                  wfa_girls_z[currentVisit.data.age].SD1
+                )+"</br>";
+              visit_content += "<strong>P/T:</strong> "+find_z_deviation_height(
+                  wfh_girls_z,
+                  currentVisit.data.height,
+                  currentVisit.data.weight
+                )+"</br>";
+              break;
+            case 0: // Boys
+              visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
+                  currentVisit.data.height,
+                  lhfa_boys_z[currentVisit.data.age].SD0,
+                  lhfa_boys_z[currentVisit.data.age].SD1
+                )+"</br>";
+              visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
+                  currentVisit.data.weight,
+                  wfa_boys_z[currentVisit.data.age].SD0,
+                  wfa_boys_z[currentVisit.data.age].SD1
+                )+"</br>";
+              visit_content += "<strong>P/T:</strong> "+find_z_deviation_height(
+                  wfh_boys_z,
+                  currentVisit.data.height,
+                  currentVisit.data.weight
+                )+"</br>";
+              break;
+          }
+        } else {
+          // length - child <= 2
+          // Look for the adecuate nutritional info.
+          switch(benef_info.gender) {
+            case 1: // Girls
+              visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
+                  currentVisit.data.length,
+                  lhfa_girls_z[currentVisit.data.age].SD0,
+                  lhfa_girls_z[currentVisit.data.age].SD1
+                )+"</br>";
+              visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
+                  currentVisit.data.weight,
+                  wfa_girls_z[currentVisit.data.age].SD0,
+                  wfa_girls_z[currentVisit.data.age].SD1
+                )+"</br>";
+              visit_content += "<strong>P/T:</strong> "+find_z_deviation_length(
+                  wfl_girls_z,
+                  currentVisit.data.length,
+                  currentVisit.data.weight
+                )+"</br>";
+              break;
+            case 0: // Boys
+              visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
+                  currentVisit.data.length,
+                  lhfa_boys_z[currentVisit.data.age].SD0,
+                  lhfa_boys_z[currentVisit.data.age].SD1
+                )+"</br>";
+              visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
+                  currentVisit.data.weight,
+                  wfa_boys_z[currentVisit.data.age].SD0,
+                  wfa_boys_z[currentVisit.data.age].SD1
+                )+"</br>";
+              visit_content += "<strong>P/T:</strong> "+find_z_deviation_length(
+                  wfl_boys_z,
+                  currentVisit.data.length,
+                  currentVisit.data.weight
+                )+"</br>";
+              break;
+          }
+        }
+      } // End of CHILDS
+
+      if (nutrimiles.getBeneficiaryInformations().group_id == 1)
+      {
+        bmi = Math.floor(
+          currentVisit.data.weight/(
+            currentVisit.data.height*currentVisit.data.height
+            )*10000);
+        visit_content += "<strong>BMI:</strong> "+bmi;
+      }
+      
+      visit_content += '</div>';
+
+      $('#health_checkups').append($(visit_content).collapsible());
     }
-	
   }
-}
-</script>
-</head>
-<body>
-<br />
-<br />
-<div id="msg">
-</div>
-<table class="pure-table pure-table-bordered" id="historyTable">
-</table>
-<div id="obj_dump">
-</div>
-</body>
+});
+    </script>
+  </head>
+  <body>
+    <div data-role="page">
+      <div id="text_header">
+      </div>
+      <div role="main" class="ui-content" id="main_content">
+        <div data-role="collapsibleset" data-theme="a" data-inset="false" id="health_checkups">
+        </div>
+      </div>
+      <div class="ui-grid-solo">
+        <div class="ui-block-a" id="obj_dump"></div>
+      </div>
+    </div>
+  </body>
 </html>

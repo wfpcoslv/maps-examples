@@ -1,169 +1,156 @@
 /*
- * Nutrimiles is a wrapper to encapsulate the API functions
- * provided access and modify the data on the NFC cards.
- * The goal for later versions is to provide a simple framework
- * to define rules to record and validate co-responsibilities.
- * For this implementation most of the logic is defined on the
- * HTML View,
+ * Copyright (C) 2017 World Food Programme - All Rights Reserved.
+ *
+ * This file is part of "MAPS Co-responsibilities Examples".
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Implementation examples originally written by Mario Gómez.
+ * For more info about this examples contact at <mario.gomez@wfp.org>
+ */
+
+/*
+ * Nutrimiles es una clase abstracta de alto nivel que facilita el 
+ * acceso a la API NFC de bajo nivel para lectura y escritura de 
+ * registros en las tarjetas MAPS.
+ * Aunque las funciones de bajo nivel pueden ser accedidas fácilmente
+ * directamente desde JavaScript se recomienda instanciar Nutrimiles
+ * luego de la carga del archivo de HTML y utilizar las funciones
+ * de ayuda.
+ * La clase también incluye funciones "simuladas" para facilitar y
+ * acelerar el desarrollo sin necesidad de contar con un dispositivo
+ * FAMOCO.
+ * En donde se encuentre la palabra "NATIVO" indica una llamada a la 
+ * API NFC de bajo nivel. Para garantizar un buen desempeño se
+ * recomienda reducir el número de llamadas de bajo nivel al mínimo.
  */
 function Nutrimiles() {
 
-  // This attributes are now replaced
-  // by the API calls wrapped on the
-  // Nutrimiles object it's not supposed
-  // to access this data directly.
-
+  // Las siguientes funciones están descontinuadas, pueden no incluirse
+  // en futuras versiones. Instancie esta clase y acceda a los datos
+  // utilizando los métodos getBeneficiaryInformations(),
+  // getTransactions() y getUserInformations()
   this.beneficiary = function() {
-      return JSON.parse(NutrimilesAndroid.getBeneficiaryInformations())
+    return this.getBeneficiaryInformations();
   }
-
   this.events = function() {
-      return JSON.parse(NutrimilesAndroid.getTransactions())
+    return this.getTransactions();
   }
-
   this.userInfos = function(){
-      return JSON.parse(NutrimilesAndroid.getUserInformations())
+    return this.getUserInformations();
   }
-  
 }
 
+/** NATIVO
+  * createTransaction ingresa una nueva transacción en el registro
+  * cíclico de la tarjeta NFC. Recuerda que los eventos no pueden ser
+  * modificados una vez escritos en la tarjeta.
+  */
 Nutrimiles.prototype.createTransaction = function(newEvent) {
-  if(typeof NutrimilesAndroid.createTransaction !== 'undefined') {
-    // Return API Call if available
-    //window.alert("Call createTransaction");
+  if((typeof NutrimilesAndroid !== 'undefined')&&(typeof NutrimilesAndroid.createTransaction !== 'undefined')) {
     return NutrimilesAndroid.createTransaction(JSON.stringify(newEvent));
   } else {
-    //NutrimilesAndroid.createTransaction(newEvent);
-    //window.alert("Can't call createTransaction");
     console.log(JSON.stringify(newEvent));
   }
 }
 
+/** NATIVO
+  * getUserInformations devuelve la información del usuario local
+  * para esta implementación se devuelve un objeto con los siguientes
+  * atributos:
+  *   id: ID único de usuario en MAPS.
+  *   firstname: Nombre de pila
+  *   lastname: Apellido
+  *   email: Nombre de usuario registrado en la plataforma.
+  *     Por convención MAPS utiliza correos institucionales como nombre
+  *     de usuario dentro de la plataforma
+  *   role: Rol del usuario según definido en MAPS Cloud.
+  */
 Nutrimiles.prototype.getUserInformations = function() {
-  if(typeof NutrimilesAndroid.getUserInformations !== 'undefined') {
-    // Return API Call if available
+  if((typeof NutrimilesAndroid !== 'undefined')&&(typeof NutrimilesAndroid.getUserInformations !== 'undefined')) {
     return JSON.parse(NutrimilesAndroid.getUserInformations());
   } else {
-    return {  
-      "id": 1,
-      "name":"Isabella",
-      "lastName": "Salamanca",
-      "email" : "isabella@salamanca.com",
-      "expiration_date": "2019-01-01",
-      "role": "Health worker"
-      };
+    return user_info;
   }
 }
 
+/** NATIVO
+  * getBeneficiaryInformations devuelve la información del beneficiario
+  * que se encuentra almacenado en la tarjeta que corresponde a los
+  * datos ingresados al momento de inicialización de la misma.
+  * Se devuelven los siguientes atributos:
+  *   beneficiary_id: ID único de usuario en MAPS. Nótese que este es
+  *     un ID único dentro de la plataforma y no necesariamente coincide
+  *     coincide con el ID definido como único para otras plataformas de
+  *     registro de beneficiarios.
+  *   birth_date: Fecha de Nacimiento
+  *   expiration_date: Fecha de expiración de la tarjeta.
+  *   registration_date: Fecha de inicialización de la tarjeta en la
+  *     plataforma.
+  *   gender: Sexo biológico (1:Mujer, 2:Hombre)
+  *   id_document: Número de documento único de beneficiario.
+  *   name: Apellido (BUG)
+  *   first_name: Nombre de pila
+  *   group_id: ID de grupo dentro de MAPS.
+  *   nutrimiles_id: Número de identificación dentro del programa.
+  *   version: Versión de la API NFC.
+  */
 Nutrimiles.prototype.getBeneficiaryInformations = function()  {
-  if(typeof NutrimilesAndroid.getBeneficiaryInformations  !== 'undefined') {
+  if((typeof NutrimilesAndroid !== 'undefined')&&(typeof NutrimilesAndroid.getBeneficiaryInformations  !== 'undefined')) {
     // Return API Call if available
     return JSON.parse(NutrimilesAndroid.getBeneficiaryInformations());
   } else {
-    return {
-      "beneficiary_id": 65789641025451,
-      "birth_date": "1992-05-22",
-      "expiration_date": null,
-      "registration_date": "2015-04-02",
-      "gender": 1,
-      "id_document": "45547150048948541",
-      "name": "Villatoro",
-      "first_name": "Claudia",
-      "group_id": 1,
-      "nutrimiles_id": "6578964102545",
-      "version": 1
-      };
+    return beneficiaryData.info;
   }
 }
 
+/** NATIVO
+  * getTransactions es el método que devuelve el historial completo
+  * de eventos en la tarjeta filtrados por tipo de co-responsabilidad
+  * activa. Esta función devuelve tantas entradas como registros
+  * almacenados en la tarjeta NFC.
+  * Los valores devuelvos por este método se corresponden a los 
+  * establecidos en la especificación de ProtocolBuffer
+  */
 Nutrimiles.prototype.getTransactions = function()  {
-  if(typeof NutrimilesAndroid.getTransactions  !== 'undefined') {
+  if((typeof NutrimilesAndroid !== 'undefined')&&(typeof NutrimilesAndroid.getTransactions  !== 'undefined')) {
     // Return API Call if available
     return JSON.parse(NutrimilesAndroid.getTransactions());
   } else {
-    return [
-    {
-      "type": 1,
-      "userID": 1,
-      "validationDate": "2016-11-15T13:33:40.919Z",
-      "deviceID": 112233,
-      "location": {
-        "latitude": 1,
-        "longitude": 1
-      },
-      "data": {
-        "weight": 3.7,
-        "height": 52,
-        "age": 16,
-        "gestational_age" : 23,
-        "intrauterine_growth" : 10,
-        "head_circumference" : 20,
-        "length" : 52,
-        "scp_received" : 0,
-      },
-      "validated": true
-    }, {
-      "type": 1,
-      "userID": 2,
-      "validationDate": "2016-11-15T13:33:40.926Z",
-      "deviceID": 112233,
-      "location": {
-        "latitude": 2,
-        "longitude": 2
-      },
-      "data": {
-        "weight": 7.0,
-        "height": 56,
-        "age": 111,
-        "gestational_age" : 23,
-        "intrauterine_growth" : 10,
-        "head_circumference" : 20,
-        "length" : 56,
-        "scp_received" : 0,
-      },
-      "validated": true
-    }, {
-      "type": 1,
-      "userID": 2,
-      "validationDate": "2016-11-19T13:33:40.926Z",
-      "deviceID": 112233,
-      "location": {
-        "latitude": 2,
-        "longitude": 2
-      },
-      "data": {
-        "weight": 0,
-        "height": 0,
-        "age": 0,
-        "gestational_age" : 0,
-        "intrauterine_growth" : 0,
-        "head_circumference" : 0,
-        "length" : 0,
-        "scp_received" : 5,
-      },
-      "validated": true
-    }];
+    return beneficiaryData.events;
   }
 }
 
-Nutrimiles.prototype.status = function() {  // Returns 1 on valid reader status
+Nutrimiles.prototype.status = function() {
+  //TODO: Return reader status.
   return 1; // On this test this always returns true.
 }
 
 Nutrimiles.prototype.prepareEvent = function(patientData) {
-  // Prepare must validate the data
+  // TODO: Implement validations
   return {
     'data' : patientData
   };
 }
 
 Nutrimiles.prototype.setBeneficiary = function(beneficiaryData) {
-  // Do some validation
+  // TODO: Implement validations
   this.beneficiary = beneficiaryData
 }
 
 Nutrimiles.prototype.setEvents = function(events) {
-  // Do some validation
+  // TODO: Implement validations
   this.event = events
 }
 
@@ -176,7 +163,7 @@ Nutrimiles.prototype.pushEvent = function(event) {
   }
 }
 
-// Helper functions for the UI.
+// Cambia el lenguaje de la interfaz al vuelo
 function defineLanguage(language)
 {
   lang = language
@@ -184,12 +171,12 @@ function defineLanguage(language)
 
 function calculateVisits(events) {
   var visits = 0;
-	for (i=0;i<events.length;i++) {
+  for (i=0;i<events.length;i++) {
     if(events[i].data.weight) {
       visits++;
     }
-	}
-	return visits;
+  }
+  return visits;
 }
 
 function calculateRation(events) {
@@ -229,6 +216,7 @@ function find_z_deviation_length(data_array, measurement1, measurement2) {
   var stdDev = data_array[i].SD1-data_array[i].SD0;
   return ((measurement2-data_array[i].SD0)/stdDev).toFixed(2);
 }
+
 function find_z_deviation_height(data_array, measurement1, measurement2) {
   var i = 0
   while(measurement1>data_array[i].Height) {

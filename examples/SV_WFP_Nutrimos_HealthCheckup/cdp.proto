@@ -11,6 +11,9 @@ message Event {
 		float     intrauterineGrowth = 9006;
 		float     length = 9007;
 		uint32    scpReceived = 9008;
+		string    nextVisit = 9009;
+		uint32    gaveBirth = 9010;
+		uint32    childDeath = 9011;
 	}
 
 	// fixed fields
