@@ -1,7 +1,7 @@
 
-†
+¼
 	cdp.proto
-nutrimiles"ä
+nutrimiles"š
 Event
 	timestampG (R	timestamp
 locationG (	Rlocation
@@ -9,7 +9,7 @@ nutrimiles"ä
 beneficiaryIdG (RbeneficiaryId%
 transactionId‘G (RtransactionId
 date’G (	Rdate2
-data“G (2.nutrimiles.Event.PatientDataRdataö
+data“G (2.nutrimiles.Event.PatientDataRdata¬
 PatientData
 weight©F (Rweight
 ageªF (Rage
@@ -23,4 +23,6 @@ nutrimiles"ä
 	gaveBirth²F (R	gaveBirth
 
 childDeath³F (R
-childDeathbproto3
+childDeath
+excuse´F (Rexcuse
+trainingµF (Rtrainingbproto3

@@ -1,0 +1,15 @@
+
+Ì
+	cdp.proto
+nutrimiles"ª
+Event
+	timestamp½7 (R	timestamp
+location¾7 (	Rlocation
+id¿7 (Rid%
+beneficiaryIdÀ7 (RbeneficiaryId%
+transactionIdÁ7 (RtransactionId
+dateÂ7 (	Rdate3
+dataÃ7 (2.nutrimiles.Event.DetailedDataRdata<
+DetailedData
+data1Ù6 (Rdata1
+data2ªF (Rdata2bproto3

@@ -14,6 +14,8 @@ message Event {
 		string    nextVisit = 9009;
 		uint32    gaveBirth = 9010;
 		uint32    childDeath = 9011;
+		uint32    excuse = 9012;
+		uint32    training = 9013;
 	}
 
 	// fixed fields

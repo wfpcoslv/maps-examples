@@ -26,6 +26,35 @@ For more info about this examples contact at <mario.gomez@wfp.org>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="./pure-min.css">
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.inline-png-1.4.5.min.css" />
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.theme-1.4.5.min.css" />
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.icons-1.4.5.min.css" />
+    <style type="text/css">
+.ui-page { margin-top: 60px; }
+#msg {
+  font-size: 1.2em;
+}
+.tooltip {
+  font-size: 0.5em;
+  font-color: rgb(25,25,125);
+}
+#obj_dump {
+  word-wrap: break-word;
+}
+    </style>
+    <!-- Para pruebas incluír siempre el archivo test_data.js //-->
+    <script type="text/javascript" src="test_data.js?rev=1"></script>
+
+    <!-- Preservar el orden de inclusión de los
+         siguientes archivos de plataforma. //-->
+    <script language="JavaScript" src="js/Nutrimiles.js"></script>
+    <script language="JavaScript" src="js/lang.js"></script>
+    <script language="JavaScript" src="js/lang_es.js"></script>
+
+    <!-- Incluír los archivos de soporte de Javascript //-->
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
 
 <script type="text/javascript" language="JavaScript">
 var nutrimiles = null;
@@ -42,6 +71,10 @@ function calculateRation(events) {
 	}
 	return allowed_scp - given_scp;
 }
+
+$(function() {
+  init();
+});
 
 function init() {
 
@@ -64,8 +97,9 @@ function init() {
 */
 
   var htmlToDisplay = '';
+  var currentUser = nutrimiles.getUserInformations();
 
-  if(nutrimiles.getUserInformations().firstname == "TIENDA") { // Hardcoded Store id.
+  if(currentUser.firstname == "TIENDA") { // Hardcoded Store id.
     // Store User Interface
     
     var allowedRations = calculateRation(nutrimiles.getTransactions())
@@ -81,6 +115,43 @@ function init() {
     } else {
       htmlToDisplay += '<p>'+lang.not_allowed+'</p>';
     }
+  } else if(currentUser.firstname == "MONITOR") {
+    
+    htmlToDisplay += '<div class="pure-control-group"><label for="nextVisit">Registrar Nacimiento</label>'+
+    '<select id="gaveBirth">'+
+    '<option value="">N/A</option>'+
+    '<option value="1">Enero</option>'+
+    '<option value="2">Febrero</option>'+
+    '<option value="3">Marzo</option>'+
+    '<option value="4">Abril</option>'+
+    '<option value="5">Mayo</option>'+
+    '<option value="6">Junio</option>'+
+    '<option value="7">Julio</option>'+
+    '<option value="8">Agosto</option>'+
+    '<option value="9">Septiembre</option>'+
+    '<option value="10">Octubre</option>'+
+    '<option value="11">Noviembre</option>'+
+    '<option value="12">Diciembre</option>'+
+    '</select></div>';
+    
+    htmlToDisplay += '<div class="pure-control-group"><label for="nextVisit">Registrar justificación por no-visita</label>'+
+    '<select id="excuse">'+
+    '<option value="">N/A</option>'+
+    '<option value="1">Enfermedad</option>'+
+    '<option value="2">Muerte de un familiar</option>'+
+    '<option value="3">Otro justificado</option>'+
+    '<option value="3">Otro no-justificado</option>'+
+    '</select></div>';
+    
+    htmlToDisplay += '<div class="pure-control-group"><label for="nextVisit">Registrar muerte infantil</label>'+
+    '<select id="childDeath">'+
+    '<option value="">N/A</option>'+
+    '<option value="1">Muerte Ante-parto</option>'+
+    '<option value="2">Muerte neonatal</option>'+
+    '<option value="3">No sabe</option>'+
+    '</select></div>';
+    
+    htmlToDisplay += '<div class="pure-controls"><input type="button" class="pure-button pure-button-primary" value="'+lang.add_entry+'" onClick="addEntry()"></button></div>';
   } else { 
       // weight - all
     htmlToDisplay += 
@@ -106,7 +177,7 @@ function init() {
         lang.intra_growth+'</label><input id="intrauterine_growth" type="number" step="any" placeholder="'+
         lang.in_intra_growth+'"></div>';
         break;
-      case 2: case 3:
+      case 2:
         // Child under 5
         if (age_days(nutrimiles.getBeneficiaryInformations().birth_date) > 720)
         {
@@ -129,7 +200,21 @@ function init() {
         break;
     }
     
-  htmlToDisplay += '<div class="pure-control-group"><label for="nextVisit">Próxima Visita</label><input data-role="date" data-inline="true" type="text"></div>';
+  htmlToDisplay += '<div class="pure-control-group"><label for="nextVisit">Próxima Visita</label>'+
+  '<select id="nextVisit">'+
+  '<option value="Enero">Enero</option>'+
+  '<option value="Febrero">Febrero</option>'+
+  '<option value="Marzo">Marzo</option>'+
+  '<option value="Abril">Abril</option>'+
+  '<option value="Mayo">Mayo</option>'+
+  '<option value="Junio">Junio</option>'+
+  '<option value="Julio">Julio</option>'+
+  '<option value="Agosto">Agosto</option>'+
+  '<option value="Septiembre">Septiembre</option>'+
+  '<option value="Octubre">Octubre</option>'+
+  '<option value="Noviembre">Noviembre</option>'+
+  '<option value="Diciembre">Diciembre</option>'+
+  '</select></div>';
   
   htmlToDisplay += '<div class="pure-controls"><input type="button" class="pure-button pure-button-primary" value="'+lang.add_entry+'" onClick="addEntry()"></button></div>';
   }
@@ -138,15 +223,30 @@ function init() {
 
 function addEntry() {
   var patientData = null;
+  var currentUser = nutrimiles.getUserInformations();
   
-  if(nutrimiles.getUserInformations().firstname == "TIENDA") { // Hardcoded Store id.
+  if(currentUser.firstname == "TIENDA") { // Hardcoded Store id.
     patientData = {
       "scpReceived": document.getElementById("scp_received").value
       };
+  } else if(currentUser.firstname == "MONITOR") {
+    patientData = {
+      "training" : 1
+    };
+    if($('#gaveBirth').val()!="") {
+      patientData.gaveBirth = $('#gaveBirth').val();
+    }
+    if($('#excuse').val()!="") {
+      patientData.excuse = $('#excuse').val();
+    }
+    if($('#childDeath').val()!="") {
+      patientData.childDeath = $('#childDeath').val();
+    }
   } else {
     patientData = {
       "weight": document.getElementById("weight").value,
-      "age": age_days(nutrimiles.getBeneficiaryInformations().birth_date)
+      "age": age_days(nutrimiles.getBeneficiaryInformations().birth_date),
+      "nextVisit": $('#nextVisit').val()
       };
     switch(nutrimiles.getBeneficiaryInformations().group_id) {
       case 1: // Mother
@@ -154,7 +254,7 @@ function addEntry() {
         patientData.gestationalAge = document.getElementById("gestational_age").value;
         patientData.intrauterineGrowth = document.getElementById("intrauterine_growth").value;
         break;
-      case 2: case 3:
+      case 2:
         // Child under 5
         if (age_days(nutrimiles.getBeneficiaryInformations().birth_date) > 720)
         {
@@ -180,12 +280,6 @@ function addEntry() {
 }
 </script>
 </head>
-
-<script language="JavaScript" src="beneficiary.js"></script>
-<script language="JavaScript" src="js/Nutrimiles.js"></script>
-<script language="JavaScript" src="js/lang.js"></script>
-<script language="JavaScript" src="js/lang_es.js"></script>
-
 <body onLoad="init()">
     <form class="pure-form pure-form-aligned">
           <fieldset id="questions">

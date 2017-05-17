@@ -25,13 +25,11 @@ For more info about this examples contact at <mario.gomez@wfp.org>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="./pure-min.css">
     <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.inline-png-1.4.5.min.css" />
     <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.theme-1.4.5.min.css" />
-    <style type="text/css">
     <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.icons-1.4.5.min.css" />
     <style type="text/css">
-.ui-content, #header { margin-top: 100px; }
+.ui-page { margin-top: 60px; }
 #msg {
   font-size: 1.2em;
 }
@@ -101,6 +99,13 @@ function calculateRation(events) {
   * luego de la carga de esta página.
   */
 $(function() {
+  init();
+});
+
+/*
+ * init() se llama cada vez que se actualizan las transacciones.
+ */
+function init() {
 
   if(nutrimiles == null) // Chequeo de sanidad antes de iniciar
   {
@@ -115,137 +120,170 @@ $(function() {
 
   var htmlToDisplay = '';
   var transactions = nutrimiles.getTransactions();
+  var currentUser = nutrimiles.getUserInformations();
   
   $('#health_checkups').html('');
-  
-  if(nutrimiles.getUserInformations().firstname == "TIENDA") { // Hardcoded Store id.
+
+  if(currentUser.firstname == "TIENDA") { // Hardcoded Store id.
    // Info para tiendas.
     var allowedRations = calculateRation(transactions)
     // Units to register
     if(allowedRations > 0) {
       $('#text_header').html(lang.is_allowed_to_get+allowedRations
-        +lang.units_csp);
+        +lang.units_csp+".");
     } else {
-      $('#text_header').html(lang.not_allowed);
+      $('#text_header').html(lang.not_allowed+".");
     }
   } else {
-    for (i=0;i<transactions.length;i++) {
-      var data_header = 
-      currentVisit = transactions[i];
-      if(currentVisit.data.weight) {
-        var row_date = new Date(Date.parse(currentVisit.date))
-      }
-      var visit_content =
-        '<div data-role="collapsible"><h3>'+row_date.getFullYear()+"-"+
-        (row_date.getMonth()+1)+"-"+row_date.getDate()+'</h3>';
-      
-      for(var name in currentVisit.data) {
-        visit_content += '<strong>'+lang.translate(name)+'</strong>: '+currentVisit.data[name]+'<br />';
-      }
-      
-      var benef_info = nutrimiles.getBeneficiaryInformations();
+    if(currentUser.firstname == "MONITOR") {
+      for (i=0;i<transactions.length;i++) {
+        currentVisit = transactions[i];
+        if(
+          typeof currentVisit.data.gaveBirth !== 'undefined' ||
+          typeof currentVisit.data.childDeath !== 'undefined' ||
+          typeof currentVisit.data.excuse !== 'undefined' ||
+          typeof currentVisit.data.training !== 'undefined'
+          ) {
+            var row_date = new Date(Date.parse(currentVisit.date))
+            var visit_content =
+              '<div data-role="collapsible"><h3>MONITOREO '+row_date.getFullYear()+"-"+
+              (row_date.getMonth()+1)+"-"+row_date.getDate()+'</h3>';
+            for(var name in currentVisit.data) {
+              if(currentVisit.data[name] != 0) {
+                visit_content += '<strong>'+lang.translate(name)+'</strong>: '+currentVisit.data[name]+'<br />';
+              }
+            }
+            visit_content += '</div>';
 
-      if (benef_info.group_id == 2) { // Begin of CHILDS
-        if (currentVisit.data.age > 720)
-        {
-          switch(benef_info.gender) {
-            case 1: // Girls
-              visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
-                  currentVisit.data.height,
-                  lhfa_girls_z[currentVisit.data.age].SD0,
-                  lhfa_girls_z[currentVisit.data.age].SD1
-                )+"</br>";
-              visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
-                  currentVisit.data.weight,
-                  wfa_girls_z[currentVisit.data.age].SD0,
-                  wfa_girls_z[currentVisit.data.age].SD1
-                )+"</br>";
-              visit_content += "<strong>P/T:</strong> "+find_z_deviation_height(
-                  wfh_girls_z,
-                  currentVisit.data.height,
-                  currentVisit.data.weight
-                )+"</br>";
-              break;
-            case 0: // Boys
-              visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
-                  currentVisit.data.height,
-                  lhfa_boys_z[currentVisit.data.age].SD0,
-                  lhfa_boys_z[currentVisit.data.age].SD1
-                )+"</br>";
-              visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
-                  currentVisit.data.weight,
-                  wfa_boys_z[currentVisit.data.age].SD0,
-                  wfa_boys_z[currentVisit.data.age].SD1
-                )+"</br>";
-              visit_content += "<strong>P/T:</strong> "+find_z_deviation_height(
-                  wfh_boys_z,
-                  currentVisit.data.height,
-                  currentVisit.data.weight
-                )+"</br>";
-              break;
+            $('#health_checkups').append($(visit_content).collapsible());
+          }
+      }
+    }
+    for (i=0;i<transactions.length;i++) {
+      currentVisit = transactions[i];
+      // Solo continuar si es una visita médica
+      if(typeof currentVisit.data.weight !== 'undefined') {
+        var row_date = new Date(Date.parse(currentVisit.date))
+        var visit_content =
+          '<div data-role="collapsible"><h3>VISITA '+row_date.getFullYear()+"-"+
+          (row_date.getMonth()+1)+"-"+row_date.getDate()+'</h3>';
+        
+        if(currentUser.firstname != "MONITOR") {
+          for(var name in currentVisit.data) {
+            visit_content += '<strong>'+lang.translate(name)+'</strong>: '+currentVisit.data[name]+'<br />';
           }
         } else {
-          // length - child <= 2
-          // Look for the adecuate nutritional info.
-          switch(benef_info.gender) {
-            case 1: // Girls
-              visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
-                  currentVisit.data.length,
-                  lhfa_girls_z[currentVisit.data.age].SD0,
-                  lhfa_girls_z[currentVisit.data.age].SD1
-                )+"</br>";
-              visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
-                  currentVisit.data.weight,
-                  wfa_girls_z[currentVisit.data.age].SD0,
-                  wfa_girls_z[currentVisit.data.age].SD1
-                )+"</br>";
-              visit_content += "<strong>P/T:</strong> "+find_z_deviation_length(
-                  wfl_girls_z,
-                  currentVisit.data.length,
-                  currentVisit.data.weight
-                )+"</br>";
-              break;
-            case 0: // Boys
-              visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
-                  currentVisit.data.length,
-                  lhfa_boys_z[currentVisit.data.age].SD0,
-                  lhfa_boys_z[currentVisit.data.age].SD1
-                )+"</br>";
-              visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
-                  currentVisit.data.weight,
-                  wfa_boys_z[currentVisit.data.age].SD0,
-                  wfa_boys_z[currentVisit.data.age].SD1
-                )+"</br>";
-              visit_content += "<strong>P/T:</strong> "+find_z_deviation_length(
-                  wfl_boys_z,
-                  currentVisit.data.length,
-                  currentVisit.data.weight
-                )+"</br>";
-              break;
+          // Mostrar si visita fue completada a tiempo
+          if(typeof currentVisit.data.nextVisit !== 'undefined') {
+            visit_content += '<strong>'+lang.translate('nextVisit')+'</strong>: '+currentVisit.data.nextVisit+'<br />';
           }
         }
-      } // End of CHILDS
+        
+        var benef_info = nutrimiles.getBeneficiaryInformations();
 
-      if (nutrimiles.getBeneficiaryInformations().group_id == 1)
-      {
-        bmi = Math.floor(
-          currentVisit.data.weight/(
-            currentVisit.data.height*currentVisit.data.height
-            )*10000);
-        visit_content += "<strong>BMI:</strong> "+bmi;
+        if (benef_info.group_id == 2) { // Begin of CHILDS
+          if (currentVisit.data.age > 720)
+          {
+            switch(benef_info.gender) {
+              case 1: // Girls
+                visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
+                    currentVisit.data.height,
+                    lhfa_girls_z[currentVisit.data.age].SD0,
+                    lhfa_girls_z[currentVisit.data.age].SD1
+                  )+"</br>";
+                visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
+                    currentVisit.data.weight,
+                    wfa_girls_z[currentVisit.data.age].SD0,
+                    wfa_girls_z[currentVisit.data.age].SD1
+                  )+"</br>";
+                visit_content += "<strong>P/T:</strong> "+find_z_deviation_height(
+                    wfh_girls_z,
+                    currentVisit.data.height,
+                    currentVisit.data.weight
+                  )+"</br>";
+                break;
+              case 0: // Boys
+                visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
+                    currentVisit.data.height,
+                    lhfa_boys_z[currentVisit.data.age].SD0,
+                    lhfa_boys_z[currentVisit.data.age].SD1
+                  )+"</br>";
+                visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
+                    currentVisit.data.weight,
+                    wfa_boys_z[currentVisit.data.age].SD0,
+                    wfa_boys_z[currentVisit.data.age].SD1
+                  )+"</br>";
+                visit_content += "<strong>P/T:</strong> "+find_z_deviation_height(
+                    wfh_boys_z,
+                    currentVisit.data.height,
+                    currentVisit.data.weight
+                  )+"</br>";
+                break;
+            }
+          } else {
+            // length - child <= 2
+            // Look for the adecuate nutritional info.
+            switch(benef_info.gender) {
+              case 1: // Girls
+                visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
+                    currentVisit.data.length,
+                    lhfa_girls_z[currentVisit.data.age].SD0,
+                    lhfa_girls_z[currentVisit.data.age].SD1
+                  )+"</br>";
+                visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
+                    currentVisit.data.weight,
+                    wfa_girls_z[currentVisit.data.age].SD0,
+                    wfa_girls_z[currentVisit.data.age].SD1
+                  )+"</br>";
+                visit_content += "<strong>P/T:</strong> "+find_z_deviation_length(
+                    wfl_girls_z,
+                    currentVisit.data.length,
+                    currentVisit.data.weight
+                  )+"</br>";
+                break;
+              case 0: // Boys
+                visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
+                    currentVisit.data.length,
+                    lhfa_boys_z[currentVisit.data.age].SD0,
+                    lhfa_boys_z[currentVisit.data.age].SD1
+                  )+"</br>";
+                visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
+                    currentVisit.data.weight,
+                    wfa_boys_z[currentVisit.data.age].SD0,
+                    wfa_boys_z[currentVisit.data.age].SD1
+                  )+"</br>";
+                visit_content += "<strong>P/T:</strong> "+find_z_deviation_length(
+                    wfl_boys_z,
+                    currentVisit.data.length,
+                    currentVisit.data.weight
+                  )+"</br>";
+                break;
+            }
+          }
+        } // End of CHILDS
+
+        if (nutrimiles.getBeneficiaryInformations().group_id == 1)
+        {
+          bmi = Math.floor(
+            currentVisit.data.weight/(
+              currentVisit.data.height*currentVisit.data.height
+              )*10000);
+          visit_content += "<strong>BMI:</strong> "+bmi;
+        }
+        
+        visit_content += '</div>';
+
+        $('#health_checkups').append($(visit_content).collapsible());
       }
-      
-      visit_content += '</div>';
-
-      $('#health_checkups').append($(visit_content).collapsible());
     }
   }
-});
+};
     </script>
   </head>
   <body>
-    <div data-role="page">
-      <div id="text_header">
+    <div data-role="page" id="content">
+      <div class="ui-grid-solo">
+        <div class="ui-block-a" id="text_header"></div>
       </div>
       <div role="main" class="ui-content" id="main_content">
         <div data-role="collapsibleset" data-theme="a" data-inset="false" id="health_checkups">

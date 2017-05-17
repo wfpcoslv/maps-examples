@@ -1,7 +1,7 @@
 // userData contiene los datos del usuario actual.
 var userData = {
   "id": 1,
-  "firstname":"MONITOR",
+  "firstname":"Isabella",
   "lastName": "Salamanca",
   "email" : "isabella@salamanca.com",
   "role": "Health Worker"
@@ -18,7 +18,7 @@ var userData = {
 // Monitor de campo
 var userData = {
   "id": 1,
-  "firstname":"MONITOR",
+  "firstname":"TIENDA",
   "lastName": "UNO",
   "email" : "tienda1@maps.org",
   "role": "Field Monitor"
@@ -51,31 +51,8 @@ var beneficiaryData = {
           "longitude": 1
         },
         "data": {
-          "training": 1,
-          "gaveBirth" : 1,
-          "childDeath" : 1
-        },
-        "validated": true
-      },
-      {
-        "type": 1,
-        "userID": 1,
-        "date": "2016-11-15T13:33:40.919Z",
-        "deviceID": 112233,
-        "location": {
-          "latitude": 1,
-          "longitude": 1
-        },
-        "data": {
-          "weight": 3.7,
-          "height": 52,
-          "age": 16,
-          "gestationalAge" : 23,
-          "intrauterineGrowth" : 10,
-          "headCircumference" : 20,
-          "length" : 52,
-          "scpReceived" : 0,
-          "nextVisit" : "2017-01-01"
+          "data1" : 1,
+          "data2" : 2
         },
         "validated": true
       }, {
@@ -88,15 +65,8 @@ var beneficiaryData = {
           "longitude": 2
         },
         "data": {
-          "weight": 7.0,
-          "height": 56,
-          "age": 111,
-          "gestationalAge" : 23,
-          "intrauterineGrowth" : 10,
-          "headCircumference" : 20,
-          "length" : 56,
-          "scpReceived" : 0,
-          "nextVisit" : "2017-01-01"
+          "data1" : 1,
+          "data2" : 2
         },
         "validated": true
       }, {
@@ -109,15 +79,8 @@ var beneficiaryData = {
           "longitude": 2
         },
         "data": {
-          "weight": 0,
-          "age": 0,
-          "height": 0,
-          "headCircumference" : 0,
-          "gestationalAge" : 0,
-          "intrauterineGrowth" : 0,
-          "length" : 0,
-          "scpReceived" : 5,
-          "nextVisit" : "2017-01-01"
+          "data1" : 1,
+          "data2" : 2
         },
         "validated": true
       }

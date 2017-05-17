@@ -32,9 +32,7 @@ lang_es.intrauterineGrowth = "Crecimiento intrauterino"
 lang_es.headCircumference =  "Circunferencia craneana"
 lang_es.scpReceived =        "SCP entregado"
 lang_es.nextVisit =          "Siguiente visita"
-lang_es.gaveBirth =          "Dió a luz (mes)"
+lang_es.gaveBirth =          "Dió a luz"
 lang_es.childDeath =         "Muerte infantil"
-lang_es.excuse =             "Justificación por no-visita"
-lang_es.training =           "Asistió a capacitación"
 
 lang = lang_es;

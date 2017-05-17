@@ -38,8 +38,6 @@ function Language() {
   this.nextVisit =          "Next visit"
   this.gaveBirth =          "Gave birth"
   this.childDeath =         "Child Death"
-  this.excuse =             "Excuse"
-  this.training =           "Training"
 };
 
 Language.prototype.translate = function(text) {
