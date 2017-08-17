@@ -1,0 +1,23 @@
+
+ﬂ
+	cdp.proto
+nutrimiles"Ω
+Event
+	timestampµ (R	timestamp
+location∂ (	Rlocation
+id∑ (Rid%
+beneficiaryId∏ (RbeneficiaryId%
+transactionIdπ (RtransactionId
+date∫ (	Rdate2
+dataª (2.nutrimiles.Event.PatientDataRdataœ
+PatientData
+seqô (Rseq
+pesoö (Rpeso
+tallaõ (Rtalla
+tiponacú (Rtiponac
+
+esquemavacù (R
+esquemavac
+vitaû (Rvita
+vitsfü (Rvitsf
+antipar† (Rantiparbproto3

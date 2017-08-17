@@ -1,0 +1,26 @@
+syntax = "proto3";
+package nutrimiles;
+
+message Event {
+	message PatientData {
+      uint32  seq = 2201;
+      float   peso = 2202;
+      float   talla = 2203;
+      uint32  tiponac = 2204;
+      uint32  esquemavac = 2205;
+      uint32  vita = 2206;
+      uint32  vitsf = 2207;
+      uint32  antipar = 2208;
+	}
+
+	// fixed fields
+	uint32      timestamp = 2101;
+	string      location = 2102;
+
+	// variable fields
+	uint32      id = 2103;
+	uint32      beneficiaryId = 2104;
+	uint32      transactionId = 2105;
+	string      date = 2106;
+	PatientData data = 2107;
+}

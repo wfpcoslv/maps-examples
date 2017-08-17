@@ -1,0 +1,334 @@
+<!--
+Copyright (C) 2017 World Food Programme - All Rights Reserved.
+
+This file is part of "MAPS Co-responsibilities Examples".
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Implementation examples originally written by Mario Gómez.
+For more info about this examples contact at <mario.gomez@wfp.org>
+
+//-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./pure-min.css">
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.inline-png-1.4.5.min.css" />
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.theme-1.4.5.min.css" />
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.icons-1.4.5.min.css" />
+    <style type="text/css">
+.ui-page { margin-top: 60px; }
+#msg {
+  font-size: 1.2em;
+}
+.tooltip {
+  font-size: 0.5em;
+  font-color: rgb(25,25,125);
+}
+#obj_dump {
+  word-wrap: break-word;
+}
+    </style>
+    <!-- Para pruebas incluír siempre el archivo test_data.js //-->
+    <script type="text/javascript" src="test_data.js?rev=1"></script>
+
+    <!-- Preservar el orden de inclusión de los
+         siguientes archivos de plataforma. //-->
+    <script language="JavaScript" src="js/Nutrimiles.js"></script>
+    <script language="JavaScript" src="js/lang.js"></script>
+    <script language="JavaScript" src="js/lang_es.js"></script>
+
+    <!-- Incluír los archivos de soporte de Javascript //-->
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+
+<script type="text/javascript" language="JavaScript">
+var nutrimiles = null;
+
+$(function() {
+  init();
+});
+
+var seq = 0;
+
+function init() {
+
+  if(nutrimiles == null)
+  {
+    nutrimiles = new Nutrimiles();
+  }
+
+  if(nutrimiles.status()!=1) {
+    // Critical error found, stop.
+    window.alert(lang.default_alert);
+    return;
+  }
+
+  console.log("NMI - new event...");
+
+  var htmlToDisplay = '';
+  var currentUser = nutrimiles.getUserInformations();
+  var transactions = nutrimiles.getTransactions();
+  var beneficiary = nutrimiles.getBeneficiaryInformations();
+  var age_in_days = age_days(beneficiary.birth_date);
+
+  
+  if(age_in_days < 30) { // Hasta mes 1
+    $('#peso_grp').show();
+    $('#talla_grp').show();
+    $('#tiponac_grp').show();
+    $('#esquemavac_grp').show();
+    $('#vita_grp').hide();
+    $('#vitsf_grp').hide();
+    $('#antipar_grp').hide();
+    seq = 1;
+  }
+  if(
+      (age_in_days >= 30) &&
+      (age_in_days <  60)
+    ) { // Hasta mes 2
+    $('#peso_grp').show();
+    $('#talla_grp').show();
+    $('#tiponac_grp').hide();
+    $('#esquemavac_grp').show();
+    $('#vita_grp').hide();
+    $('#vitsf_grp').hide();
+    $('#antipar_grp').hide();
+    seq = 2;
+  }
+  if(
+      (age_in_days >= 60) &&
+      (age_in_days <  150)
+    ) { // Hasta mes 5
+    $('#peso_grp').show();
+    $('#talla_grp').show();
+    $('#tiponac_grp').hide();
+    $('#esquemavac_grp').show();
+    $('#vita_grp').hide();
+    $('#vitsf_grp').hide();
+    $('#antipar_grp').hide();
+    seq = 3;
+  }
+  if(
+      (age_in_days >= 150) &&
+      (age_in_days <  210)
+    ) {  // Hasta mes 7
+    $('#peso_grp').hide();
+    $('#talla_grp').hide();
+    $('#tiponac_grp').hide();
+    $('#esquemavac_grp').hide();
+    $('#vita_grp').show();
+    $('#vitsf_grp').show();
+    $('#antipar_grp').show();
+    seq = 4;
+  }
+  if(
+      (age_in_days >= 210) &&
+      (age_in_days <  270)
+    ) {  // Hasta mes 9
+    $('#peso_grp').show();
+    $('#talla_grp').show();
+    $('#tiponac_grp').hide();
+    $('#esquemavac_grp').show();
+    $('#vita_grp').show();
+    $('#vitsf_grp').show();
+    $('#antipar_grp').hide();
+    seq = 5;
+  }
+  if(
+      (age_in_days >= 270) &&
+      (age_in_days <  330)
+    ) {  // Hasta mes 11
+    $('#peso_grp').hide();
+    $('#talla_grp').hide();
+    $('#tiponac_grp').hide();
+    $('#esquemavac_grp').show();
+    $('#vita_grp').show();
+    $('#vitsf_grp').show();
+    $('#antipar_grp').hide();
+    seq = 6;
+  }
+  if(
+      (age_in_days >= 330) &&
+      (age_in_days <  390)
+    ) {  // Hasta mes 13
+    $('#peso_grp').show();
+    $('#talla_grp').show();
+    $('#tiponac_grp').hide();
+    $('#esquemavac_grp').show();
+    $('#vita_grp').show();
+    $('#vitsf_grp').show();
+    $('#antipar_grp').show();
+    seq = 7;
+  }
+  if(
+      (age_in_days >= 390) &&
+      (age_in_days <  480)
+    ) {  // Hasta mes 16
+    $('#peso_grp').show();
+    $('#talla_grp').show();
+    $('#tiponac_grp').hide();
+    $('#esquemavac_grp').show();
+    $('#vita_grp').hide();
+    $('#vitsf_grp').show();
+    $('#antipar_grp').hide();
+    seq = 8;
+  }
+  if(
+      (age_in_days >= 480) &&
+      (age_in_days <  570)
+    ) {  // Hasta mes 19
+    $('#peso_grp').show();
+    $('#talla_grp').show();
+    $('#tiponac_grp').hide();
+    $('#esquemavac_grp').show();
+    $('#vita_grp').hide();
+    $('#vitsf_grp').show();
+    $('#antipar_grp').hide();
+  }
+  if(
+      (age_in_days >= 570) &&
+      (age_in_days <  660)
+    ) {  // Hasta mes 22
+    $('#peso_grp').show();
+    $('#talla_grp').show();
+    $('#tiponac_grp').hide();
+    $('#esquemavac_grp').show();
+    $('#vita_grp').hide();
+    $('#vitsf_grp').show();
+    $('#antipar_grp').hide();
+  }
+  if(
+      (age_in_days >= 660) &&
+      (age_in_days <  750)
+    ) {  // Hasta mes 24
+    $('#peso_grp').show();
+    $('#talla_grp').show();
+    $('#tiponac_grp').hide();
+    $('#esquemavac_grp').show();
+    $('#vita_grp').hide();
+    $('#vitsf_grp').show();
+    $('#antipar_grp').show();
+  }
+  if(
+      (age_in_days >= 750)
+    ) {  // Hasta mes 24
+    $('#peso_grp').hide();
+    $('#talla_grp').hide();
+    $('#tiponac_grp').hide();
+    $('#esquemavac_grp').hide();
+    $('#vita_grp').hide();
+    $('#vitsf_grp').hide();
+    $('#antipar_grp').hide();
+  }
+}
+
+function addEntry() {
+  var patientData = null;
+
+  patientData = {
+    "seq" : seq
+  };
+
+  if($('#peso_grp').is(":visible")) {
+    patientData.peso = $('#peso').val();
+  }
+  if($('#talla_grp').is(":visible")) {
+    patientData.talla = $('#talla').val();
+  }
+  if($('#tiponac_grp').is(":visible")) {
+    patientData.tiponac = $('#tiponac').val();
+  }
+  if($('#esquemavac_gpr').is(":visible")) {
+    patientData.esquemavac = $('#esquemavac').val();
+  }
+  if($('#vita_gpr').is(":visible")) {
+    patientData.vita = $('#vita').val();
+  }
+  if($('#vitsf_gpr').is(":visible")) {
+    patientData.vitsf = $('#vitsf').val();
+  }
+  if($('#antipar_gpr').is(":visible")) {
+    patientData.antipar = $('#antipar').val();
+  }
+
+  newEvent = nutrimiles.prepareEvent(patientData);
+  
+  if(newEvent) {
+    nutrimiles.createTransaction(newEvent);
+  } else {
+    window.alert(lang.default_alert);
+  }
+}
+</script>
+</head>
+<body onLoad="init()">
+    <form class="pure-form pure-form-aligned">
+          <fieldset id="questions">
+            <div class="pure-control-group" id="peso_grp">
+              <label for="peso">Peso:</label>
+              <input id="peso" class="indicator" type="number" step="0.01" placeholder="En Kg" />
+            </div>
+            <div class="pure-control-group" id="talla_grp">
+              <label for="talla">Talla/Longitud:</label>
+              <input id="talla" class="indicator" type="number" step="0.01" placeholder="En cm" />
+            </div>
+            <div class="pure-control-group" id="tiponac_grp">
+              <label for="tiponac">Tipo de Nacimiento:</label>
+              <select id="tiponac">
+                <option value="1">Intrashospitalario</option>
+                <option value="2">Intradomiciliar</option>
+              </select>
+            </div>
+            <div class="pure-control-group" id="esquemavac_grp">
+              <label for="esquemavac">Esquema de vacunación según edad:</label>
+              <select id="esquemavac">
+                <option value="1">Sí</option>
+                <option value="2">No</option>
+              </select>
+            </div>
+            <div class="pure-control-group" id="vita_grp">
+              <label for="vita">Micronutritentes: Vitamina A</label>
+              <select id="vita">
+                <option value="1">Sí</option>
+                <option value="2">No (No hay)</option>
+                <option value="3">No (No lo toma)</option>
+                <option value="4">No (Otro)</option>
+              </select>
+            </div>
+            <div class="pure-control-group" id="vitsf_grp">
+              <label for="vitsf">Micronutrientes: Sulfato Ferroso</label>
+              <select id="vitsf">
+                <option value="1">Sí</option>
+                <option value="2">No (No hay)</option>
+                <option value="3">No (No lo toma)</option>
+                <option value="4">No (Otro)</option>
+              </select>
+            </div>
+            <div class="pure-control-group" id="antipar_grp">
+              <label for="antipar">Antiparasitarios: Mebandazole</label>
+              <select id="antipar">
+                <option value="1">Sí</option>
+                <option value="2">No (No hay)</option>
+                <option value="3">No (No lo toma)</option>
+                <option value="4">No (Otro)</option>
+              </select>
+            </div>
+          </fieldset>
+      </form>
+</body>
+</html>

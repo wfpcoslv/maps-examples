@@ -1,0 +1,297 @@
+<!--
+Copyright (C) 2017 World Food Programme - All Rights Reserved.
+
+This file is part of "MAPS Co-responsibilities Examples".
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Implementation examples originally written by Mario GÃ³mez.
+For more info about this examples contact at <mario.gomez@wfp.org>
+
+//-->
+<!DOCTYPE html> <!-- Se recomienda utilizar HTML5 //-->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.inline-png-1.4.5.min.css" />
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.theme-1.4.5.min.css" />
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.icons-1.4.5.min.css" />
+    <style type="text/css">
+.ui-page { margin-top: 60px; }
+#msg {
+  font-size: 1.2em;
+}
+.tooltip {
+  font-size: 0.5em;
+  font-color: rgb(25,25,125);
+}
+#obj_dump {
+  word-wrap: break-word;
+}
+    </style>
+
+    <!-- Para pruebas incluír siempre el archivo test_data.js //-->
+    <script type="text/javascript" src="test_data.js?rev=1"></script>
+
+    <!-- Preservar el orden de inclusión de los
+         siguientes archivos de plataforma. //-->
+    <script type="text/javascript" src="js/Nutrimiles.js?rev=3"></script>
+    <script type="text/javascript" src="js/lang.js"></script>
+    <script type="text/javascript" src="js/lang_es.js"></script>
+
+    <!-- Incluír los archivos de soporte de Javascript //-->
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+    <!-- Los siguientes archivos contienen las tablas de consulta para
+         indicadores nutricionales de la OMS para niños y niñas menores
+         a los 5 años //-->
+    <!-- Height for Age Girls Z Scores //-->
+    <script type="text/javascript" src="data/lhfa_girls_z_exp.js"></script>
+    <!-- Height for Age Boys Z Scores //-->
+    <script type="text/javascript" src="data/lhfa_boys_z_exp.js"></script>
+    <!-- Weight for Age Girls Z Scores //-->
+    <script type="text/javascript" src="data/wfa_girls_z_exp.js"></script>
+    <!-- Weight for Age Boys Z Scores //-->
+    <script type="text/javascript" src="data/wfa_boys_z_exp.js"></script>
+    <!-- Weight for Height Girls Z Scores //-->
+    <script type="text/javascript" src="data/wfh_girls_z_exp.js"></script>
+    <!-- Weight for Height Boys Z Scores //-->
+    <script type="text/javascript" src="data/wfh_boys_z_exp.js"></script>
+    <!-- Weight for Lenght Girls Z Scores //-->
+    <script type="text/javascript" src="data/wfl_girls_z_exp.js"></script>
+    <!-- Weight for Lenght Boys Z Scores //-->
+    <script type="text/javascript" src="data/wfl_boys_z_exp.js"></script>
+
+    <script type="text/javascript">
+var nutrimiles = null;
+
+/** Coloque aquí todas las funciones utilitarias que desea llamar 
+  * unicamente dentro de esta vista
+  */
+function calculateRation(events) {
+  var given_scp = 0;
+  var allowed_scp = 0;
+	for (i=0;i<events.length;i++) {
+    if(events[i].data.scpReceived) {
+      given_scp += events[i].data.scpReceived
+    } else {
+      allowed_scp += 5; // User is allowed to get 5 units by visit
+    }
+  }
+  return allowed_scp - given_scp;
+}
+
+/**
+  * Coloque dentro de esta función todo lo que se debe ejecutar
+  * luego de la carga de esta página.
+  */
+$(function() {
+  init();
+});
+
+/*
+ * init() se llama cada vez que se actualizan las transacciones.
+ */
+function init() {
+
+  if(nutrimiles == null) // Chequeo de sanidad antes de iniciar
+  {
+    nutrimiles = new Nutrimiles()
+  }
+
+  if(nutrimiles.status()!=1) {
+    // Critical error found, stop.
+    window.alert(lang.default_alert);
+    return;
+  }
+
+  var htmlToDisplay = '';
+  var transactions = nutrimiles.getTransactions();
+  var currentUser = nutrimiles.getUserInformations();
+  
+  $('#health_checkups').html('');
+
+  if(currentUser.firstname == "TIENDA") { // Hardcoded Store id.
+   // Info para tiendas.
+    var allowedRations = calculateRation(transactions)
+    // Units to register
+    if(allowedRations > 0) {
+      $('#text_header').html(lang.is_allowed_to_get+allowedRations
+        +lang.units_csp+".");
+    } else {
+      $('#text_header').html(lang.not_allowed+".");
+    }
+  } else {
+    if(currentUser.firstname == "MONITOR") {
+      for (i=0;i<transactions.length;i++) {
+        currentVisit = transactions[i];
+        if(
+          typeof currentVisit.data.gaveBirth !== 'undefined' ||
+          typeof currentVisit.data.childDeath !== 'undefined' ||
+          typeof currentVisit.data.excuse !== 'undefined' ||
+          typeof currentVisit.data.training !== 'undefined'
+          ) {
+            var row_date = new Date(Date.parse(currentVisit.date))
+            var visit_content =
+              '<div data-role="collapsible"><h3>MONITOREO '+row_date.getFullYear()+"-"+
+              (row_date.getMonth()+1)+"-"+row_date.getDate()+'</h3>';
+            for(var name in currentVisit.data) {
+              if(currentVisit.data[name] != 0) {
+                visit_content += '<strong>'+lang.translate(name)+'</strong>: '+currentVisit.data[name]+'<br />';
+              }
+            }
+            visit_content += '</div>';
+
+            $('#health_checkups').append($(visit_content).collapsible());
+          }
+      }
+    }
+    for (i=0;i<transactions.length;i++) {
+      currentVisit = transactions[i];
+      // Solo continuar si es una visita médica
+      if(typeof currentVisit.data.weight !== 'undefined') {
+        var row_date = new Date(Date.parse(currentVisit.date))
+        var visit_content =
+          '<div data-role="collapsible"><h3>VISITA '+row_date.getFullYear()+"-"+
+          (row_date.getMonth()+1)+"-"+row_date.getDate()+'</h3>';
+        
+        if(currentUser.firstname != "MONITOR") {
+          for(var name in currentVisit.data) {
+            visit_content += '<strong>'+lang.translate(name)+'</strong>: '+currentVisit.data[name]+'<br />';
+          }
+        } else {
+          // Mostrar si visita fue completada a tiempo
+          if(typeof currentVisit.data.nextVisit !== 'undefined') {
+            visit_content += '<strong>'+lang.translate('nextVisit')+'</strong>: '+currentVisit.data.nextVisit+'<br />';
+          }
+        }
+        
+        var benef_info = nutrimiles.getBeneficiaryInformations();
+
+        if (benef_info.group_id == 2) { // Begin of CHILDS
+          if (currentVisit.data.age > 720)
+          {
+            switch(benef_info.gender) {
+              case 1: // Girls
+                visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
+                    currentVisit.data.height,
+                    lhfa_girls_z[currentVisit.data.age].SD0,
+                    lhfa_girls_z[currentVisit.data.age].SD1
+                  )+"</br>";
+                visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
+                    currentVisit.data.weight,
+                    wfa_girls_z[currentVisit.data.age].SD0,
+                    wfa_girls_z[currentVisit.data.age].SD1
+                  )+"</br>";
+                visit_content += "<strong>P/T:</strong> "+find_z_deviation_height(
+                    wfh_girls_z,
+                    currentVisit.data.height,
+                    currentVisit.data.weight
+                  )+"</br>";
+                break;
+              case 0: // Boys
+                visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
+                    currentVisit.data.height,
+                    lhfa_boys_z[currentVisit.data.age].SD0,
+                    lhfa_boys_z[currentVisit.data.age].SD1
+                  )+"</br>";
+                visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
+                    currentVisit.data.weight,
+                    wfa_boys_z[currentVisit.data.age].SD0,
+                    wfa_boys_z[currentVisit.data.age].SD1
+                  )+"</br>";
+                visit_content += "<strong>P/T:</strong> "+find_z_deviation_height(
+                    wfh_boys_z,
+                    currentVisit.data.height,
+                    currentVisit.data.weight
+                  )+"</br>";
+                break;
+            }
+          } else {
+            // length - child <= 2
+            // Look for the adecuate nutritional info.
+            switch(benef_info.gender) {
+              case 1: // Girls
+                visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
+                    currentVisit.data.length,
+                    lhfa_girls_z[currentVisit.data.age].SD0,
+                    lhfa_girls_z[currentVisit.data.age].SD1
+                  )+"</br>";
+                visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
+                    currentVisit.data.weight,
+                    wfa_girls_z[currentVisit.data.age].SD0,
+                    wfa_girls_z[currentVisit.data.age].SD1
+                  )+"</br>";
+                visit_content += "<strong>P/T:</strong> "+find_z_deviation_length(
+                    wfl_girls_z,
+                    currentVisit.data.length,
+                    currentVisit.data.weight
+                  )+"</br>";
+                break;
+              case 0: // Boys
+                visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
+                    currentVisit.data.length,
+                    lhfa_boys_z[currentVisit.data.age].SD0,
+                    lhfa_boys_z[currentVisit.data.age].SD1
+                  )+"</br>";
+                visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
+                    currentVisit.data.weight,
+                    wfa_boys_z[currentVisit.data.age].SD0,
+                    wfa_boys_z[currentVisit.data.age].SD1
+                  )+"</br>";
+                visit_content += "<strong>P/T:</strong> "+find_z_deviation_length(
+                    wfl_boys_z,
+                    currentVisit.data.length,
+                    currentVisit.data.weight
+                  )+"</br>";
+                break;
+            }
+          }
+        } // End of CHILDS
+
+        if (nutrimiles.getBeneficiaryInformations().group_id == 1)
+        {
+          bmi = Math.floor(
+            currentVisit.data.weight/(
+              currentVisit.data.height*currentVisit.data.height
+              )*10000);
+          visit_content += "<strong>BMI:</strong> "+bmi;
+        }
+        
+        visit_content += '</div>';
+
+        $('#health_checkups').append($(visit_content).collapsible());
+      }
+    }
+  }
+};
+    </script>
+  </head>
+  <body>
+    <div data-role="page" id="content">
+      <div class="ui-grid-solo">
+        <div class="ui-block-a" id="text_header"></div>
+      </div>
+      <div role="main" class="ui-content" id="main_content">
+        <div data-role="collapsibleset" data-theme="a" data-inset="false" id="health_checkups">
+        </div>
+      </div>
+      <div class="ui-grid-solo">
+        <div class="ui-block-a" id="obj_dump"></div>
+      </div>
+    </div>
+  </body>
+</html>
