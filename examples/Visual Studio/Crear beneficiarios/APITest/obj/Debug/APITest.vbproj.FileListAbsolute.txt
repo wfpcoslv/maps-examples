@@ -1,0 +1,13 @@
+C:\Users\pmamg\Documents\Visual Studio 2008\Projects\APITest\APITest\bin\Debug\APITest.exe
+C:\Users\pmamg\Documents\Visual Studio 2008\Projects\APITest\APITest\bin\Debug\APITest.pdb
+C:\Users\pmamg\Documents\Visual Studio 2008\Projects\APITest\APITest\bin\Debug\APITest.xml
+C:\Users\pmamg\Documents\Visual Studio 2008\Projects\APITest\APITest\bin\Debug\Newtonsoft.Json.dll
+C:\Users\pmamg\Documents\Visual Studio 2008\Projects\APITest\APITest\bin\Debug\Newtonsoft.Json.pdb
+C:\Users\pmamg\Documents\Visual Studio 2008\Projects\APITest\APITest\bin\Debug\Newtonsoft.Json.xml
+C:\Users\pmamg\Documents\Visual Studio 2008\Projects\APITest\APITest\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\pmamg\Documents\Visual Studio 2008\Projects\APITest\APITest\obj\Debug\WindowsApplication1.Form1.resources
+C:\Users\pmamg\Documents\Visual Studio 2008\Projects\APITest\APITest\obj\Debug\WindowsApplication1.Resources.resources
+C:\Users\pmamg\Documents\Visual Studio 2008\Projects\APITest\APITest\obj\Debug\APITest.vbproj.GenerateResource.Cache
+C:\Users\pmamg\Documents\Visual Studio 2008\Projects\APITest\APITest\obj\Debug\APITest.exe
+C:\Users\pmamg\Documents\Visual Studio 2008\Projects\APITest\APITest\obj\Debug\APITest.xml
+C:\Users\pmamg\Documents\Visual Studio 2008\Projects\APITest\APITest\obj\Debug\APITest.pdb
