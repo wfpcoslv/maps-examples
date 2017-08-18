@@ -86,154 +86,232 @@ function init() {
   var beneficiary = nutrimiles.getBeneficiaryInformations();
   var age_in_days = age_days(beneficiary.birth_date);
 
-  
-  if(age_in_days < 30) { // Hasta mes 1
-    $('#peso_grp').show();
-    $('#talla_grp').show();
-    $('#tiponac_grp').show();
-    $('#esquemavac_grp').show();
-    $('#vita_grp').hide();
-    $('#vitsf_grp').hide();
-    $('#antipar_grp').hide();
-    seq = 1;
+  if( beneficiary.group = 1 ) { // Mujeres
+    var age_pregnancy = age_days(beneficiary.fur);
+
+    if(age_pregnancy < 54) {
+      $('#peso_grp').show();
+      $('#talla_grp').show();
+      $('#anemia_grp').show();
+      //$('#antitetanica_grp').show();
+      $('#influenza_grp').show();
+      //$('#ggh_grp').show();
+      $('#folico_grp').show();
+      $('#hierro_grp').show();
+      $('#vita_grp').show();
+      $('#calcio_grp').show();
+    }
+    if(
+        (age_pregnancy >= 54) &&
+        (age_pregnancy <  108)
+      ) {
+      $('#peso_grp').show();
+      //$('#talla_grp').show();
+      $('#anemia_grp').show();
+      $('#antitetanica_grp').show();
+      //$('#influenza_grp').show();
+      //$('#ggh_grp').show();
+      $('#folico_grp').show();
+      $('#hierro_grp').show();
+      $('#vita_grp').show();
+      $('#calcio_grp').show();
+    }
+    if(
+        (age_pregnancy >= 108) &&
+        (age_pregnancy <  162)
+      ) {
+      $('#peso_grp').show();
+      //$('#talla_grp').show();
+      $('#anemia_grp').show();
+      //$('#antitetanica_grp').show();
+      //$('#influenza_grp').show();
+      //$('#ggh_grp').show();
+      $('#folico_grp').show();
+      $('#hierro_grp').show();
+      $('#vita_grp').show();
+      $('#calcio_grp').show();
+    }
+    if(
+        (age_pregnancy >= 162) &&
+        (age_pregnancy <  216)
+      ) {
+      $('#peso_grp').show();
+      //$('#talla_grp').show();
+      $('#anemia_grp').show();
+      //$('#antitetanica_grp').show();
+      //$('#influenza_grp').show();
+      $('#ggh_grp').show();
+      $('#folico_grp').show();
+      $('#hierro_grp').show();
+      $('#vita_grp').show();
+      $('#calcio_grp').show();
+    }
+    if(
+        (age_pregnancy >= 216) &&
+        (age_pregnancy <  270)
+      ) {
+      $('#peso_grp').show();
+      //$('#talla_grp').show();
+      $('#anemia_grp').show();
+      //$('#antitetanica_grp').show();
+      //$('#influenza_grp').show();
+      //$('#ggh_grp').show();
+      $('#folico_grp').show();
+      $('#hierro_grp').show();
+      $('#vita_grp').show();
+      $('#calcio_grp').show();
+    }
   }
-  if(
-      (age_in_days >= 30) &&
-      (age_in_days <  60)
-    ) { // Hasta mes 2
-    $('#peso_grp').show();
-    $('#talla_grp').show();
-    $('#tiponac_grp').hide();
-    $('#esquemavac_grp').show();
-    $('#vita_grp').hide();
-    $('#vitsf_grp').hide();
-    $('#antipar_grp').hide();
-    seq = 2;
-  }
-  if(
-      (age_in_days >= 60) &&
-      (age_in_days <  150)
-    ) { // Hasta mes 5
-    $('#peso_grp').show();
-    $('#talla_grp').show();
-    $('#tiponac_grp').hide();
-    $('#esquemavac_grp').show();
-    $('#vita_grp').hide();
-    $('#vitsf_grp').hide();
-    $('#antipar_grp').hide();
-    seq = 3;
-  }
-  if(
-      (age_in_days >= 150) &&
-      (age_in_days <  210)
-    ) {  // Hasta mes 7
-    $('#peso_grp').hide();
-    $('#talla_grp').hide();
-    $('#tiponac_grp').hide();
-    $('#esquemavac_grp').hide();
-    $('#vita_grp').show();
-    $('#vitsf_grp').show();
-    $('#antipar_grp').show();
-    seq = 4;
-  }
-  if(
-      (age_in_days >= 210) &&
-      (age_in_days <  270)
-    ) {  // Hasta mes 9
-    $('#peso_grp').show();
-    $('#talla_grp').show();
-    $('#tiponac_grp').hide();
-    $('#esquemavac_grp').show();
-    $('#vita_grp').show();
-    $('#vitsf_grp').show();
-    $('#antipar_grp').hide();
-    seq = 5;
-  }
-  if(
-      (age_in_days >= 270) &&
-      (age_in_days <  330)
-    ) {  // Hasta mes 11
-    $('#peso_grp').hide();
-    $('#talla_grp').hide();
-    $('#tiponac_grp').hide();
-    $('#esquemavac_grp').show();
-    $('#vita_grp').show();
-    $('#vitsf_grp').show();
-    $('#antipar_grp').hide();
-    seq = 6;
-  }
-  if(
-      (age_in_days >= 330) &&
-      (age_in_days <  390)
-    ) {  // Hasta mes 13
-    $('#peso_grp').show();
-    $('#talla_grp').show();
-    $('#tiponac_grp').hide();
-    $('#esquemavac_grp').show();
-    $('#vita_grp').show();
-    $('#vitsf_grp').show();
-    $('#antipar_grp').show();
-    seq = 7;
-  }
-  if(
-      (age_in_days >= 390) &&
-      (age_in_days <  480)
-    ) {  // Hasta mes 16
-    $('#peso_grp').show();
-    $('#talla_grp').show();
-    $('#tiponac_grp').hide();
-    $('#esquemavac_grp').show();
-    $('#vita_grp').hide();
-    $('#vitsf_grp').show();
-    $('#antipar_grp').hide();
-    seq = 8;
-  }
-  if(
-      (age_in_days >= 480) &&
-      (age_in_days <  570)
-    ) {  // Hasta mes 19
-    $('#peso_grp').show();
-    $('#talla_grp').show();
-    $('#tiponac_grp').hide();
-    $('#esquemavac_grp').show();
-    $('#vita_grp').hide();
-    $('#vitsf_grp').show();
-    $('#antipar_grp').hide();
-  }
-  if(
-      (age_in_days >= 570) &&
-      (age_in_days <  660)
-    ) {  // Hasta mes 22
-    $('#peso_grp').show();
-    $('#talla_grp').show();
-    $('#tiponac_grp').hide();
-    $('#esquemavac_grp').show();
-    $('#vita_grp').hide();
-    $('#vitsf_grp').show();
-    $('#antipar_grp').hide();
-  }
-  if(
-      (age_in_days >= 660) &&
-      (age_in_days <  750)
-    ) {  // Hasta mes 24
-    $('#peso_grp').show();
-    $('#talla_grp').show();
-    $('#tiponac_grp').hide();
-    $('#esquemavac_grp').show();
-    $('#vita_grp').hide();
-    $('#vitsf_grp').show();
-    $('#antipar_grp').show();
-  }
-  if(
-      (age_in_days >= 750)
-    ) {  // Hasta mes 24
-    $('#peso_grp').hide();
-    $('#talla_grp').hide();
-    $('#tiponac_grp').hide();
-    $('#esquemavac_grp').hide();
-    $('#vita_grp').hide();
-    $('#vitsf_grp').hide();
-    $('#antipar_grp').hide();
+
+  if( beneficiary.group = 3 ) { // Niños
+    if(age_in_days < 30) { // Hasta mes 1
+      $('#peso_grp').show();
+      $('#talla_grp').show();
+      $('#tiponac_grp').show();
+      $('#esquemavac_grp').show();
+      $('#vita_grp').hide();
+      $('#vitsf_grp').hide();
+      $('#antipar_grp').hide();
+      seq = 1;
+    }
+    if(
+        (age_in_days >= 30) &&
+        (age_in_days <  60)
+      ) { // Hasta mes 2
+      $('#peso_grp').show();
+      $('#talla_grp').show();
+      $('#tiponac_grp').hide();
+      $('#esquemavac_grp').show();
+      $('#vita_grp').hide();
+      $('#vitsf_grp').hide();
+      $('#antipar_grp').hide();
+      seq = 2;
+    }
+    if(
+        (age_in_days >= 60) &&
+        (age_in_days <  150)
+      ) { // Hasta mes 5
+      $('#peso_grp').show();
+      $('#talla_grp').show();
+      $('#tiponac_grp').hide();
+      $('#esquemavac_grp').show();
+      $('#vita_grp').hide();
+      $('#vitsf_grp').hide();
+      $('#antipar_grp').hide();
+      seq = 3;
+    }
+    if(
+        (age_in_days >= 150) &&
+        (age_in_days <  210)
+      ) {  // Hasta mes 7
+      $('#peso_grp').hide();
+      $('#talla_grp').hide();
+      $('#tiponac_grp').hide();
+      $('#esquemavac_grp').hide();
+      $('#vita_grp').show();
+      $('#vitsf_grp').show();
+      $('#antipar_grp').show();
+      seq = 4;
+    }
+    if(
+        (age_in_days >= 210) &&
+        (age_in_days <  270)
+      ) {  // Hasta mes 9
+      $('#peso_grp').show();
+      $('#talla_grp').show();
+      $('#tiponac_grp').hide();
+      $('#esquemavac_grp').show();
+      $('#vita_grp').show();
+      $('#vitsf_grp').show();
+      $('#antipar_grp').hide();
+      seq = 5;
+    }
+    if(
+        (age_in_days >= 270) &&
+        (age_in_days <  330)
+      ) {  // Hasta mes 11
+      $('#peso_grp').hide();
+      $('#talla_grp').hide();
+      $('#tiponac_grp').hide();
+      $('#esquemavac_grp').show();
+      $('#vita_grp').show();
+      $('#vitsf_grp').show();
+      $('#antipar_grp').hide();
+      seq = 6;
+    }
+    if(
+        (age_in_days >= 330) &&
+        (age_in_days <  390)
+      ) {  // Hasta mes 13
+      $('#peso_grp').show();
+      $('#talla_grp').show();
+      $('#tiponac_grp').hide();
+      $('#esquemavac_grp').show();
+      $('#vita_grp').show();
+      $('#vitsf_grp').show();
+      $('#antipar_grp').show();
+      seq = 7;
+    }
+    if(
+        (age_in_days >= 390) &&
+        (age_in_days <  480)
+      ) {  // Hasta mes 16
+      $('#peso_grp').show();
+      $('#talla_grp').show();
+      $('#tiponac_grp').hide();
+      $('#esquemavac_grp').show();
+      $('#vita_grp').hide();
+      $('#vitsf_grp').show();
+      $('#antipar_grp').hide();
+      seq = 8;
+    }
+    if(
+        (age_in_days >= 480) &&
+        (age_in_days <  570)
+      ) {  // Hasta mes 19
+      $('#peso_grp').show();
+      $('#talla_grp').show();
+      $('#tiponac_grp').hide();
+      $('#esquemavac_grp').show();
+      $('#vita_grp').hide();
+      $('#vitsf_grp').show();
+      $('#antipar_grp').hide();
+    }
+    if(
+        (age_in_days >= 570) &&
+        (age_in_days <  660)
+      ) {  // Hasta mes 22
+      $('#peso_grp').show();
+      $('#talla_grp').show();
+      $('#tiponac_grp').hide();
+      $('#esquemavac_grp').show();
+      $('#vita_grp').hide();
+      $('#vitsf_grp').show();
+      $('#antipar_grp').hide();
+    }
+    if(
+        (age_in_days >= 660) &&
+        (age_in_days <  750)
+      ) {  // Hasta mes 24
+      $('#peso_grp').show();
+      $('#talla_grp').show();
+      $('#tiponac_grp').hide();
+      $('#esquemavac_grp').show();
+      $('#vita_grp').hide();
+      $('#vitsf_grp').show();
+      $('#antipar_grp').show();
+    }
+    if(
+        (age_in_days >= 750)
+      ) {  // Hasta mes 24
+      $('#peso_grp').hide();
+      $('#talla_grp').hide();
+      $('#tiponac_grp').hide();
+      $('#esquemavac_grp').hide();
+      $('#vita_grp').hide();
+      $('#vitsf_grp').hide();
+      $('#antipar_grp').hide();
+    }
   }
 }
 
@@ -265,9 +343,32 @@ function addEntry() {
   if($('#antipar_gpr').is(":visible")) {
     patientData.antipar = $('#antipar').val();
   }
+  
+  // Indicadores especificos para las madres.
+  if($('#anemia_grp').is(":visible")) {
+    patientData.anemia = $('#anemia').val();
+  }
+  if($('#antitetanica_grp').is(":visible")) {
+    patientData.antitetanica = $('#antitetanica').val();
+  }
+  if($('#influenza_grp').is(":visible")) {
+    patientData.antitetanica = $('#influenza').val();
+  }
+  if($('#ggh_grp').is(":visible")) {
+    patientData.antitetanica = $('#ggh').val();
+  }
+  if($('#folico_grp').is(":visible")) {
+    patientData.antitetanica = $('#folico').val();
+  }
+  if($('#hierro_grp').is(":visible")) {
+    patientData.antitetanica = $('#hierro').val();
+  }
+  if($('#calcio_grp').is(":visible")) {
+    patientData.antitetanica = $('#calcio').val();
+  }
 
   newEvent = nutrimiles.prepareEvent(patientData);
-  
+
   if(newEvent) {
     nutrimiles.createTransaction(newEvent);
   } else {
@@ -322,6 +423,62 @@ function addEntry() {
             <div class="pure-control-group" id="antipar_grp">
               <label for="antipar">Antiparasitarios: Mebandazole</label>
               <select id="antipar">
+                <option value="1">Sí</option>
+                <option value="2">No (No hay)</option>
+                <option value="3">No (No lo toma)</option>
+                <option value="4">No (Otro)</option>
+              </select>
+            </div>
+            <div class="pure-control-group" id="anemia_grp">
+              <label for="anemia">Respuesta de examen Hemoglobina</label>
+              <select id="anemia">
+                <option value="1">Hay Anemia</option>
+                <option value="2">No hay Anemia</option>
+                <option value="9">No se realizó el exámen</option>
+              </select>
+            </div>
+            <div class="pure-control-group" id="antitetanica_grp">
+              <label for="antitetanica">Vacunación Antitetánica</label>
+              <select id="antitetanica">
+                <option value="1">Sí</option>
+                <option value="2">No</option>
+              </select>
+            </div>
+            <div class="pure-control-group" id="influenza_grp">
+              <label for="influenza">Vacunación Influenza Estacional</label>
+              <select id="influenza">
+                <option value="1">Sí</option>
+                <option value="2">No</option>
+              </select>
+            </div>
+            <div class="pure-control-group" id="ggh_grp">
+              <label for="ggh">Vacunación con Gamma Globulina hiperinmune antiD</label>
+              <select id="ggh">
+                <option value="1">Sí</option>
+                <option value="2">No</option>
+              </select>
+            </div>
+            <div class="pure-control-group" id="folico_grp">
+              <select id="folico">
+              <label for="folico">Ácido fólico</label>
+                <option value="1">Sí</option>
+                <option value="2">No (No hay)</option>
+                <option value="3">No (No lo toma)</option>
+                <option value="4">No (Otro)</option>
+              </select>
+            </div>
+            <div class="pure-control-group" id="hierro_grp">
+              <select id="hierro">
+              <label for="hierro">Hierro</label>
+                <option value="1">Sí</option>
+                <option value="2">No (No hay)</option>
+                <option value="3">No (No lo toma)</option>
+                <option value="4">No (Otro)</option>
+              </select>
+            </div>
+            <div class="pure-control-group" id="calcio_grp">
+              <select id="calcio">
+              <label for="calcio">Calcio</label>
                 <option value="1">Sí</option>
                 <option value="2">No (No hay)</option>
                 <option value="3">No (No lo toma)</option>
