@@ -29,6 +29,8 @@ For more info about this examples contact at <mario.gomez@wfp.org>
     <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.inline-png-1.4.5.min.css" />
     <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.theme-1.4.5.min.css" />
     <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.icons-1.4.5.min.css" />
+    <link rel="stylesheet" href="./js/jquery.mobile.datepicker/jquery.mobile.datepicker.css" />
+    <link rel="stylesheet" href="./js/jquery.mobile.datepicker/jquery.mobile.datepicker.theme.css" />
     <style type="text/css">
 .ui-page { margin-top: 60px; }
 #msg {
@@ -54,6 +56,8 @@ For more info about this examples contact at <mario.gomez@wfp.org>
     <!-- Incluír los archivos de soporte de Javascript //-->
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile.datepicker/external/jquery-ui/datepicker.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile.datepicker/jquery.mobile.datepicker.js"></script>
 
 
 <script type="text/javascript" language="JavaScript">
@@ -64,6 +68,10 @@ $(function() {
 });
 
 var seq = 0;
+
+function find_age_pregnancy(preg_age) {
+  return "2017-29-01";
+}
 
 function init() {
 
@@ -79,6 +87,9 @@ function init() {
   }
 
   console.log("NMI - new event...");
+  
+  //$(".date-input-inline").datepicker();
+  //$(".date-input").datepicker.altFormat('option', 'altFormat', 'yy-mm-dd');
 
   var htmlToDisplay = '';
   var currentUser = nutrimiles.getUserInformations();
@@ -90,6 +101,7 @@ function init() {
     var age_pregnancy = age_days(beneficiary.fur);
 
     if(age_pregnancy < 54) {
+      $('#pregDate').show();
       $('#peso_grp').show();
       $('#talla_grp').show();
       $('#anemia_grp').show();
@@ -100,6 +112,7 @@ function init() {
       $('#hierro_grp').show();
       $('#vita_grp').show();
       $('#calcio_grp').show();
+      seq = 1;
     }
     if(
         (age_pregnancy >= 54) &&
@@ -115,6 +128,7 @@ function init() {
       $('#hierro_grp').show();
       $('#vita_grp').show();
       $('#calcio_grp').show();
+      seq = 2;
     }
     if(
         (age_pregnancy >= 108) &&
@@ -130,6 +144,7 @@ function init() {
       $('#hierro_grp').show();
       $('#vita_grp').show();
       $('#calcio_grp').show();
+      seq = 3;
     }
     if(
         (age_pregnancy >= 162) &&
@@ -145,6 +160,7 @@ function init() {
       $('#hierro_grp').show();
       $('#vita_grp').show();
       $('#calcio_grp').show();
+      seq = 4;
     }
     if(
         (age_pregnancy >= 216) &&
@@ -160,6 +176,7 @@ function init() {
       $('#hierro_grp').show();
       $('#vita_grp').show();
       $('#calcio_grp').show();
+      seq = 5;
     }
   }
 
@@ -172,7 +189,7 @@ function init() {
       $('#vita_grp').hide();
       $('#vitsf_grp').hide();
       $('#antipar_grp').hide();
-      seq = 1;
+      seq = 6;
     }
     if(
         (age_in_days >= 30) &&
@@ -185,7 +202,7 @@ function init() {
       $('#vita_grp').hide();
       $('#vitsf_grp').hide();
       $('#antipar_grp').hide();
-      seq = 2;
+      seq = 7;
     }
     if(
         (age_in_days >= 60) &&
@@ -198,7 +215,7 @@ function init() {
       $('#vita_grp').hide();
       $('#vitsf_grp').hide();
       $('#antipar_grp').hide();
-      seq = 3;
+      seq = 8;
     }
     if(
         (age_in_days >= 150) &&
@@ -211,7 +228,7 @@ function init() {
       $('#vita_grp').show();
       $('#vitsf_grp').show();
       $('#antipar_grp').show();
-      seq = 4;
+      seq = 9;
     }
     if(
         (age_in_days >= 210) &&
@@ -224,7 +241,7 @@ function init() {
       $('#vita_grp').show();
       $('#vitsf_grp').show();
       $('#antipar_grp').hide();
-      seq = 5;
+      seq = 10;
     }
     if(
         (age_in_days >= 270) &&
@@ -237,7 +254,7 @@ function init() {
       $('#vita_grp').show();
       $('#vitsf_grp').show();
       $('#antipar_grp').hide();
-      seq = 6;
+      seq = 11;
     }
     if(
         (age_in_days >= 330) &&
@@ -250,7 +267,7 @@ function init() {
       $('#vita_grp').show();
       $('#vitsf_grp').show();
       $('#antipar_grp').show();
-      seq = 7;
+      seq = 12;
     }
     if(
         (age_in_days >= 390) &&
@@ -263,7 +280,7 @@ function init() {
       $('#vita_grp').hide();
       $('#vitsf_grp').show();
       $('#antipar_grp').hide();
-      seq = 8;
+      seq = 13;
     }
     if(
         (age_in_days >= 480) &&
@@ -276,6 +293,7 @@ function init() {
       $('#vita_grp').hide();
       $('#vitsf_grp').show();
       $('#antipar_grp').hide();
+      seq = 14;
     }
     if(
         (age_in_days >= 570) &&
@@ -288,6 +306,7 @@ function init() {
       $('#vita_grp').hide();
       $('#vitsf_grp').show();
       $('#antipar_grp').hide();
+      seq = 15;
     }
     if(
         (age_in_days >= 660) &&
@@ -300,6 +319,7 @@ function init() {
       $('#vita_grp').hide();
       $('#vitsf_grp').show();
       $('#antipar_grp').show();
+      seq = 16;
     }
     if(
         (age_in_days >= 750)
@@ -311,6 +331,7 @@ function init() {
       $('#vita_grp').hide();
       $('#vitsf_grp').hide();
       $('#antipar_grp').hide();
+      seq = 17;
     }
   }
 }
@@ -322,12 +343,17 @@ function addEntry() {
     "seq" : seq
   };
 
+  if($('pregDate').is(":visible")) {
+    patientData.pregDate = $('#pregDate').val();
+  }
   if($('#peso_grp').is(":visible")) {
     patientData.peso = $('#peso').val();
   }
   if($('#talla_grp').is(":visible")) {
     patientData.talla = $('#talla').val();
   }
+  
+  // Indicadores especificos para los niños
   if($('#tiponac_grp').is(":visible")) {
     patientData.tiponac = $('#tiponac').val();
   }
@@ -352,19 +378,19 @@ function addEntry() {
     patientData.antitetanica = $('#antitetanica').val();
   }
   if($('#influenza_grp').is(":visible")) {
-    patientData.antitetanica = $('#influenza').val();
+    patientData.influenza = $('#influenza').val();
   }
   if($('#ggh_grp').is(":visible")) {
-    patientData.antitetanica = $('#ggh').val();
+    patientData.ggh = $('#ggh').val();
   }
   if($('#folico_grp').is(":visible")) {
-    patientData.antitetanica = $('#folico').val();
+    patientData.folico = $('#folico').val();
   }
   if($('#hierro_grp').is(":visible")) {
-    patientData.antitetanica = $('#hierro').val();
+    patientData.hierro = $('#hierro').val();
   }
   if($('#calcio_grp').is(":visible")) {
-    patientData.antitetanica = $('#calcio').val();
+    patientData.calcio = $('#calcio').val();
   }
 
   newEvent = nutrimiles.prepareEvent(patientData);
@@ -380,6 +406,14 @@ function addEntry() {
 <body onLoad="init()">
     <form class="pure-form pure-form-aligned">
           <fieldset id="questions">
+            <div class="pure-control-group">
+              <label for="pregDate">Cálculo de edad gestacional:</label><br />
+              <select id="tipocalc">
+                <option value="1">FUR</option>
+                <option value="2">FPP</option>
+              </select><br />
+              <input id="pregDate" type="text" class="date-input-inline" data-inline="false" data-role="date" />
+            </div>
             <div class="pure-control-group" id="peso_grp">
               <label for="peso">Peso:</label>
               <input id="peso" class="indicator" type="number" step="0.01" placeholder="En Kg" />
@@ -459,8 +493,8 @@ function addEntry() {
               </select>
             </div>
             <div class="pure-control-group" id="folico_grp">
-              <select id="folico">
               <label for="folico">Ácido fólico</label>
+              <select id="folico">
                 <option value="1">Sí</option>
                 <option value="2">No (No hay)</option>
                 <option value="3">No (No lo toma)</option>
@@ -468,8 +502,8 @@ function addEntry() {
               </select>
             </div>
             <div class="pure-control-group" id="hierro_grp">
-              <select id="hierro">
               <label for="hierro">Hierro</label>
+              <select id="hierro">
                 <option value="1">Sí</option>
                 <option value="2">No (No hay)</option>
                 <option value="3">No (No lo toma)</option>
@@ -477,8 +511,8 @@ function addEntry() {
               </select>
             </div>
             <div class="pure-control-group" id="calcio_grp">
-              <select id="calcio">
               <label for="calcio">Calcio</label>
+              <select id="calcio">
                 <option value="1">Sí</option>
                 <option value="2">No (No hay)</option>
                 <option value="3">No (No lo toma)</option>
