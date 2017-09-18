@@ -35,7 +35,7 @@ var beneficiaryData = {
     "id_document": "45547150048948541",
     "name": "Villatoro",
     "first_name": "Claudia",
-    "group_id": 2,
+    "group_id": 1,
     "nutrimiles_id": "6578964102545",
     "version": 1
     },
