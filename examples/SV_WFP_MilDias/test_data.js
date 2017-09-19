@@ -28,10 +28,10 @@ var userData = {
 var beneficiaryData = {
   "info" : {
     "beneficiary_id": 65789641025451,
-    "birth_date": "2016-12-26",
+    "birth_date": "2017-09-13",
     "expiration_date": null,
     "registration_date": "2015-01-02",
-    "gender": 1,
+    "gender": 2,
     "id_document": "45547150048948541",
     "name": "Villatoro",
     "first_name": "Claudia",

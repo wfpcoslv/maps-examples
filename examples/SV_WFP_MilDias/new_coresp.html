@@ -45,11 +45,259 @@ $(function() {
   init();
 });
 
-var seq = 0;
+var seq = 55;
 
 function find_age_pregnancy(preg_age) {
-  return 10;
+  return 0;
 }
+
+var capture_sequence = {
+    'mother': [
+      { 'days': 54,
+	'seq': 1,
+	'variables': [
+	  'gest',
+	  'peso',
+	  'talla',
+	  'influenza',
+	  'folico',
+	  'hierro',
+	  'calcio'
+	]
+      },
+      { 'days': 108,
+	'seq': 2,
+	'variables': [
+	  'peso',
+	  'anemia',
+	  'antitetanica',
+	  'folico',
+	  'hierro',
+	  'calcio'
+	]
+      },
+      { 'days': 162,
+	'seq': 3,
+	'variables': [
+	  'peso',
+	  'folico',
+	  'hierro',
+	  'calcio'
+	]
+      },
+      { 'days': 216,
+	'seq': 4,
+	'variables': [
+	  'peso',
+	  'anemia',
+	  'ggh',
+	  'folico',
+	  'hierro',
+	  'calcio'
+	]
+      },
+      { 'days': 270,
+	'seq': 5,
+	'variables': [
+	  'peso',
+	  'talla',
+	  'folico',
+	  'hierro',
+	  'calcio'
+	]
+      }
+    ],
+    'child': [
+      { 'days': 7,
+	'seq': 6,
+	'variables': [
+	  'peso',
+	  'talla',
+	  'tiponac',
+	  'enrn',
+	  'lactan',
+	  'esquemavac'
+	]
+      },
+      { 'days': 60,
+	'seq': 7,
+	'variables': [
+	  'peso',
+	  'talla',
+	  'lactan',
+	  'esquemavac'
+	]
+      },
+      { 'days': 120,
+	'seq': 8,
+	'variables': [
+	  'peso',
+	  'talla',
+	  'esquemavac'
+	]
+      },
+      { 'days': 180,
+	'seq': 9,
+	'variables': [
+	  'peso',
+	  'talla',
+	  'esquemavac'
+	]
+      },
+      { 'days': 240,
+	'seq': 10,
+	'variables': [
+	  'peso',
+	  'talla',
+	  'esquemavac',
+	  'vita',
+	  'vitsf'
+	]
+      },
+      { 'days': 300,
+	'seq': 11,
+	'variables': [
+	  'peso',
+	  'talla',
+	  'esquemavac',
+	  'vita'
+	]
+      },
+      { 'days': 360,
+	'seq': 12,
+	'variables': [
+	  'peso',
+	  'talla',
+	  'esquemavac',
+	  'vita'
+	]
+      },
+      { 'days': 450,
+	'seq': 13,
+	'variables': [
+	  'peso',
+	  'talla',
+	  'esquemavac',
+	  'vitsf',
+	  'antipar'
+	]
+      },
+      { 'days': 540,
+	'seq': 14,
+	'variables': [
+	  'peso',
+	  'talla',
+	  'esquemavac'
+	]
+      },
+      { 'days': 630,
+	'seq': 15,
+	'variables': [
+	  'peso',
+	  'talla',
+	  'esquemavac',
+	  'vitsf',
+	  'antipar'
+	]
+      },
+      { 'days': 720,
+	'seq': 16,
+	'variables': [
+	  'peso',
+	  'talla',
+	  'esquemavac'
+	]
+      },
+      { 'days': 1000,
+	'seq': 17,
+	'variables': [
+	  'peso',
+	  'talla',
+	  'esquemavac',
+	  'vitsf',
+	  'antipar'
+	]
+      }
+    ]
+  };
+  
+function findPregnancyDate(events) {
+  for(var i=(events.length-1); i>=0; i--) {
+    if(events[i].data.preg_offset) {
+      var offset = events[i].data.preg_offset;
+      var evt_date = new Date(events[i].date);
+      if(offset<1) {
+	// Asumir FUR.
+	evt_date.setDate(evt_date.getDate()+offset);
+      } else {
+	// Asumir FPP
+	evt_date.setDate(evt_date.getDate()+(280-offset));
+      }
+      
+      return evt_date.toISOString();
+    }
+  }
+  return null;
+}
+
+function displayMotherSequence() {
+  //window.alert("Mother sequence");
+  var found = false;
+  var idx = 0;
+  for(var i=0;i < capture_sequence.mother.length; i++) {
+    if(age_pregnancy < capture_sequence.mother[i].days) {
+      found = true;
+      idx = i;
+      break;
+    }
+  }
+
+  if(found) {
+    for(var i=0;i<capture_sequence.mother[idx].variables.length; i++) {
+      $('#'+capture_sequence.mother[idx].variables[i]+'_grp').show();
+  //window.alert(capture_sequence.mother[idx].variables[i]);
+    }
+    seq = capture_sequence.mother[idx].seq;
+  } else {
+    // TODO: Do nothing (for now)
+  }
+}
+var date_pregnancy = "";
+var age_pregnancy = 0;
+
+var method = "";
+
+function generatePregDate() {
+  var selectedDate = new Date($("#pregDate").datepicker("getDate"));
+  var baseDate = new Date();
+  var diffDays = Math.ceil((selectedDate.getTime()-baseDate.getTime())/86400000);
+  if(diffDays<1) {
+    baseDate.setDate(baseDate.getDate()+diffDays);
+    method = "FUR";
+  } else {
+    baseDate.setDate(baseDate.getDate()-(280-diffDays));
+    method = "FPP";
+  }
+  return ""+baseDate.getFullYear()+"-"+(baseDate.getMonth()+1)+"-"+baseDate.getDate();
+}
+
+function calcEmb() {
+  date_pregnancy = generatePregDate();
+  var days = age_days(date_pregnancy);
+  age_pregnancy = days;
+  
+  var baseDate = new Date(date_pregnancy);
+  var today = new Date();
+  
+  $('#mother_info').show();
+  $('#mother_edagest').html(Math.floor(days/7)+" semanas "+(days%7)+ " días.<br /> Método: "+method);
+  displayMotherSequence();
+  $('#gest_grp').hide();
+    //window.alert("not hiding");
+  $('#calc_control').hide();
+  $('#submit_control').show();
+}
+
 
 function init() {
 
@@ -60,11 +308,11 @@ function init() {
 
   if(nutrimiles.status()!=1) {
     // Critical error found, stop.
-    window.alert(lang.default_alert);
+    //window.alert(lang.default_alert);
     return;
   }
 
-  console.log("NMI - new event...");
+  //console.log("NMI - new event...");
 
   var htmlToDisplay = '';
   var currentUser = nutrimiles.getUserInformations();
@@ -72,376 +320,70 @@ function init() {
   var beneficiary = nutrimiles.getBeneficiaryInformations();
   var age_in_days = age_days(beneficiary.birth_date);
   
+  // First hide all input fields:
+  $('#gest_grp').hide();
+  $('#peso_grp').hide();
+  $('#talla_grp').hide();
+  $('#tiponac_grp').hide();
+  $('#esquemavac_grp').hide();
+  $('#vita_grp').hide();
+  $('#vitsf_grp').hide();
+  $('#antipar_grp').hide();
+  $('#anemia_grp').hide();
+  $('#antitetanica_grp').hide();
+  $('#influenza_grp').hide();
+  $('#ggh_grp').hide();
+  $('#enrn_grp').hide();
+  $('#folico_grp').hide();
+  $('#hierro_grp').hide();
+  $('#calcio_grp').hide();
+  $('#lactan_grp').hide();
+  $('#child_info').hide();
+  $('#mother_info').hide();
+  $('#submit_control').hide();
+  $('#calc_control').hide();
+  
   if( beneficiary.group_id == 1 ) { // Mujeres
-    var age_pregnancy = find_age_pregnancy(beneficiary.fur);
-
-    if(age_pregnancy < 54) {
+    var date_pregnancy = findPregnancyDate(transactions);
+    
+    if(date_pregnancy===null) {
       $('#gest_grp').show();
-      $('#peso_grp').show();
-      $('#talla_grp').show();
-      $('#tiponac_grp').hide();
-      $('#esquemavac_grp').hide();
-      $('#vita_grp').hide();
-      $('#vitsf_grp').hide();
-      $('#antipar_grp').hide();
-      $('#anemia_grp').hide();
-      $('#antitetanica_grp').hide();
-      $('#influenza_grp').show();
-      $('#ggh_grp').hide();
-      $('#enrn_grp').hide();
-      $('#folico_grp').show();
-      $('#hierro_grp').show();
-      $('#calcio_grp').show();
-      seq = 1;
-    } else if (
-        (age_pregnancy >= 54) &&
-        (age_pregnancy <  108)
-      ) {
-      $('#gest_grp').hide();
-      $('#peso_grp').show();
-      $('#talla_grp').hide();
-      $('#tiponac_grp').hide();
-      $('#esquemavac_grp').hide();
-      $('#vita_grp').hide();
-      $('#vitsf_gvrp').hide();
-      $('#antipar_grp').hide();
-      $('#anemia_grp').show();
-      $('#antitetanica_grp').show();
-      $('#influenza_grp').hide();
-      $('#ggh_grp').hide();
-      $('#enrn_grp').hide();
-      $('#folico_grp').show();
-      $('#hierro_grp').show();
-      $('#calcio_grp').show();
-      seq = 2;
-    } else if (
-        (age_pregnancy >= 108) &&
-        (age_pregnancy <  162)
-      ) {
-      $('#gest_grp').hide();
-      $('#peso_grp').show();
-      $('#talla_grp').hide();
-      $('#tiponac_grp').hide();
-      $('#esquemavac_grp').hide();
-      $('#vita_grp').hide();
-      $('#vitsf_gvrp').hide();
-      $('#antipar_grp').hide();
-      $('#anemia_grp').hide();
-      $('#antitetanica_grp').hide();
-      $('#influenza_grp').hide();
-      $('#ggh_grp').hide();
-      $('#enrn_grp').hide();
-      $('#folico_grp').show();
-      $('#hierro_grp').show();
-      $('#calcio_grp').show();
-      seq = 3;
-    } else if (
-        (age_pregnancy >= 162) &&
-        (age_pregnancy <  216)
-      ) {
-      $('#gest_grp').hide();
-      $('#peso_grp').show();
-      $('#talla_grp').hide();
-      $('#tiponac_grp').hide();
-      $('#esquemavac_grp').hide();
-      $('#vita_grp').hide();
-      $('#vitsf_gvrp').hide();
-      $('#antipar_grp').hide();
-      $('#anemia_grp').show();
-      $('#antitetanica_grp').hide();
-      $('#influenza_grp').hide();
-      $('#ggh_grp').show();
-      $('#enrn_grp').hide();
-      $('#folico_grp').show();
-      $('#hierro_grp').show();
-      $('#calcio_grp').show();
-      seq = 4;
-    } else if (
-        (age_pregnancy >= 216) &&
-        (age_pregnancy <  270)
-      ) {
-      $('#gest_grp').hide();
-      $('#peso_grp').show();
-      $('#talla_grp').show();
-      $('#tiponac_grp').hide();
-      $('#esquemavac_grp').hide();
-      $('#vita_grp').hide();
-      $('#vitsf_gvrp').hide();
-      $('#antipar_grp').hide();
-      $('#anemia_grp').hide();
-      $('#antitetanica_grp').hide();
-      $('#influenza_grp').hide();
-      $('#ggh_grp').hide();
-      $('#enrn_grp').hide();
-      $('#folico_grp').show();
-      $('#hierro_grp').show();
-      $('#calcio_grp').show();
-      seq = 5;
+      $('#calc_control').show();
+      $("#pregDate").datepicker({"dateFormat": "yy-mm-dd"});
+    } else {
+      age_pregnancy = find_age_days(date_pregnancy);
+      displayMotherSequence();
+      //$('#gest_grp').hide();
+      //$('#calc_control').hide();
+      //$('#submit_control').show();
     }
   }
-
+  
   if( beneficiary.group_id == 3 ) { // Niños
-  //window.alert(age_in_days)
-    if(age_in_days < 30) { // Hasta mes 1
-      $('#gest_grp').hide();
-      $('#peso_grp').show();
-      $('#talla_grp').show();
-      $('#tiponac_grp').show();
-      $('#esquemavac_grp').show();
-      $('#vita_grp').hide();
-      $('#vitsf_gvrp').hide();
-      $('#antipar_grp').hide();
-      $('#anemia_grp').hide();
-      $('#antitetanica_grp').hide();
-      $('#influenza_grp').hide();
-      $('#ggh_grp').hide();
-      $('#enrn_grp').show();
-      $('#folico_grp').hide();
-      $('#hierro_grp').hide();
-      $('#calcio_grp').hide();
-      seq = 6;
+    var found = false;
+    var idx = 0;
+    for(var i=0;i<capture_sequence.child.length; i++) {
+      if(age_in_days < capture_sequence.child[i].days) {
+	found = true;
+	idx = i;
+	break;
+      }
+      ////window.alert('ap:'+age_pregnancy+' i:'+i+' ag_d:'+capture_sequence.mother[i].days);
     }
-    if(
-        (age_in_days >= 30) &&
-        (age_in_days <  60)
-      ) { // Hasta mes 2
-      $('#gest_grp').hide();
-      $('#peso_grp').show();
-      $('#talla_grp').show();
-      $('#tiponac_grp').hide();
-      $('#esquemavac_grp').show();
-      $('#vita_grp').hide();
-      $('#vitsf_gvrp').hide();
-      $('#antipar_grp').hide();
-      $('#anemia_grp').hide();
-      $('#antitetanica_grp').hide();
-      $('#influenza_grp').hide();
-      $('#ggh_grp').hide();
-      $('#enrn_grp').hide();
-      $('#folico_grp').hide();
-      $('#hierro_grp').hide();
-      $('#calcio_grp').hide();
-      seq = 7;
+    
+    if(found) {
+      for(var i=0;i<capture_sequence.child[idx].variables.length; i++) {
+	$('#'+capture_sequence.child[idx].variables[i]+'_grp').show();
+      }
+      seq = capture_sequence.child[idx].seq;
+    } else {
+      // TODO: Do nothing (for now)
     }
-    if(
-        (age_in_days >= 60) &&
-        (age_in_days <  150)
-      ) { // Hasta mes 5
-      $('#gest_grp').hide();
-      $('#peso_grp').show();
-      $('#talla_grp').show();
-      $('#tiponac_grp').hide();
-      $('#esquemavac_grp').show();
-      $('#vita_grp').hide();
-      $('#vitsf_gvrp').hide();
-      $('#antipar_grp').hide();
-      $('#anemia_grp').hide();
-      $('#antitetanica_grp').hide();
-      $('#influenza_grp').hide();
-      $('#ggh_grp').hide();
-      $('#enrn_grp').hide();
-      $('#folico_grp').hide();
-      $('#hierro_grp').hide();
-      $('#calcio_grp').hide();
-      seq = 8;
-    }
-    if(
-        (age_in_days >= 150) &&
-        (age_in_days <  210)
-      ) {  // Hasta mes 7
-      $('#gest_grp').hide();
-      $('#peso_grp').show();
-      $('#talla_grp').show();
-      $('#tiponac_grp').hide();
-      $('#esquemavac_grp').show();
-      $('#vita_grp').hide();
-      $('#vitsf_gvrp').hide();
-      $('#antipar_grp').hide();
-      $('#anemia_grp').hide();
-      $('#antitetanica_grp').hide();
-      $('#influenza_grp').hide();
-      $('#ggh_grp').hide();
-      $('#enrn_grp').hide();
-      $('#folico_grp').hide();
-      $('#hierro_grp').hide();
-      $('#calcio_grp').hide();
-      seq = 9;
-    }
-    if(
-        (age_in_days >= 210) &&
-        (age_in_days <  270)
-      ) {  // Hasta mes 9
-      $('#gest_grp').hide();
-      $('#peso_grp').show();
-      $('#talla_grp').show();
-      $('#tiponac_grp').hide();
-      $('#esquemavac_grp').show();
-      $('#vita_grp').show();
-      $('#vitsf_gvrp').show();
-      $('#antipar_grp').show();
-      $('#anemia_grp').hide();
-      $('#antitetanica_grp').hide();
-      $('#influenza_grp').hide();
-      $('#ggh_grp').hide();
-      $('#enrn_grp').hide();
-      $('#folico_grp').hide();
-      $('#hierro_grp').hide();
-      $('#calcio_grp').hide();
-      seq = 10;
-    }
-    if(
-        (age_in_days >= 270) &&
-        (age_in_days <  330)
-      ) {  // Hasta mes 11
-      $('#gest_grp').hide();
-      $('#peso_grp').show();
-      $('#talla_grp').show();
-      $('#tiponac_grp').hide();
-      $('#esquemavac_grp').show();
-      $('#vita_grp').show();
-      $('#vitsf_gvrp').show();
-      $('#antipar_grp').hide();
-      $('#anemia_grp').hide();
-      $('#antitetanica_grp').hide();
-      $('#influenza_grp').hide();
-      $('#ggh_grp').hide();
-      $('#enrn_grp').hide();
-      $('#folico_grp').hide();
-      $('#hierro_grp').hide();
-      $('#calcio_grp').hide();
-      seq = 11;
-    }
-    if(
-        (age_in_days >= 330) &&
-        (age_in_days <  390)
-      ) {  // Hasta mes 13
-      $('#gest_grp').hide();
-      $('#peso_grp').show();
-      $('#talla_grp').show();
-      $('#tiponac_grp').hide();
-      $('#esquemavac_grp').show();
-      $('#vita_grp').show();
-      $('#vitsf_gvrp').show();
-      $('#antipar_grp').hide();
-      $('#anemia_grp').hide();
-      $('#antitetanica_grp').hide();
-      $('#influenza_grp').hide();
-      $('#ggh_grp').hide();
-      $('#enrn_grp').hide();
-      $('#folico_grp').hide();
-      $('#hierro_grp').hide();
-      $('#calcio_grp').hide();
-      seq = 12;
-    }
-    if(
-        (age_in_days >= 390) &&
-        (age_in_days <  480)
-      ) {  // Hasta mes 16
-      $('#gest_grp').hide();
-      $('#peso_grp').show();
-      $('#talla_grp').show();
-      $('#tiponac_grp').hide();
-      $('#esquemavac_grp').show();
-      $('#vita_grp').show();
-      $('#vitsf_gvrp').show();
-      $('#antipar_grp').show();
-      $('#anemia_grp').hide();
-      $('#antitetanica_grp').hide();
-      $('#influenza_grp').hide();
-      $('#ggh_grp').hide();
-      $('#enrn_grp').hide();
-      $('#folico_grp').hide();
-      $('#hierro_grp').hide();
-      $('#calcio_grp').hide();
-      seq = 13;
-    }
-    if(
-        (age_in_days >= 480) &&
-        (age_in_days <  570)
-      ) {  // Hasta mes 19
-      $('#gest_grp').hide();
-      $('#peso_grp').show();
-      $('#talla_grp').show();
-      $('#tiponac_grp').hide();
-      $('#esquemavac_grp').show();
-      $('#vita_grp').hide();
-      $('#vitsf_gvrp').show();
-      $('#antipar_grp').hide();
-      $('#anemia_grp').hide();
-      $('#antitetanica_grp').hide();
-      $('#influenza_grp').hide();
-      $('#ggh_grp').hide();
-      $('#enrn_grp').hide();
-      $('#folico_grp').hide();
-      $('#hierro_grp').hide();
-      $('#calcio_grp').hide();
-      seq = 14;
-    }
-    if(
-        (age_in_days >= 570) &&
-        (age_in_days <  660)
-      ) {  // Hasta mes 22
-      $('#gest_grp').hide();
-      $('#peso_grp').show();
-      $('#talla_grp').show();
-      $('#tiponac_grp').hide();
-      $('#esquemavac_grp').show();
-      $('#vita_grp').hide();
-      $('#vitsf_gvrp').show();
-      $('#antipar_grp').show();
-      $('#anemia_grp').hide();
-      $('#antitetanica_grp').hide();
-      $('#influenza_grp').hide();
-      $('#ggh_grp').hide();
-      $('#enrn_grp').hide();
-      $('#folico_grp').hide();
-      $('#hierro_grp').hide();
-      $('#calcio_grp').hide();
-      seq = 15;
-    }
-    if(
-        (age_in_days >= 660) &&
-        (age_in_days <  750)
-      ) {  // Hasta mes 24
-      $('#gest_grp').hide();
-      $('#peso_grp').show();
-      $('#talla_grp').show();
-      $('#tiponac_grp').hide();
-      $('#esquemavac_grp').show();
-      $('#vita_grp').hide();
-      $('#vitsf_gvrp').show();
-      $('#antipar_grp').hide();
-      $('#anemia_grp').hide();
-      $('#antitetanica_grp').hide();
-      $('#influenza_grp').hide();
-      $('#ggh_grp').hide();
-      $('#enrn_grp').hide();
-      $('#folico_grp').hide();
-      $('#hierro_grp').hide();
-      $('#calcio_grp').hide();
-      seq = 16;
-    }
-    if(
-        (age_in_days >= 750)
-      ) {  // Hasta mes 24
-      $('#gest_grp').hide();
-      $('#peso_grp').show();
-      $('#talla_grp').show();
-      $('#tiponac_grp').hide();
-      $('#esquemavac_grp').show();
-      $('#vita_grp').hide();
-      $('#vitsf_gvrp').show();
-      $('#antipar_grp').show();
-      $('#anemia_grp').hide();
-      $('#antitetanica_grp').hide();
-      $('#influenza_grp').hide();
-      $('#ggh_grp').hide();
-      $('#enrn_grp').hide();
-      $('#folico_grp').hide();
-      $('#hierro_grp').hide();
-      $('#calcio_grp').hide();
-      seq = 17;
-    }
+    
+    $('#child_info').show();
+    $('#child_birthdate').html(beneficiary.birth_date);
+    $('#child_agedays').html(age_in_days);
+    $('#submit_control').show();
   }
 }
 
@@ -452,7 +394,7 @@ function addEntry() {
     "seq" : seq
   };
 
-  if($('pregDate').is(":visible")) {
+  if($('#pregDate').is(":visible")) {
     patientData.pregDate = $('#pregDate').val();
   }
   if($('#peso_grp').is(":visible")) {
@@ -507,21 +449,24 @@ function addEntry() {
   if(newEvent) {
     nutrimiles.createTransaction(newEvent);
   } else {
-    window.alert(lang.default_alert);
+    //window.alert(lang.default_alert);
   }
 }
 </script>
 </head>
-<body onLoad="init()">
+<body onLoad="init()" id="index">
     <form class="pure-form pure-form-aligned">
           <fieldset id="questions">
+            <div class="pure-control-group" id="child_info">
+		<h3>Fecha de Nacimiento: <span id="child_birthdate"></span></h3>
+		<h3>Edad (días): <span id="child_agedays"></span></h3>
+            </div>
+            <div class="pure-control-group" id="mother_info">
+		<h3>Edad gestacional: <span id="mother_edagest"></span></h3>
+            </div>
             <div class="pure-control-group" id="gest_grp">
-              <label for="pregDate">Cálculo de edad gestacional:</label><br />
-              <select id="tipocalc">
-                <option value="1">FUR</option>
-                <option value="2">FPP</option>
-              </select><br />
-              <input id="pregDate" type="text" class="date-input-inline" data-inline="false" data-role="date" />
+              <h3>Cálculo de edad gestacional: Fechas anteriores a la fecha actual se estima por FUR. Fechas posteriores por FPP.</h3>
+              <div id="pregDate" class="date-input-inline"></div>
             </div>
             <div class="pure-control-group" id="peso_grp">
               <label for="peso">Peso:</label>
@@ -636,7 +581,15 @@ function addEntry() {
                 <option value="4">No (Otro)</option>
               </select>
             </div>
-            <div class="pure-controls"><input type="button" class="pure-button pure-button-primary" value="Registrar visita" onClick="addEntry()"></button></div>
+            <div class="pure-control-group" id="lactan_grp">
+              <label for="lactan">Lactancia Materna</label>
+              <select id="lactan">
+                <option value="1">Sí</option>
+                <option value="2">No</option>
+              </select>
+            </div>
+            <div class="pure-controls" id="calc_control"><input type="button" class="pure-button pure-button-primary" value="Calcular Edad Gestacional" onClick="calcEmb()"></button></div>
+            <div class="pure-controls" id="submit_control"><input type="button" class="pure-button pure-button-primary" value="Registrar visita" onClick="addEntry()"></button></div>
           </fieldset>
       </form>
 </body>
