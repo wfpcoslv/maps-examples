@@ -220,28 +220,36 @@ var capture_sequence = {
       }
     ]
   };
+
+var date_pregnancy = "";
+var age_pregnancy = 0;
+var emboff = null;
+var child_age = null;
+
+var method = "";
   
 function findPregnancyDate(events) {
   for(var i=(events.length-1); i>=0; i--) {
-    if(events[i].data.preg_offset) {
-      var offset = events[i].data.preg_offset;
+    if(events[i].data.emboff) {
+      var offset = events[i].data.emboff;
       var evt_date = new Date(events[i].date);
       if(offset<1) {
 	// Asumir FUR.
 	evt_date.setDate(evt_date.getDate()+offset);
+	method = "FUR";
       } else {
 	// Asumir FPP
-	evt_date.setDate(evt_date.getDate()+(280-offset));
+	evt_date.setDate(evt_date.getDate()-(280-offset));
+	method = "FPP";
       }
       
-      return evt_date.toISOString();
+      return ""+evt_date.getFullYear()+"-"+(evt_date.getMonth()+1)+"-"+evt_date.getDate();
     }
   }
   return null;
 }
 
 function displayMotherSequence() {
-  //window.alert("Mother sequence");
   var found = false;
   var idx = 0;
   for(var i=0;i < capture_sequence.mother.length; i++) {
@@ -251,26 +259,23 @@ function displayMotherSequence() {
       break;
     }
   }
+  //window.alert(capture_sequence.mother.length);
 
-  if(found) {
-    for(var i=0;i<capture_sequence.mother[idx].variables.length; i++) {
-      $('#'+capture_sequence.mother[idx].variables[i]+'_grp').show();
-  //window.alert(capture_sequence.mother[idx].variables[i]);
-    }
-    seq = capture_sequence.mother[idx].seq;
-  } else {
-    // TODO: Do nothing (for now)
+  if(!found) {
+    idx = capture_sequence.mother.length - 1;
   }
+  for(var i=0;i<capture_sequence.mother[idx].variables.length; i++) {
+    $('#'+capture_sequence.mother[idx].variables[i]+'_grp').show();
+//window.alert(capture_sequence.mother[idx].variables[i]);
+  }
+  seq = capture_sequence.mother[idx].seq;
 }
-var date_pregnancy = "";
-var age_pregnancy = 0;
-
-var method = "";
 
 function generatePregDate() {
   var selectedDate = new Date($("#pregDate").datepicker("getDate"));
   var baseDate = new Date();
   var diffDays = Math.ceil((selectedDate.getTime()-baseDate.getTime())/86400000);
+  emboff = diffDays;
   if(diffDays<1) {
     baseDate.setDate(baseDate.getDate()+diffDays);
     method = "FUR";
@@ -290,10 +295,10 @@ function calcEmb() {
   var today = new Date();
   
   $('#mother_info').show();
-  $('#mother_edagest').html(Math.floor(days/7)+" semanas "+(days%7)+ " días.<br /> Método: "+method);
+  $('#mother_edagest').html(Math.floor(days/7)+" semanas "+(days%7)+ " días.<br /> Calculado por "+method);
   displayMotherSequence();
   $('#gest_grp').hide();
-    //window.alert("not hiding");
+
   $('#calc_control').hide();
   $('#submit_control').show();
 }
@@ -319,6 +324,7 @@ function init() {
   var transactions = nutrimiles.getTransactions();
   var beneficiary = nutrimiles.getBeneficiaryInformations();
   var age_in_days = age_days(beneficiary.birth_date);
+  
   
   // First hide all input fields:
   $('#gest_grp').hide();
@@ -351,15 +357,22 @@ function init() {
       $('#calc_control').show();
       $("#pregDate").datepicker({"dateFormat": "yy-mm-dd"});
     } else {
-      age_pregnancy = find_age_days(date_pregnancy);
+      age_pregnancy = age_days(date_pregnancy);
+  
+      var days = age_days(date_pregnancy);
+      var baseDate = new Date(date_pregnancy);
+      var today = new Date();
+
+      $('#mother_info').show();
+      $('#mother_edagest').html(Math.floor(days/7)+" semanas "+(days%7)+ " días.<br /> Método: "+method);
       displayMotherSequence();
-      //$('#gest_grp').hide();
-      //$('#calc_control').hide();
-      //$('#submit_control').show();
+      $('#gest_grp').hide();
+      $('#submit_control').show();
     }
   }
   
   if( beneficiary.group_id == 3 ) { // Niños
+    child_age = age_in_days;
     var found = false;
     var idx = 0;
     for(var i=0;i<capture_sequence.child.length; i++) {
@@ -394,54 +407,63 @@ function addEntry() {
     "seq" : seq
   };
 
-  if($('#pregDate').is(":visible")) {
-    patientData.pregDate = $('#pregDate').val();
-  }
-  if($('#peso_grp').is(":visible")) {
+  //if($('#pregDate').is(":visible")) {
+  //  patientData.pregDate = $('#pregDate').val();
+  //}
+  if($('#peso').is(":visible")) {
     patientData.peso = $('#peso').val();
   }
-  if($('#talla_grp').is(":visible")) {
+  if($('#talla').is(":visible")) {
     patientData.talla = $('#talla').val();
   }
 
   // Indicadores especificos para los niños
-  if($('#tiponac_grp').is(":visible")) {
+  if($('#tiponac').is(":visible")) {
     patientData.tiponac = $('#tiponac').val();
   }
-  if($('#esquemavac_gpr').is(":visible")) {
+  if($('#esquemavac').is(":visible")) {
     patientData.esquemavac = $('#esquemavac').val();
   }
-  if($('#vita_gpr').is(":visible")) {
+  if($('#vita').is(":visible")) {
     patientData.vita = $('#vita').val();
   }
-  if($('#vitsf_gpr').is(":visible")) {
+  if($('#vitsf').is(":visible")) {
     patientData.vitsf = $('#vitsf').val();
   }
-  if($('#antipar_gpr').is(":visible")) {
+  if($('#antipar').is(":visible")) {
     patientData.antipar = $('#antipar').val();
   }
 
   // Indicadores especificos para las madres.
-  if($('#anemia_grp').is(":visible")) {
+  if($('#anemia').is(":visible")) {
     patientData.anemia = $('#anemia').val();
   }
-  if($('#antitetanica_grp').is(":visible")) {
+  if($('#antitetanica').is(":visible")) {
     patientData.antitetanica = $('#antitetanica').val();
   }
-  if($('#influenza_grp').is(":visible")) {
+  if($('#influenza').is(":visible")) {
     patientData.influenza = $('#influenza').val();
   }
-  if($('#ggh_grp').is(":visible")) {
+  if($('#ggh').is(":visible")) {
     patientData.ggh = $('#ggh').val();
   }
-  if($('#folico_grp').is(":visible")) {
+  if($('#folico').is(":visible")) {
     patientData.folico = $('#folico').val();
   }
-  if($('#hierro_grp').is(":visible")) {
+  if($('#hierro').is(":visible")) {
     patientData.hierro = $('#hierro').val();
   }
-  if($('#calcio_grp').is(":visible")) {
+  if($('#calcio').is(":visible")) {
     patientData.calcio = $('#calcio').val();
+  }
+  if($('#lactan').is(":visible")) {
+    patientData.lactan = $('#lactan').val();
+  }
+  if(emboff!==null) {
+    patientData.emboff = emboff;
+  }
+  if(child_age!==null) {
+    patientData.edadias = child_age;
   }
 
   newEvent = nutrimiles.prepareEvent(patientData);

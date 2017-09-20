@@ -3,14 +3,25 @@ package nutrimiles;
 
 message Event {
 	message PatientData {
-      uint32  seq = 2201;
-      float   peso = 2202;
-      float   talla = 2203;
-      uint32  tiponac = 2204;
-      uint32  esquemavac = 2205;
-      uint32  vita = 2206;
-      uint32  vitsf = 2207;
-      uint32  antipar = 2208;
+      		uint32  seq = 2201;
+      		float   peso = 2202;
+      		float   talla = 2203;
+      		uint32  tiponac = 2204;
+      		uint32  esquemavac = 2205;
+      		uint32  vita = 2206;
+      		uint32  vitsf = 2207;
+      		uint32  antipar = 2208;
+		uint32  anemia = 2209;
+		uint32  antitetanica = 2210;
+		uint32  influenza = 2211;
+		uint32  ggh = 2212;
+		uint32  enrn = 2213;
+		uint32  folico = 2214;
+		uint32  hierro = 2215;
+		uint32  calcio = 2216;
+		uint32  lactan = 2217;
+		int32   emboff = 2218;
+		uint32  edadias = 2219;
 	}
 
 	// fixed fields

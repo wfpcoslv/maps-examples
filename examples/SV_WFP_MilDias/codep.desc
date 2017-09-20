@@ -1,7 +1,7 @@
 
-ß
+ü
 	cdp.proto
-nutrimiles"½
+nutrimiles"Ú
 Event
 	timestampµ (R	timestamp
 location¶ (	Rlocation
@@ -9,7 +9,7 @@ nutrimiles"½
 beneficiaryId¸ (RbeneficiaryId%
 transactionId¹ (RtransactionId
 dateº (	Rdate2
-data» (2.nutrimiles.Event.PatientDataRdataÏ
+data» (2.nutrimiles.Event.PatientDataRdataì
 PatientData
 seq™ (Rseq
 pesoš (Rpeso
@@ -20,4 +20,15 @@ esquemavac (R
 esquemavac
 vita (Rvita
 vitsfŸ (Rvitsf
-antipar  (Rantiparbproto3
+antipar  (Rantipar
+anemia¡ (Ranemia#
+antitetanica¢ (Rantitetanica
+	influenza£ (R	influenza
+ggh¤ (Rggh
+enrn¥ (Renrn
+folico¦ (Rfolico
+hierro§ (Rhierro
+calcio¨ (Rcalcio
+lactan© (Rlactan
+emboffª (Remboff
+edadias« (Redadiasbproto3

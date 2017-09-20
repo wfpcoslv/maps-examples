@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-Implementation examples originally written by Mario GÃ³mez.
+Implementation examples originally written by Mario GÃƒÂ³mez.
 For more info about this examples contact at <mario.gomez@wfp.org>
 
 //-->
@@ -42,22 +42,22 @@ For more info about this examples contact at <mario.gomez@wfp.org>
 }
     </style>
 
-    <!-- Para pruebas incluír siempre el archivo test_data.js //-->
+    <!-- Para pruebas incluÃ­r siempre el archivo test_data.js //-->
     <script type="text/javascript" src="test_data.js?rev=1"></script>
 
-    <!-- Preservar el orden de inclusión de los
+    <!-- Preservar el orden de inclusiÃ³n de los
          siguientes archivos de plataforma. //-->
     <script type="text/javascript" src="js/Nutrimiles.js?rev=3"></script>
     <script type="text/javascript" src="js/lang.js"></script>
     <script type="text/javascript" src="js/lang_es.js"></script>
 
-    <!-- Incluír los archivos de soporte de Javascript //-->
+    <!-- IncluÃ­r los archivos de soporte de Javascript //-->
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
 
     <!-- Los siguientes archivos contienen las tablas de consulta para
-         indicadores nutricionales de la OMS para niños y niñas menores
-         a los 5 años //-->
+         indicadores nutricionales de la OMS para niÃ±os y niÃ±as menores
+         a los 5 aÃ±os //-->
     <!-- Height for Age Girls Z Scores //-->
     <script type="text/javascript" src="data/lhfa_girls_z_exp.js"></script>
     <!-- Height for Age Boys Z Scores //-->
@@ -78,7 +78,7 @@ For more info about this examples contact at <mario.gomez@wfp.org>
     <script type="text/javascript">
 var nutrimiles = null;
 
-/** Coloque aquí todas las funciones utilitarias que desea llamar 
+/** Coloque aquÃ­ todas las funciones utilitarias que desea llamar 
   * unicamente dentro de esta vista
   */
 function calculateRation(events) {
@@ -95,8 +95,8 @@ function calculateRation(events) {
 }
 
 /**
-  * Coloque dentro de esta función todo lo que se debe ejecutar
-  * luego de la carga de esta página.
+  * Coloque dentro de esta funciÃ³n todo lo que se debe ejecutar
+  * luego de la carga de esta pÃ¡gina.
   */
 $(function() {
   init();
@@ -120,6 +120,7 @@ function init() {
 
   var htmlToDisplay = '';
   var transactions = nutrimiles.getTransactions();
+  $('#obj_dump').append(JSON.stringify(transactions));
   var currentUser = nutrimiles.getUserInformations();
   
   $('#health_checkups').html('');
@@ -161,8 +162,8 @@ function init() {
     }
     for (i=0;i<transactions.length;i++) {
       currentVisit = transactions[i];
-      // Solo continuar si es una visita médica
-      if(typeof currentVisit.data.weight !== 'undefined') {
+      // Solo continuar si es una visita mÃ©dica
+      if(typeof currentVisit.data.peso !== 'undefined') {
         var row_date = new Date(Date.parse(currentVisit.date))
         var visit_content =
           '<div data-role="collapsible"><h3>VISITA '+row_date.getFullYear()+"-"+
@@ -182,41 +183,41 @@ function init() {
         var benef_info = nutrimiles.getBeneficiaryInformations();
 
         if (benef_info.group_id == 2) { // Begin of CHILDS
-          if (currentVisit.data.age > 720)
+          if (currentVisit.data.edad_dias > 720)
           {
             switch(benef_info.gender) {
               case 1: // Girls
                 visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
-                    currentVisit.data.height,
-                    lhfa_girls_z[currentVisit.data.age].SD0,
-                    lhfa_girls_z[currentVisit.data.age].SD1
+                    currentVisit.data.talla,
+                    lhfa_girls_z[currentVisit.data.edad_dias].SD0,
+                    lhfa_girls_z[currentVisit.data.edad_dias].SD1
                   )+"</br>";
                 visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
-                    currentVisit.data.weight,
-                    wfa_girls_z[currentVisit.data.age].SD0,
-                    wfa_girls_z[currentVisit.data.age].SD1
+                    currentVisit.data.peso,
+                    wfa_girls_z[currentVisit.data.edad_dias].SD0,
+                    wfa_girls_z[currentVisit.data.edad_dias].SD1
                   )+"</br>";
                 visit_content += "<strong>P/T:</strong> "+find_z_deviation_height(
                     wfh_girls_z,
-                    currentVisit.data.height,
-                    currentVisit.data.weight
+                    currentVisit.data.talla,
+                    currentVisit.data.peso
                   )+"</br>";
                 break;
               case 0: // Boys
                 visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
-                    currentVisit.data.height,
-                    lhfa_boys_z[currentVisit.data.age].SD0,
-                    lhfa_boys_z[currentVisit.data.age].SD1
+                    currentVisit.data.talla,
+                    lhfa_boys_z[currentVisit.data.edad_dias].SD0,
+                    lhfa_boys_z[currentVisit.data.edad_dias].SD1
                   )+"</br>";
                 visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
-                    currentVisit.data.weight,
-                    wfa_boys_z[currentVisit.data.age].SD0,
-                    wfa_boys_z[currentVisit.data.age].SD1
+                    currentVisit.data.peso,
+                    wfa_boys_z[currentVisit.data.edad_dias].SD0,
+                    wfa_boys_z[currentVisit.data.edad_dias].SD1
                   )+"</br>";
                 visit_content += "<strong>P/T:</strong> "+find_z_deviation_height(
                     wfh_boys_z,
-                    currentVisit.data.height,
-                    currentVisit.data.weight
+                    currentVisit.data.talla,
+                    currentVisit.data.peso
                   )+"</br>";
                 break;
             }
@@ -227,35 +228,35 @@ function init() {
               case 1: // Girls
                 visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
                     currentVisit.data.length,
-                    lhfa_girls_z[currentVisit.data.age].SD0,
-                    lhfa_girls_z[currentVisit.data.age].SD1
+                    lhfa_girls_z[currentVisit.data.edad_dias].SD0,
+                    lhfa_girls_z[currentVisit.data.edad_dias].SD1
                   )+"</br>";
                 visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
-                    currentVisit.data.weight,
-                    wfa_girls_z[currentVisit.data.age].SD0,
-                    wfa_girls_z[currentVisit.data.age].SD1
+                    currentVisit.data.peso,
+                    wfa_girls_z[currentVisit.data.edad_dias].SD0,
+                    wfa_girls_z[currentVisit.data.edad_dias].SD1
                   )+"</br>";
                 visit_content += "<strong>P/T:</strong> "+find_z_deviation_length(
                     wfl_girls_z,
                     currentVisit.data.length,
-                    currentVisit.data.weight
+                    currentVisit.data.peso
                   )+"</br>";
                 break;
               case 0: // Boys
                 visit_content += "<strong>T/E:</strong> "+calculate_z_deviation(
                     currentVisit.data.length,
-                    lhfa_boys_z[currentVisit.data.age].SD0,
-                    lhfa_boys_z[currentVisit.data.age].SD1
+                    lhfa_boys_z[currentVisit.data.edad_dias].SD0,
+                    lhfa_boys_z[currentVisit.data.edad_dias].SD1
                   )+"</br>";
                 visit_content += "<strong>P/E:</strong> "+calculate_z_deviation(
-                    currentVisit.data.weight,
-                    wfa_boys_z[currentVisit.data.age].SD0,
-                    wfa_boys_z[currentVisit.data.age].SD1
+                    currentVisit.data.peso,
+                    wfa_boys_z[currentVisit.data.edad_dias].SD0,
+                    wfa_boys_z[currentVisit.data.edad_dias].SD1
                   )+"</br>";
                 visit_content += "<strong>P/T:</strong> "+find_z_deviation_length(
                     wfl_boys_z,
                     currentVisit.data.length,
-                    currentVisit.data.weight
+                    currentVisit.data.peso
                   )+"</br>";
                 break;
             }
@@ -265,10 +266,10 @@ function init() {
         if (nutrimiles.getBeneficiaryInformations().group_id == 1)
         {
           bmi = Math.floor(
-            currentVisit.data.weight/(
-              currentVisit.data.height*currentVisit.data.height
+            currentVisit.data.peso/(
+              currentVisit.data.talla*currentVisit.data.talla
               )*10000);
-          visit_content += "<strong>BMI:</strong> "+bmi;
+          visit_content += "<strong>IMC:</strong> "+bmi;
         }
         
         visit_content += '</div>';

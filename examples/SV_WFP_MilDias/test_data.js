@@ -28,14 +28,14 @@ var userData = {
 var beneficiaryData = {
   "info" : {
     "beneficiary_id": 65789641025451,
-    "birth_date": "2017-09-13",
+    "birth_date": "2016-09-20",
     "expiration_date": null,
     "registration_date": "2015-01-02",
     "gender": 2,
     "id_document": "45547150048948541",
     "name": "Villatoro",
     "first_name": "Claudia",
-    "group_id": 1,
+    "group_id": 3,
     "nutrimiles_id": "6578964102545",
     "version": 1
     },
@@ -44,7 +44,7 @@ var beneficiaryData = {
       {
         "type": 1,
         "userID": 1,
-        "date": "2016-11-15T13:33:40.919Z",
+        "date": "2017-09-20T13:33:40.919Z",
         "deviceID": 112233,
         "location": {
           "latitude": 1,
@@ -53,7 +53,8 @@ var beneficiaryData = {
         "data": {
           "training": 1,
           "gaveBirth" : 1,
-          "childDeath" : 1
+          "childDeath" : 1,
+	  "preg_offset" : 1
         },
         "validated": true
       },
