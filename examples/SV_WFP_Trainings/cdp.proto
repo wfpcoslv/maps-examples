@@ -1,0 +1,21 @@
+syntax = "proto3";
+package nutrimiles;
+
+message Event {
+  message DetailedData {
+    uint32     deinf   = 1001;
+    uint32     alimsal = 1002;
+    uint32     habvid  = 1003;
+  }
+
+  // fixed fields
+  uint32    timestamp = 1101;
+  string    location = 1102;
+
+  // variable fields
+  uint32    id = 1103;
+  uint32    beneficiaryId = 1104;
+  uint32    transactionId = 1105;
+  string    date = 1106;
+  DetailedData data = 1107;
+}
