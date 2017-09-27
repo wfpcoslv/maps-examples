@@ -51,8 +51,8 @@ var beneficiaryData = {
           "longitude": 1
         },
         "data": {
-          "data1" : 1,
-          "data2" : 2
+          "habvid" : 1,
+          "alimsal" : 2
         },
         "validated": true
       }, {
@@ -65,8 +65,8 @@ var beneficiaryData = {
           "longitude": 2
         },
         "data": {
-          "data1" : 1,
-          "data2" : 2
+          "habvid" : 1,
+          "alimsal" : 2
         },
         "validated": true
       }, {
@@ -79,8 +79,8 @@ var beneficiaryData = {
           "longitude": 2
         },
         "data": {
-          "data1" : 1,
-          "data2" : 2
+          "deinf" : 1,
+          "alimsal" : 2
         },
         "validated": true
       }

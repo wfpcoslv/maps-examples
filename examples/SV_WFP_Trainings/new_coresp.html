@@ -1,31 +1,9 @@
-<!--
-Copyright (C) 2017 World Food Programme - All Rights Reserved.
-
-This file is part of "MAPS Co-responsibilities Examples".
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-Implementation examples originally written by Mario GÃ³mez.
-For more info about this examples contact at <mario.gomez@wfp.org>
-
-//-->
 <!DOCTYPE html> <!-- Se recomienda utilizar HTML5 //-->
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="./pure-min.css">
+    <link rel="stylesheet" href="./css/Pure-0.6.1/pure-min.css">
     <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.inline-png-1.4.5.min.css" />
     <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.theme-1.4.5.min.css" />
     <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.icons-1.4.5.min.css" />
@@ -48,12 +26,12 @@ For more info about this examples contact at <mario.gomez@wfp.org>
 
     <!-- Preservar el orden de inclusión de los
          siguientes archivos de plataforma. //-->
-    <script type="text/javascript" src="js/Nutrimiles.js?rev=3"></script>
-    <script type="text/javascript" src="js/lang.js"></script>
-    <script type="text/javascript" src="js/lang_es.js"></script>
+    <script type="text/javascript" src="js/MAPSApi-0.1/Nutrimiles.js?rev=3"></script>
+    <script type="text/javascript" src="js/MAPSApi-0.1/lang.js"></script>
+    <script type="text/javascript" src="lang_es.js"></script>
 
     <!-- Incluír los archivos de soporte de Javascript //-->
-    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery-2.1.1/jquery.min.js"></script>
     <script type="text/javascript" src="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
     <script type="text/javascript">
 var nutrimiles = null;
@@ -76,7 +54,7 @@ function addEntry() {
 }
 
 $(function() {
-  init();
+  //init();
 });
 
 function init() {
@@ -108,14 +86,14 @@ function init() {
 	  </select>
 	</div>
 	<div class="pure-control-group" id="deinf_grp">
-	  <label for="alimsal">Alimentación Saludable:</label>
+	  <label for="alimsal">Alimentación Saludable</label>
 	  <select id="alimsal">
 	    <option value="1">Sí</option>
 	    <option value="2">No</option>
 	  </select>
 	</div>
 	<div class="pure-control-group" id="deinf_grp">
-	  <label for="habvid">Habilidades para la vida:</label>
+	  <label for="habvid">Habilidades para la vida</label>
 	  <select id="habvid">
 	    <option value="1">Sí</option>
 	    <option value="2">No</option>

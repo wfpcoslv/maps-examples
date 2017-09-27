@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Implementation examples originally written by Mario G髆ez.
+ * Implementation examples originally written by Mario G贸mez.
  * For more info about this examples contact at <mario.gomez@wfp.org>
  */
 
@@ -24,22 +24,22 @@
  * Nutrimiles es una clase abstracta de alto nivel que facilita el 
  * acceso a la API NFC de bajo nivel para lectura y escritura de 
  * registros en las tarjetas MAPS.
- * Aunque las funciones de bajo nivel pueden ser accedidas f醕ilmente
+ * Aunque las funciones de bajo nivel pueden ser accedidas f谩cilmente
  * directamente desde JavaScript se recomienda instanciar Nutrimiles
  * luego de la carga del archivo de HTML y utilizar las funciones
  * de ayuda.
- * La clase tambi閚 incluye funciones "simuladas" para facilitar y
+ * La clase tambi茅n incluye funciones "simuladas" para facilitar y
  * acelerar el desarrollo sin necesidad de contar con un dispositivo
  * FAMOCO.
  * En donde se encuentre la palabra "NATIVO" indica una llamada a la 
- * API NFC de bajo nivel. Para garantizar un buen desempe駉 se
- * recomienda reducir el n鷐ero de llamadas de bajo nivel al m韓imo.
+ * API NFC de bajo nivel. Para garantizar un buen desempe帽o se
+ * recomienda reducir el n煤mero de llamadas de bajo nivel al m铆nimo.
  */
 function Nutrimiles() {
 
-  // Las siguientes funciones est醤 descontinuadas, pueden no incluirse
+  // Las siguientes funciones est谩n descontinuadas, pueden no incluirse
   // en futuras versiones. Instancie esta clase y acceda a los datos
-  // utilizando los m閠odos getBeneficiaryInformations(),
+  // utilizando los m茅todos getBeneficiaryInformations(),
   // getTransactions() y getUserInformations()
   this.beneficiary = function() {
     return this.getBeneficiaryInformations();
@@ -53,8 +53,8 @@ function Nutrimiles() {
 }
 
 /** NATIVO
-  * createTransaction ingresa una nueva transacci髇 en el registro
-  * c韈lico de la tarjeta NFC. Recuerda que los eventos no pueden ser
+  * createTransaction ingresa una nueva transacci贸n en el registro
+  * c铆clico de la tarjeta NFC. Recuerda que los eventos no pueden ser
   * modificados una vez escritos en la tarjeta.
   */
 Nutrimiles.prototype.createTransaction = function(newEvent) {
@@ -66,16 +66,16 @@ Nutrimiles.prototype.createTransaction = function(newEvent) {
 }
 
 /** NATIVO
-  * getUserInformations devuelve la informaci髇 del usuario local
-  * para esta implementaci髇 se devuelve un objeto con los siguientes
+  * getUserInformations devuelve la informaci贸n del usuario local
+  * para esta implementaci贸n se devuelve un objeto con los siguientes
   * atributos:
-  *   id: ID 鷑ico de usuario en MAPS.
+  *   id: ID 煤nico de usuario en MAPS.
   *   firstname: Nombre de pila
   *   lastname: Apellido
   *   email: Nombre de usuario registrado en la plataforma.
-  *     Por convenci髇 MAPS utiliza correos institucionales como nombre
+  *     Por convenci贸n MAPS utiliza correos institucionales como nombre
   *     de usuario dentro de la plataforma
-  *   role: Rol del usuario seg鷑 definido en MAPS Cloud.
+  *   role: Rol del usuario seg煤n definido en MAPS Cloud.
   */
 Nutrimiles.prototype.getUserInformations = function() {
   if((typeof NutrimilesAndroid !== 'undefined')&&(typeof NutrimilesAndroid.getUserInformations !== 'undefined')) {
@@ -86,25 +86,25 @@ Nutrimiles.prototype.getUserInformations = function() {
 }
 
 /** NATIVO
-  * getBeneficiaryInformations devuelve la informaci髇 del beneficiario
+  * getBeneficiaryInformations devuelve la informaci贸n del beneficiario
   * que se encuentra almacenado en la tarjeta que corresponde a los
-  * datos ingresados al momento de inicializaci髇 de la misma.
+  * datos ingresados al momento de inicializaci贸n de la misma.
   * Se devuelven los siguientes atributos:
-  *   beneficiary_id: ID 鷑ico de usuario en MAPS. N髏ese que este es
-  *     un ID 鷑ico dentro de la plataforma y no necesariamente coincide
-  *     coincide con el ID definido como 鷑ico para otras plataformas de
+  *   beneficiary_id: ID 煤nico de usuario en MAPS. N贸tese que este es
+  *     un ID 煤nico dentro de la plataforma y no necesariamente coincide
+  *     coincide con el ID definido como 煤nico para otras plataformas de
   *     registro de beneficiarios.
   *   birth_date: Fecha de Nacimiento
-  *   expiration_date: Fecha de expiraci髇 de la tarjeta.
-  *   registration_date: Fecha de inicializaci髇 de la tarjeta en la
+  *   expiration_date: Fecha de expiraci贸n de la tarjeta.
+  *   registration_date: Fecha de inicializaci贸n de la tarjeta en la
   *     plataforma.
-  *   gender: Sexo biol骻ico (1:Mujer, 2:Hombre)
-  *   id_document: N鷐ero de documento 鷑ico de beneficiario.
+  *   gender: Sexo biol贸gico (1:Mujer, 2:Hombre)
+  *   id_document: N煤mero de documento 煤nico de beneficiario.
   *   name: Apellido (BUG)
   *   first_name: Nombre de pila
   *   group_id: ID de grupo dentro de MAPS.
-  *   nutrimiles_id: N鷐ero de identificaci髇 dentro del programa.
-  *   version: Versi髇 de la API NFC.
+  *   nutrimiles_id: N煤mero de identificaci贸n dentro del programa.
+  *   version: Versi贸n de la API NFC.
   */
 Nutrimiles.prototype.getBeneficiaryInformations = function()  {
   if((typeof NutrimilesAndroid !== 'undefined')&&(typeof NutrimilesAndroid.getBeneficiaryInformations  !== 'undefined')) {
@@ -116,12 +116,12 @@ Nutrimiles.prototype.getBeneficiaryInformations = function()  {
 }
 
 /** NATIVO
-  * getTransactions es el m閠odo que devuelve el historial completo
+  * getTransactions es el m茅todo que devuelve el historial completo
   * de eventos en la tarjeta filtrados por tipo de co-responsabilidad
-  * activa. Esta funci髇 devuelve tantas entradas como registros
+  * activa. Esta funci贸n devuelve tantas entradas como registros
   * almacenados en la tarjeta NFC.
-  * Los valores devuelvos por este m閠odo se corresponden a los 
-  * establecidos en la especificaci髇 de ProtocolBuffer
+  * Los valores devuelvos por este m茅todo se corresponden a los 
+  * establecidos en la especificaci贸n de ProtocolBuffer
   */
 Nutrimiles.prototype.getTransactions = function()  {
   if((typeof NutrimilesAndroid !== 'undefined')&&(typeof NutrimilesAndroid.getTransactions  !== 'undefined')) {

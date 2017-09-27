@@ -34,5 +34,21 @@ lang_es.scpReceived =        "SCP entregado"
 lang_es.nextVisit =          "Siguiente visita"
 lang_es.gaveBirth =          "Dió a luz"
 lang_es.childDeath =         "Muerte infantil"
+lang_es.deinf =              "Estimulación del Desarrollo Infantíl"
+lang_es.alimsal =            "Alimentación Saludable"
+lang_es.habvid =             "Habilidades para la vida"
+
+// Opciones de selección comunes
+lang_es.SI_NO = [
+    { 'v': 1, 't': "Sí"},
+    { 'v': 2, 't': "No"}
+  ];
+
+// Asignación de listas de selección
+lang_es.options = [
+  { 'name': 'deinf', 'options': lang_es.SI_NO },
+  { 'name': 'alimsal', 'options': lang_es.SI_NO },
+  { 'name': 'habvid', 'options': lang_es.SI_NO }
+];
 
 lang = lang_es;
