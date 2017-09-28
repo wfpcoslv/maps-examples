@@ -1,5 +1,5 @@
-Active Monitoring for Social Programmes (MAPS)
-===================
+# Active Monitoring for Social Programmes (MAPS)
+
 MAPS is the Spanish acronym for Active Monitoring of Social Programmes (Monitoreo Activo de Programas Sociales). This is one of the projects funded by the [World Food Programme Innovation Accelerator](http://innovation.wfp.org/) office in Munich and designed and implemented by WFP El Salvador Country Office.
 
 MAPS helps to capture and track the individual achivements of participants of social programmes. It was designed to be able to work completely offline combining state-of-art NFC technology and a powerful framework that can be used to desing and create any kind of data capture interfaces.
@@ -15,9 +15,9 @@ To implement MAPS on the field you would the following combination of Hardware a
 
 1. Secure NFC devices (Currently provided by [FAMOCO](https://www.famoco.com/))
 2. NFC Cards ([MIFARE DESFire EV1 8K](https://www.nxp.com/products/identification-and-security/mifare-ics/mifare-desfire/mifare-desfire-ev1-contactless-multi-application-ic:MIFARE_DESFIRE_EV1_8K))
-3. Cloud Management Platform (MAPS Cloud)
+3. Access to the Cloud Management Platform (MAPS Cloud)
 
-However, if you want to develop the capture interfaces you only will need a web browser, a good text editor and [Google Protocol Buffer](https://developers.google.com/protocol-buffers/docs/downloads).
+However, if you want to develop the capture/visualization interfaces for MAPS you'll only need a web browser, a good text editor and [Google Protocol Buffer](https://developers.google.com/protocol-buffers/docs/downloads).
 
 ### Understanding MAPS
 Before starting to develop interfaces is important to know the current capabilities of the cards used and how the data flows in the whole system.
@@ -40,50 +40,75 @@ A custom application reads the data from the card and exposes it to a inline web
 When Internet connectivity is available all the data is syncronized to the cloud platform and an REST API is available to access the información in external systems.
 
 ## Developing Custom Interfaces
+Here is a very rough guide to develop custom interfaces for MAPS:
+
 1. Clone this repository with the following command:
 
- git clone https://github.com/wfpcoslv/
+```
+git clone https://github.com/wfpcoslv/
+```
 
 2. Open the "examples" folder and duplicate one of the existing examples:
 
- cd examples
- cp -r SV_Generic_SimpleExample MyExample
+```
+cd examples
+cp -r SV_Generic_SimpleExample MyExample
+```
 
 3. Edit the "cdp.proto" to define the variables to be captured using the Protocol Buffers definition syntax.
 
- vim MyExample/cdp.proto
- 
+```
+vim MyExample/cdp.proto
+```
+
 4. You might want to generate test data to match the protocol buffer definition file. Edit the test_data.js file to make those changes:
 
- vim MyExample/test_data.js
+```
+vim MyExample/test_data.js
+```
 
 5. To edit the data capture interface edit the "new_coresp.html" file. Take a look to the init() and addEntry() functions. Match the variables with the ones defined on cdp.proto
 
- vim MyExample/new_coresp.html
+```
+vim MyExample/new_coresp.html
+```
 
 6. To preview your work in a browser window run the following make command:
 
- make project=MyExample capture_test
+```
+make project=MyExample capture_test
+```
 
 7. To edit the data visualization interface edit the "view_list_coresp.html" file. Again, take a look to the init() funcion.
 
- vim MyExample/view_list_coresp.html
+```
+vim MyExample/view_list_coresp.html
+```
 
 8. To preview your work in a browser window run the following make command:
 
- make project=MyExample view_test
+```
+make project=MyExample view_test
+```
 
 9. When you are ready to deploy just run the following command and upload the generated zipfile under the folder output to the Maps Cloud Platform.
 
- make project=MyExample
- 
+```
+make project=MyExample
+```
+
 10. In case you want to cleanup all the temporary files just run:
 
- make project=MyExample clean
+```
+make project=MyExample clean
+```
+
+### Do you want to join us?
+Al the capture-interfaces and API clients on this repository are free to use and Open-Source for all humanitarian purposes. If you are a developer working for a local government, UN-Agency or NGO and want to contribute to develop other use-cases or interfaces for MAPS, just clone this repository and send us your pull-request to include your applications and examples.
 
 ### Do you want to test MAPS on real-life devices?
-All the development of MAPS is currently coordinated from the World Food Programme El Salvador Office. To get more info about this project please contact:
+All the development of MAPS is currently coordinated from the World Food Programme El Salvador Office. If you are interesting to deploy maps on a real-life scenario or want to test MAPS on your organization you can reach us via email:
 
-* Federico Naccarato <federico.naccarato@wfp.org> / WFP Innovation Office MAPS Project Manager
-* Claudia Rodriguez <claudia.rodriguez@wfp.org> / WFP El Salvador Country Office Project Manager
-* Mario Gómez <mario.gomez@wfp.org> / Technical Advisor
+* [Federico Naccarato](mailto:federico.naccarato@wfp.org) / WFP Innovation Office MAPS Project Manager
+* [Claudia Rodriguez](claudia.rodriguez@wfp.org) / WFP El Salvador Country Office MAPS Project Manager
+* [Mario Gómez](mario.gomez@wfp.org) / Technical Advisor
