@@ -6,7 +6,7 @@ MAPS helps to capture and track the individual achivements of participants of so
 
 The way that the system works allows the programme designer to capture key outcome indicators in a beneficiary owned smart-card. Both the data that could be captured and the user interface is fully customizable "on-the-fly". This unique feature allows to desing from simple check-box interfaces to fully interactive graphs.
 
-Once deployed, the programme can be designed to work offline but when the NFC devices connect to Internet then all the data is uploaded to the cloud and is accesible through and REST API allowing it to connect to any existing data management platform.
+Once deployed, the programme can be designed to work offline but when the NFC devices connect to Internet then all the data is uploaded to the cloud and is accesible through a REST API allowing it to connect to any existing data management platform.
 
 This repository includes several data-capture an visualization interfaces currently used in production in El Salvador to track the beneficiaries of the Poverty-Reduction Programmes that WFP is supporting in conjunction with the Goverment.
 
