@@ -112,5 +112,5 @@ All the capture-interfaces and API clients on this repository are free to use an
 All the development of MAPS is currently coordinated from the World Food Programme El Salvador Office. If you are interested to deploy maps on a real-life scenario or want to test MAPS on your organization you can reach us via email:
 
 * [Federico Naccarato](mailto:federico.naccarato@wfp.org) / WFP Innovation Office MAPS Project Manager
-* [Claudia Rodriguez](claudia.rodriguez@wfp.org) / WFP El Salvador Country Office MAPS Project Manager
-* [Mario Gómez](mario.gomez@wfp.org) / Technical Advisor
+* [Claudia Rodriguez](mailto:claudia.rodriguez@wfp.org) / WFP El Salvador Country Office MAPS Project Manager
+* [Mario Gómez](mailto:mario.gomez@wfp.org) / Technical Advisor
