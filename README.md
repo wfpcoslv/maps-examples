@@ -11,7 +11,7 @@ Once deployed, the programme can be designed to work offline but when the NFC de
 This repository includes several data-capture an visualization interfaces currently used in production in El Salvador to track the beneficiaries of the Poverty-Reduction Programmes that WFP is supporting in conjunction with the Goverment.
 
 ### What do I need to use MAPS?
-To implement MAPS on the field you would the following combination of Hardware and Software:
+To implement MAPS on the field you would need the following combination of Hardware and Software:
 
 1. Secure NFC devices (Currently provided by [FAMOCO](https://www.famoco.com/))
 2. NFC Cards ([MIFARE DESFire EV1 8K](https://www.nxp.com/products/identification-and-security/mifare-ics/mifare-desfire/mifare-desfire-ev1-contactless-multi-application-ic:MIFARE_DESFIRE_EV1_8K))
