@@ -27,7 +27,7 @@ The current NFC cards are formatted in a way that they have two data files. The 
 
 Google Protocol Buffers is used to define the format to store the data on each event, used "as-is" it's possible to store near 10 (32-bit) numeric or floating-point records for each individual event. Using it with more advanced programing techniques like packing and restricting data ranges it's possible to double or triple the number of indicators by each individual event.
 
-Each NFC card can support different types of events. The cloud management platform is used to define the different events that could be recorder under each individual programme.
+Each NFC card can support different types of events. The cloud management platform is used to define the different events that could be recorded under each individual programme.
 
 ### The Device
 FAMOCO provides NFC-enabled mobile devices that support Secure Access Modules (SAM) to keep safe the keys used by the cards in the system.
@@ -104,7 +104,7 @@ make project=MyExample clean
 ```
 
 ### Do you want to join us?
-Al the capture-interfaces and API clients on this repository are free to use and Open-Source for all humanitarian purposes. If you are a developer working for a local government, UN-Agency or NGO and want to contribute to develop other use-cases or interfaces for MAPS, just clone this repository and send us your pull-request to include your applications and examples.
+All the capture-interfaces and API clients on this repository are free to use and Open-Source for all humanitarian purposes. If you are a developer working for a local government, UN-Agency or NGO and want to contribute to develop other use-cases or interfaces for MAPS, just clone this repository and send us your pull-request to include your applications and examples.
 
 ### Do you want to test MAPS on real-life devices?
 All the development of MAPS is currently coordinated from the World Food Programme El Salvador Office. If you are interesting to deploy maps on a real-life scenario or want to test MAPS on your organization you can reach us via email:
