@@ -1,16 +1,0 @@
-
-ú
-SV_WFP_Trainings/cdp.proto
-nutrimiles"Ç
-Event
-	timestampÍ (R	timestamp
-locationÎ (	Rlocation
-idÏ (Rid%
-beneficiaryIdÐ (RbeneficiaryId%
-transactionIdÑ (RtransactionId
-dateÒ (	Rdate3
-dataÓ (2.nutrimiles.Event.DetailedDataRdataY
-DetailedData
-deinfé (Rdeinf
-alimsalê (Ralimsal
-habvidë (Rhabvidbproto3

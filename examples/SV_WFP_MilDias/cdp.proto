@@ -20,7 +20,7 @@ message Event {
 		uint32  hierro = 2215;
 		uint32  calcio = 2216;
 		uint32  lactan = 2217;
-		int32   emboff = 2218;
+		uint32   emboff = 2218;
 		uint32  edadias = 2219;
 	}
 
