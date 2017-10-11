@@ -277,17 +277,6 @@ function init() {
           }
         } // End of CHILDS
 
-        if (nutrimiles.getBeneficiaryInformations().group_id == 1)
-        {
-	  if(currentVisit.data.peso && currentVisit.data.talla) {
-	    bmi = Math.floor(
-	      currentVisit.data.peso/(
-		currentVisit.data.talla*currentVisit.data.talla
-		)*10000);
-	    visit_content += "<strong>IMC:</strong> "+bmi;
-          }
-        }
-        
         visit_content += '</div>';
 
         $('#health_checkups').append($(visit_content).collapsible());

@@ -10,14 +10,14 @@ var userData = {
 var beneficiaryData = {
   "info" : {
     "beneficiary_id": 65789641025451,
-    "birth_date": "2017-04-03",
+    "birth_date": "2017-10-10",
     "expiration_date": null,
     "registration_date": "2015-01-02",
     "gender": 1,
     "id_document": "45547150048948541",
     "name": "Villatoro",
     "first_name": "Claudia",
-    "group_id": 1,
+    "group_id": 3,
     "nutrimiles_id": "6578964102545",
     "version": 1
     },
