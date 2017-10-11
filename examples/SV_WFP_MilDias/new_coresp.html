@@ -292,6 +292,25 @@ function calcEmb() {
   var days = age_days(date_pregnancy);
   age_pregnancy = days;
   
+  // Detectar si se ha seleccionado un método adecuado:
+  if($('#calc_mtd').val()=="") {
+    $('#user_msg').html('<h3>Error: Debe seleccionar el método de cálculo.</h3>');
+    return;
+  }
+  // Detectar si el método elegido tiene sentido al seleccionar FUR
+  if(emboff<0 && ($('#calc_mtd').val()!="1")) {
+    $('#user_msg').html('<h3>Error: El método FPP requiere una fecha igual o posterior al día de hoy.</h3>');
+    return;
+  }
+  // Detectar si el método elegido tiene sentido al seleccionar FPP
+  if(emboff>=0 && ($('#calc_mtd').val()!="2")) {
+    $('#user_msg').html('<h3>Error: El método FUR requiere una fecha anterior al día de hoy.</h3>');
+    return;
+  }
+  
+  $('#user_msg').html('');
+  $('#user_msg').hide();
+  
   var baseDate = new Date(date_pregnancy);
   var today = new Date();
   
@@ -378,11 +397,10 @@ function init() {
     var idx = 0;
     for(var i=0;i<capture_sequence.child.length; i++) {
       if(age_in_days < capture_sequence.child[i].days) {
-	found = true;
-	idx = i;
-	break;
+        found = true;
+        idx = i;
+        break;
       }
-      ////window.alert('ap:'+age_pregnancy+' i:'+i+' ag_d:'+capture_sequence.mother[i].days);
     }
     
     if(found) {
@@ -402,15 +420,13 @@ function init() {
 }
 
 function addEntry() {
+
   var patientData = {};
 
   patientData = {
     "seq" : parseInt(seq)
   };
 
-  //if($('#pregDate').is(":visible")) {
-  //  patientData.pregDate = $('#pregDate').val();
-  //}
   if($('#peso').is(":visible")) {
     patientData.peso = parseFloat($('#peso').val());
   }
@@ -463,7 +479,7 @@ function addEntry() {
   if(emboff!==null) {
     patientData.emboff = parseInt(emboff);
   }
-  
+
   if(child_age!==null) {
     patientData.edadias = parseInt(child_age);
   }
@@ -482,14 +498,20 @@ function addEntry() {
     <form class="pure-form pure-form-aligned">
           <fieldset id="questions">
             <div class="pure-control-group" id="child_info">
-		<h3>Fecha de Nacimiento: <span id="child_birthdate"></span></h3>
-		<h3>Edad (días): <span id="child_agedays"></span></h3>
+              <h3>Fecha de Nacimiento: <span id="child_birthdate"></span></h3>
+              <h3>Edad (días): <span id="child_agedays"></span></h3>
             </div>
             <div class="pure-control-group" id="mother_info">
-		<h3>Edad gestacional: <span id="mother_edagest"></span></h3>
+              <h3>Edad gestacional: <span id="mother_edagest"></span></h3>
             </div>
             <div class="pure-control-group" id="gest_grp">
-              <h3>Cálculo de edad gestacional: Fechas anteriores a la fecha actual se estima por FUR. Fechas posteriores por FPP.</h3>
+              <h3>Cálculo de edad gestacional.</h3>
+              <label for="calc_mtd">Método de cálculo:</label>
+              <select id="calc_mtd">
+                <option value="">Seleccione una opción:</option>
+                <option value="1">FUR</option>
+                <option value="2">FPP</option>
+              </select>
               <div id="pregDate" class="date-input-inline"></div>
             </div>
             <div class="pure-control-group" id="peso_grp">
@@ -503,6 +525,7 @@ function addEntry() {
             <div class="pure-control-group" id="tiponac_grp">
               <label for="tiponac">Tipo de Nacimiento:</label>
               <select id="tiponac">
+                <option value="">Seleccione una opción</option>
                 <option value="1">Intrashospitalario</option>
                 <option value="2">Intradomiciliar</option>
               </select>
@@ -510,6 +533,7 @@ function addEntry() {
             <div class="pure-control-group" id="esquemavac_grp">
               <label for="esquemavac">Esquema de vacunación según edad:</label>
               <select id="esquemavac">
+                <option value="">Seleccione una opción</option>
                 <option value="1">Sí</option>
                 <option value="2">No</option>
               </select>
@@ -517,6 +541,7 @@ function addEntry() {
             <div class="pure-control-group" id="vita_grp">
               <label for="vita">Micronutritentes: Vitamina A</label>
               <select id="vita">
+                <option value="">Seleccione una opción</option>
                 <option value="1">Sí</option>
                 <option value="2">No (No hay)</option>
                 <option value="3">No (No lo toma)</option>
@@ -526,6 +551,7 @@ function addEntry() {
             <div class="pure-control-group" id="vitsf_grp">
               <label for="vitsf">Micronutrientes: Sulfato Ferroso</label>
               <select id="vitsf">
+                <option value="">Seleccione una opción</option>
                 <option value="1">Sí</option>
                 <option value="2">No (No hay)</option>
                 <option value="3">No (No lo toma)</option>
@@ -535,6 +561,7 @@ function addEntry() {
             <div class="pure-control-group" id="antipar_grp">
               <label for="antipar">Antiparasitarios: Mebandazole</label>
               <select id="antipar">
+                <option value="">Seleccione una opción</option>
                 <option value="1">Sí</option>
                 <option value="2">No (No hay)</option>
                 <option value="3">No (No lo toma)</option>
@@ -544,6 +571,7 @@ function addEntry() {
             <div class="pure-control-group" id="anemia_grp">
               <label for="anemia">Respuesta de examen Hemoglobina</label>
               <select id="anemia">
+                <option value="">Seleccione una opción</option>
                 <option value="1">Hay Anemia</option>
                 <option value="2">No hay Anemia</option>
                 <option value="9">No se realizó el exámen</option>
@@ -552,6 +580,7 @@ function addEntry() {
             <div class="pure-control-group" id="antitetanica_grp">
               <label for="antitetanica">Vacunación Antitetánica</label>
               <select id="antitetanica">
+                <option value="">Seleccione una opción</option>
                 <option value="1">Sí</option>
                 <option value="2">No</option>
               </select>
@@ -559,6 +588,7 @@ function addEntry() {
             <div class="pure-control-group" id="influenza_grp">
               <label for="influenza">Vacunación Influenza Estacional</label>
               <select id="influenza">
+                <option value="">Seleccione una opción</option>
                 <option value="1">Sí</option>
                 <option value="2">No</option>
               </select>
@@ -566,6 +596,7 @@ function addEntry() {
             <div class="pure-control-group" id="ggh_grp">
               <label for="ggh">Vacunación con Gamma Globulina hiperinmune antiD</label>
               <select id="ggh">
+                <option value="">Seleccione una opción</option>
                 <option value="1">Sí</option>
                 <option value="2">No</option>
               </select>
@@ -573,6 +604,7 @@ function addEntry() {
             <div class="pure-control-group" id="enrn_grp">
               <label for="enrn">Estado nutricional RN</label>
               <select id="enrn">
+                <option value="">Seleccione una opción</option>
                 <option value="1">Bajo peso</option>
                 <option value="2">Normal</option>
                 <option value="2">Arriba de lo normal</option>
@@ -581,6 +613,7 @@ function addEntry() {
             <div class="pure-control-group" id="folico_grp">
               <label for="folico">Ácido fólico</label>
               <select id="folico">
+                <option value="">Seleccione una opción</option>
                 <option value="1">Sí</option>
                 <option value="2">No (No hay)</option>
                 <option value="3">No (No lo toma)</option>
@@ -590,6 +623,7 @@ function addEntry() {
             <div class="pure-control-group" id="hierro_grp">
               <label for="hierro">Hierro</label>
               <select id="hierro">
+                <option value="">Seleccione una opción</option>
                 <option value="1">Sí</option>
                 <option value="2">No (No hay)</option>
                 <option value="3">No (No lo toma)</option>
@@ -599,6 +633,7 @@ function addEntry() {
             <div class="pure-control-group" id="calcio_grp">
               <label for="calcio">Calcio</label>
               <select id="calcio">
+                <option value="">Seleccione una opción</option>
                 <option value="1">Sí</option>
                 <option value="2">No (No hay)</option>
                 <option value="3">No (No lo toma)</option>
@@ -608,10 +643,12 @@ function addEntry() {
             <div class="pure-control-group" id="lactan_grp">
               <label for="lactan">Lactancia Materna</label>
               <select id="lactan">
+                <option value="">Seleccione una opción</option>
                 <option value="1">Sí</option>
                 <option value="2">No</option>
               </select>
             </div>
+            <div id="user_msg"></div>
             <div class="pure-controls" id="calc_control"><input type="button" class="pure-button pure-button-primary" value="Calcular Edad Gestacional" onClick="calcEmb()"></button></div>
             <div class="pure-controls" id="submit_control"><input type="button" class="pure-button pure-button-primary" value="Registrar visita" onClick="addEntry()"></button></div>
           </fieldset>

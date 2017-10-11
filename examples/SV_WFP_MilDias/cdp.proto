@@ -2,36 +2,43 @@ syntax = "proto3";
 package nutrimiles;
 
 message Event {
-	message PatientData {
-      		uint32  seq = 2201;
-      		float   peso = 2202;
-      		float   talla = 2203;
-      		uint32  tiponac = 2204;
-      		uint32  esquemavac = 2205;
-      		uint32  vita = 2206;
-      		uint32  vitsf = 2207;
-      		uint32  antipar = 2208;
-		uint32  anemia = 2209;
-		uint32  antitetanica = 2210;
-		uint32  influenza = 2211;
-		uint32  ggh = 2212;
-		uint32  enrn = 2213;
-		uint32  folico = 2214;
-		uint32  hierro = 2215;
-		uint32  calcio = 2216;
-		uint32  lactan = 2217;
-		uint32   emboff = 2218;
-		uint32  edadias = 2219;
-	}
+  message PatientData {
+  
+    // More frequently used variables
+    // have the lowest IDs
+    uint32  seq = 7;
+    float   peso = 8;
+    float   talla = 9;
+    uint32  esquemavac = 10;
+    int32   emboff = 11;
+    uint32  edadias = 12;
+    uint32  folico = 13;
+    uint32  hierro = 14;
+    uint32  calcio = 15;
+    
+    // Less frequently used indicators
+    uint32  vitsf = 16;
+    uint32  antipar = 17;
+    uint32  vita = 18;
+    uint32  lactan = 19;
+    uint32  anemia = 20;
+    uint32  enrn = 21;
+    uint32  tiponac = 22;
+    uint32  antitetanica = 23;
+    uint32  influenza = 24;
+    uint32  ggh = 25;
+  }
 
-	// fixed fields
-	uint32      timestamp = 2101;
-	string      location = 2102;
-
-	// variable fields
-	uint32      id = 2103;
-	uint32      beneficiaryId = 2104;
-	uint32      transactionId = 2105;
-	string      date = 2106;
-	PatientData data = 2107;
+  // Fixed Fields (always collected)
+  // Using 4-bit IDs to reduce record-size
+  uint32      timestamp = 1;
+  string      location = 2;
+  uint32      id = 3;
+  uint32      beneficiaryId = 4;
+  uint32      transactionId = 5;
+  string      date = 6;
+  
+  // This field has a higher id assuming
+  // the next field-size Jumps to 11 bits
+  PatientData data = 2048;
 }

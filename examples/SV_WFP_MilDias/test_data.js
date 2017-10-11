@@ -17,7 +17,7 @@ var beneficiaryData = {
     "id_document": "45547150048948541",
     "name": "Villatoro",
     "first_name": "Claudia",
-    "group_id": 3,
+    "group_id": 1,
     "nutrimiles_id": "6578964102545",
     "version": 1
     },
@@ -36,11 +36,11 @@ var beneficiaryData = {
           "seq": 1,
           "peso": 2.95,
           "talla": 49,
-	  "tiponac": 1,
-	  "enrn": 2,
-	  "lactan": 1,
-	  "esquemavac": 1,
-	  "edad_dias": 7
+          "tiponac": 1,
+          "enrn": 2,
+          "lactan": 1,
+          "esquemavac": 1,
+          "edad_dias": 7
         },
         "validated": true
       },
