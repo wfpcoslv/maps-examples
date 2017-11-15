@@ -193,9 +193,10 @@ function calculateRation(events) {
 }
 
 function age_days(date_str) {
+  var dty = date_str.split('-')
   var today = new Date();
-  var birth_date = new Date(date_str);
-  return Math.floor((today.getTime()-birth_date.getTime())/86400000);
+  var birth_date = new Date(dty[0],dty[1]-1,dty[2]);
+  return Math.floor((today-birth_date)/86400000);
 }
 
 function calculate_z_deviation(measurement, sd0, sd1) {

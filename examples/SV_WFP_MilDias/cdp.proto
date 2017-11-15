@@ -15,7 +15,7 @@ message Event {
     uint32  folico = 13;
     uint32  hierro = 14;
     uint32  calcio = 15;
-    
+
     // Less frequently used indicators
     uint32  vitsf = 16;
     uint32  antipar = 17;

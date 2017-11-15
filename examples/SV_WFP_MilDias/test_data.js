@@ -10,7 +10,7 @@ var userData = {
 var beneficiaryData = {
   "info" : {
     "beneficiary_id": 65789641025451,
-    "birth_date": "2017-10-10",
+    "birth_date": "1997-10-04",
     "expiration_date": null,
     "registration_date": "2015-01-02",
     "gender": 1,
@@ -40,7 +40,7 @@ var beneficiaryData = {
           "enrn": 2,
           "lactan": 1,
           "esquemavac": 1,
-          "edad_dias": 7
+          "edadias": 7
         },
         "validated": true
       },
@@ -57,9 +57,9 @@ var beneficiaryData = {
           "seq": 2,
           "peso": 2.85,
           "talla": 49,
-	  "lactan": 1,
-	  "esquemavac": 1,
-	  "edad_dias": 29
+          "lactan": 1,
+          "esquemavac": 1,
+          "edadias": 29
         },
         "validated": true
       },
@@ -76,8 +76,8 @@ var beneficiaryData = {
           "seq": 3,
           "peso": 3.3,
           "talla": 50,
-	  "esquemavac": 1,
-	  "edad_dias": 63
+          "esquemavac": 1,
+          "edadias": 63
         },
         "validated": true
       },
@@ -94,15 +94,15 @@ var beneficiaryData = {
           "seq": 4,
           "peso": 4.8,
           "talla": 53,
-	  "esquemavac": 1,
-	  "edad_dias": 63
+          "esquemavac": 1,
+          "edadias": 63
         },
         "validated": true
       },
       {
         "type": 1,
         "userID": 1,
-        "date": "2017-10-04 00:00:00",
+        "date": "2017-11-01 00:00:00",
         "deviceID": 112233,
         "location": {
           "latitude": 1,
@@ -112,10 +112,11 @@ var beneficiaryData = {
           "seq": 5,
           "peso": 5,
           "talla": 58,
-	  "esquemavac": 1,
-	  "vita": 2,
-	  "vitsf": 1,
-	  "edad_dias": 63
+          "esquemavac": 1,
+          "vita": 2,
+          "vitsf": 1,
+          "edadias": 63,
+          //"emboff": 15
         },
         "validated": true
       }

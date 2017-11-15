@@ -1,15 +1,37 @@
-<!DOCTYPE html> <!-- Se recomienda utilizar HTML5 //-->
+<!DOCTYPE html> <!-- HTML5 is recommended //-->
 <html>
-<head>
+  <head>
+
+  <!-- BEGIN: Meta tags //-->
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- END: Meta tags //-->
+
+  <!--
+    BEGIN: Global stylesheets
+    Notes: All files included here must be copied to the "resources"
+    directory and added to the file "sources.config". It's recommended
+    to use the "<css|js|otr>/<libray-name>-<version>" nomenclature.
+    All files must reside locally. No internet hosted libraries
+    are allowed.
+  //-->
   <link rel="stylesheet" href="./css/Pure-0.6.1/pure-min.css" />
-    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.inline-png-1.4.5.min.css" />
-    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.theme-1.4.5.min.css" />
-    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.icons-1.4.5.min.css" />
-    <link rel="stylesheet" href="./js/jquery.mobile.datepicker/jquery.mobile.datepicker.css" />
-    <link rel="stylesheet" href="./js/jquery.mobile.datepicker/jquery.mobile.datepicker.theme.css" />
-    <style type="text/css">
+  <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.inline-png-1.4.5.min.css" />
+  <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.theme-1.4.5.min.css" />
+  <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.icons-1.4.5.min.css" />
+  <link rel="stylesheet" href="./js/jquery.mobile.datepicker/jquery.mobile.datepicker.css" />
+  <link rel="stylesheet" href="./js/jquery.mobile.datepicker/jquery.mobile.datepicker.theme.css" />
+  <!-- END: Global stylesheets //-->
+
+  <!--
+    BEGIN: Local stylesheets
+    Notes: Local stylesheets could be embedded as shown on this example
+    or created on the co-responsibility project folder. It's recommended
+    to leave the external stylesheets unchanged as provided by the
+    original developers and override any rules on the local rules. This
+    helps to re-use global libraries between co-responsibility examples.
+  //-->
+  <style type="text/css">
 .ui-page { margin-top: 60px; }
 #msg {
   font-size: 1.2em;
@@ -26,229 +48,299 @@
   display: none;
   color: rgb(150, 0, 0);
 }
-    </style>
-    <!-- Para pruebas incluír siempre el archivo test_data.js //-->
-    <script type="text/javascript" src="test_data.js?rev=1"></script>
+  </style>
+  <!-- END: Local stylesheets //-->
 
-    <!-- Preservar el orden de inclusión de los
-         siguientes archivos de plataforma. //-->
-    <script language="JavaScript" src="js/MAPSApi-0.1/Nutrimiles.js"></script>
-    <script language="JavaScript" src="js/MAPSApi-0.1/lang.js"></script>
-    <script language="JavaScript" src="lang_es.js"></script>
+  <!--
+    BEGIN: Minimum support libraries
+    This files must be included always on all implementations. Platform
+    support libraries were designed free from external dependencies and
+    work directly with the NFC API exposed to the browser. This files
+    must be the first Javascript files loaded.
 
-    <!-- Incluír los archivos de soporte de Javascript //-->
-    <script type="text/javascript" src="js/jquery-2.1.1/jquery.min.js"></script>
-    <script type="text/javascript" src="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
-    <script type="text/javascript" src="js/jquery.mobile.datepicker/external/jquery-ui/datepicker.js"></script>
-    <script type="text/javascript" src="js/jquery.mobile.datepicker/jquery.mobile.datepicker.js"></script>
+    *test_data.js:* This file is only used for local testing and 
+    includes local testing data. Is included as an empty file on
+    the coresponsibility zipfile.
+  //-->
+  <script type="text/javascript" src="test_data.js?rev=1"></script>
 
+  <!--
+    *Nutrimiles.js:* This is the Nutrimiles basic support layer
+    to access and manage NFC card data. It must reside under
+    the resources directory.
+  //-->
+  <script language="JavaScript" src="js/MAPSApi-0.1/Nutrimiles.js"></script>
 
-<script type="text/javascript" language="JavaScript">
-var nutrimiles = null;
+  <!--
+    *lang.js*: this file provides basic translation funcions for
+    the user interface. It includes "translate" and "listOption"
+    functions to translate generic texts and sets of 
+  //-->
+  <script language="JavaScript" src="js/MAPSApi-0.1/lang.js"></script>
+  <!-- END: Minimum support libraries //-->
 
-$(function() {
-  init();
-});
+  <!--
+    BEGIN: Optional platform support files
+    This files could be included from the platform libraries or
+    could be provided by the project developer. This files provide
+    standard functions related only to this specific project.
 
-var seq = 55;
+    *lang_<ISO language>.js": creates a "Language" instance to
+    record the local translations for the strings.
+  //-->
+  <script language="JavaScript" src="lang_es.js?rev=1"></script>
+  <!-- END: Optional platform support files //-->
 
-function find_age_pregnancy(preg_age) {
-  return 0;
-}
+  <!--
+    BEGIN: Optional javascript library files
+    This section includes al the support libraries required
+    by theme user interface. It's recommended to use the 
+    "<css|js|otr>/<libray-name>-<version>" nomenclature.
+    All files must reside locally. No internet hosted libraries
+    are allowed.
+  //-->
+  <script type="text/javascript" src="js/jquery-2.1.1/jquery.min.js"></script>
+  <script type="text/javascript" src="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
+  <script type="text/javascript" src="js/jquery.mobile.datepicker/external/jquery-ui/datepicker.js"></script>
+  <script type="text/javascript" src="js/jquery.mobile.datepicker/jquery.mobile.datepicker.js"></script>
+  <!-- END: Optional javascript library files //-->
 
-var capture_sequence = {
-    'mother': [
-      { 'days': 54,
-	'seq': 1,
-	'variables': [
-	  'gest',
-	  'peso',
-	  'talla',
-	  'influenza',
-	  'folico',
-	  'hierro',
-	  'calcio'
-	]
-      },
-      { 'days': 108,
-	'seq': 2,
-	'variables': [
-	  'peso',
-	  'anemia',
-	  'antitetanica',
-	  'folico',
-	  'hierro',
-	  'calcio'
-	]
-      },
-      { 'days': 162,
-	'seq': 3,
-	'variables': [
-	  'peso',
-	  'folico',
-	  'hierro',
-	  'calcio'
-	]
-      },
-      { 'days': 216,
-	'seq': 4,
-	'variables': [
-	  'peso',
-	  'anemia',
-	  'ggh',
-	  'folico',
-	  'hierro',
-	  'calcio'
-	]
-      },
-      { 'days': 270,
-	'seq': 5,
-	'variables': [
-	  'peso',
-	  'talla',
-	  'folico',
-	  'hierro',
-	  'calcio'
-	]
-      }
-    ],
-    'child': [
-      { 'days': 7,
-	'seq': 6,
-	'variables': [
-	  'peso',
-	  'talla',
-	  'tiponac',
-	  'enrn',
-	  'lactan',
-	  'esquemavac'
-	]
-      },
-      { 'days': 60,
-	'seq': 7,
-	'variables': [
-	  'peso',
-	  'talla',
-	  'lactan',
-	  'esquemavac'
-	]
-      },
-      { 'days': 120,
-	'seq': 8,
-	'variables': [
-	  'peso',
-	  'talla',
-	  'esquemavac'
-	]
-      },
-      { 'days': 180,
-	'seq': 9,
-	'variables': [
-	  'peso',
-	  'talla',
-	  'esquemavac'
-	]
-      },
-      { 'days': 240,
-	'seq': 10,
-	'variables': [
-	  'peso',
-	  'talla',
-	  'esquemavac',
-	  'vita',
-	  'vitsf'
-	]
-      },
-      { 'days': 300,
-	'seq': 11,
-	'variables': [
-	  'peso',
-	  'talla',
-	  'esquemavac',
-	  'vita'
-	]
-      },
-      { 'days': 360,
-	'seq': 12,
-	'variables': [
-	  'peso',
-	  'talla',
-	  'esquemavac',
-	  'vita'
-	]
-      },
-      { 'days': 450,
-	'seq': 13,
-	'variables': [
-	  'peso',
-	  'talla',
-	  'esquemavac',
-	  'vitsf',
-	  'antipar'
-	]
-      },
-      { 'days': 540,
-	'seq': 14,
-	'variables': [
-	  'peso',
-	  'talla',
-	  'esquemavac'
-	]
-      },
-      { 'days': 630,
-	'seq': 15,
-	'variables': [
-	  'peso',
-	  'talla',
-	  'esquemavac',
-	  'vitsf',
-	  'antipar'
-	]
-      },
-      { 'days': 720,
-	'seq': 16,
-	'variables': [
-	  'peso',
-	  'talla',
-	  'esquemavac'
-	]
-      },
-      { 'days': 1000,
-	'seq': 17,
-	'variables': [
-	  'peso',
-	  'talla',
-	  'esquemavac',
-	  'vitsf',
-	  'antipar'
-	]
-      }
-    ]
-  };
+  <!--
+    BEGIN: View logic.
+    Notes: Local view logic could be embedded as shown on this example
+    or created on the co-responsibility project folder.
+  //-->
+  <script type="text/javascript" language="JavaScript">
+/*
+ * [View logic implementation]
+ *
+ * This section includes all the logic to:
+ *   1) Access the NFC card data on load.
+ *   2) Control the behaviour of the UI.
+ *   3) Perform data validation.
+ *   4) Store new data to the card.
+ * 
+ * It's highly recommended to use the following structure
+ *   1) Global data section
+ *   2) Utilitary functions and methods
+ *   3) Initialization function "init()" which is called 
+ *      each time there is new data.
+ *   4) Data validation and event recording "addEntry()"
+ */
 
+/** BEGIN: Global data section **/
+var nutrimiles = null; // Used to store the MAPS abstraction layer.
+var seq = 55; // Sequence number used to identify
 var date_pregnancy = "";
 var age_pregnancy = 0;
 var emboff = null;
 var child_age = null;
-
 var method = "";
-  
+
+var capture_sequence = {
+    'mother': [
+      { 'days': 84,
+        'seq': 1,
+        'variables': [
+          'gest',
+          'peso',
+          'talla',
+          'influenza',
+          'folico',
+          'hierro',
+          'calcio'
+        ]
+      },
+      { 'days': 108,
+        'seq': 2,
+        'variables': [
+          'peso',
+          'anemia',
+          'antitetanica',
+          'folico',
+          'hierro',
+          'calcio'
+        ]
+      },
+      { 'days': 162,
+        'seq': 3,
+        'variables': [
+          'peso',
+          'folico',
+          'hierro',
+          'calcio'
+        ]
+      },
+      { 'days': 216,
+        'seq': 4,
+        'variables': [
+          'peso',
+          'anemia',
+          'ggh',
+          'folico',
+          'hierro',
+          'calcio'
+        ]
+      },
+      { 'days': 270,
+        'seq': 5,
+        'variables': [
+          'peso',
+          'talla',
+          'folico',
+          'hierro',
+          'calcio'
+        ]
+      },
+      { 'days': 270,
+        'seq': 6,
+        'variables': [
+          'tiponac',
+          'enrn',
+          'hierro'
+        ]
+      }
+    ],
+    'child': [
+      { 'days': 7,
+        'seq': 1,
+        'variables': [
+          'peso',
+          'talla',
+          'tiponac',
+          'enrn',
+          'lactan',
+          'esquemavac'
+        ]
+      },
+      { 'days': 30,
+        'seq': 2,
+        'variables': [
+          'peso',
+          'talla',
+          'lactan',
+          'esquemavac'
+        ]
+      },
+      { 'days': 60,
+        'seq': 3,
+        'variables': [
+          'peso',
+          'talla',
+          'esquemavac'
+        ]
+      },
+      { 'days': 120,
+        'seq': 4,
+        'variables': [
+          'peso',
+          'talla',
+          'esquemavac'
+        ]
+      },
+      { 'days': 180,
+        'seq': 5,
+        'variables': [
+          'peso',
+          'talla',
+          'esquemavac',
+          'vita',
+          'vitsf'
+        ]
+      },
+      { 'days': 240,
+        'seq': 6,
+        'variables': [
+          'peso',
+          'talla',
+          'esquemavac',
+          'vita'
+        ]
+      },
+      { 'days': 300,
+        'seq': 7,
+        'variables': [
+          'peso',
+          'talla',
+          'esquemavac',
+          'vita'
+        ]
+      },
+      { 'days': 360,
+        'seq': 8,
+        'variables': [
+          'peso',
+          'talla',
+          'esquemavac',
+          'vitsf',
+          'antipar'
+        ]
+      },
+      { 'days': 350,
+        'seq': 9,
+        'variables': [
+          'peso',
+          'talla',
+          'esquemavac'
+        ]
+      },
+      { 'days': 540,
+        'seq': 10,
+        'variables': [
+          'peso',
+          'talla',
+          'esquemavac',
+          'vitsf',
+          'antipar'
+        ]
+      },
+      { 'days': 630,
+        'seq': 11,
+        'variables': [
+          'peso',
+          'talla',
+          'esquemavac'
+        ]
+      },
+      { 'days': 720,
+        'seq': 12,
+        'variables': [
+          'peso',
+          'talla',
+          'esquemavac',
+          'vitsf',
+          'antipar'
+        ]
+      },
+      { 'days': 1200,
+        'seq': 13,
+        'variables': [
+        ]
+      }
+    ]
+  };
+/** END: Global data section **/
+
+/** BEGIN: Utilitary functions **/
+/*
+ * findPregnancyDate(<event list>):
+ * This function calculates the estimated birth date using
+ * an offset in days stored on the card event list.
+ */
 function findPregnancyDate(events) {
   for(var i=(events.length-1); i>=0; i--) {
     if(events[i].data.emboff) {
       var offset = events[i].data.emboff;
-      
       var evt_date = new Date(events[i].date);
       if(offset<1) {
-	// Asumir FUR.
-	evt_date.setDate(evt_date.getDate()+offset);
-	method = "FUR";
+        // Asumir FUR.
+        evt_date.setDate(evt_date.getDate()+offset);
+        method = "FUR";
       } else {
-	// Asumir FPP
-	evt_date.setDate(evt_date.getDate()-(280-offset));
-	method = "FPP";
+        // Asumir FPP
+        evt_date.setDate(evt_date.getDate()-(280-offset));
+        method = "FPP";
       }
-      
       return ""+evt_date.getFullYear()+"-"+(evt_date.getMonth()+1)+"-"+evt_date.getDate();
     }
   }
@@ -256,9 +348,15 @@ function findPregnancyDate(events) {
 }
 
 function displayMotherSequence() {
+  var idx = parseInt($('#seq').val())-1;
+  //window.alert(idx);
+  /*
   var found = false;
   var idx = 0;
   for(var i=0;i < capture_sequence.mother.length; i++) {
+    //window.alert("IDX: "+i);
+    //window.alert("age_preg: "+age_pregnancy);
+    //window.alert("DAYS: "+capture_sequence.mother[i].days);
     if(age_pregnancy < capture_sequence.mother[i].days) {
       found = true;
       idx = i;
@@ -269,11 +367,12 @@ function displayMotherSequence() {
 
   if(!found) {
     idx = capture_sequence.mother.length - 1;
-  }
+  }*/
+
   for(var i=0;i<capture_sequence.mother[idx].variables.length; i++) {
     $('#'+capture_sequence.mother[idx].variables[i]+'_grp').show();
-//window.alert(capture_sequence.mother[idx].variables[i]);
   }
+
   seq = capture_sequence.mother[idx].seq;
 }
 
@@ -293,40 +392,65 @@ function generatePregDate() {
 }
 
 function calcEmb() {
-  date_pregnancy = generatePregDate();
-  var days = age_days(date_pregnancy);
-  age_pregnancy = days;
-  
-  // Detectar si se ha seleccionado un método adecuado:
-  if($('#calc_mtd').val()=="") {
-    $('#user_msg').html('<h3>Error: Debe seleccionar el método de cálculo.</h3>');
-    return;
-  }
-  // Detectar si el método elegido tiene sentido al seleccionar FUR
-  if(emboff<0 && ($('#calc_mtd').val()!="1")) {
-    $('#user_msg').html('<h3>Error: El método FPP requiere una fecha igual o posterior al día de hoy.</h3>');
-    return;
-  }
-  // Detectar si el método elegido tiene sentido al seleccionar FPP
-  if(emboff>=0 && ($('#calc_mtd').val()!="2")) {
-    $('#user_msg').html('<h3>Error: El método FUR requiere una fecha anterior al día de hoy.</h3>');
-    return;
-  }
-  
-  $('#user_msg').html('');
   $('#user_msg').hide();
+  $('#seq_grp .errormsg').hide();
+  var days = 0;
+
+  if(date_pregnancy===null) {
+    date_pregnancy = generatePregDate();
+    days = age_days(date_pregnancy);
+    age_pregnancy = days;
+
+    // Detectar si se ha seleccionado un método adecuado:
+    if($('#calc_mtd').val()=="") {
+      $('#user_msg').html('<h3>Error: Debe seleccionar el método de cálculo.</h3>');
+      $('#user_msg').show();
+      return;
+    }
+    // Detectar si el método elegido tiene sentido al seleccionar FUR
+    if(emboff<0 && ($('#calc_mtd').val()!="1")) {
+      $('#user_msg').html('<h3>Error: El método FPP requiere una fecha igual o posterior al día de hoy.</h3>');
+      $('#user_msg').show();
+      return;
+    }
+    // Detectar si el método elegido tiene sentido al seleccionar FPP
+    if(emboff>=0 && ($('#calc_mtd').val()!="2")) {
+      $('#user_msg').html('<h3>Error: El método FUR requiere una fecha anterior al día de hoy.</h3>');
+      $('#user_msg').show();
+      return;
+    }
+  } else {
+    days = age_days(date_pregnancy);
+  }
+
+  // Detectar si fue seleccionada un número de visita
+  if($('#seq').val()=="") {
+    $('#seq_grp .errormsg').html('<h3>Error: Debe seleccionar la visita de seguimiento.</h3>');
+    $('#seq_grp .errormsg').show();
+    return;
+  }
   
+  //window.alert(date_pregnancy);
+
   var baseDate = new Date(date_pregnancy);
   var today = new Date();
-  
+
   $('#mother_info').show();
   $('#mother_edagest').html(Math.floor(days/7)+" semanas "+(days%7)+ " días.<br /> Calculado por "+method);
   displayMotherSequence();
   $('#gest_grp').hide();
+  $('#seq_grp').hide();
 
   $('#calc_control').hide();
   $('#submit_control').show();
 }
+/** END: Utilitary functions **/
+
+/** BEGIN: Platform initialization functions **/
+$(function() {
+  init();
+});
+var date_pregnancy;
 
 function init() {
 
@@ -348,8 +472,7 @@ function init() {
   var transactions = nutrimiles.getTransactions();
   var beneficiary = nutrimiles.getBeneficiaryInformations();
   var age_in_days = age_days(beneficiary.birth_date);
-  
-  
+
   // First hide all input fields:
   $('#gest_grp').hide();
   $('#peso_grp').hide();
@@ -372,29 +495,25 @@ function init() {
   $('#mother_info').hide();
   $('#submit_control').hide();
   $('#calc_control').hide();
-  
-  if( beneficiary.group_id == 1 ) { // Mujeres
-    var date_pregnancy = findPregnancyDate(transactions);
-    
+  $('#seq_grp').hide();
+
+  // Show controls for pregnant mothers
+  if( beneficiary.group_id == 1 |  beneficiary.group_id == 2 ) { // Mujeres
+    date_pregnancy = findPregnancyDate(transactions);
+
     if(date_pregnancy===null) {
       $('#gest_grp').show();
-      $('#calc_control').show();
       $("#pregDate").datepicker({"dateFormat": "yy-mm-dd"});
-    } else {
-      age_pregnancy = age_days(date_pregnancy);
-  
-      var days = age_days(date_pregnancy);
-      var baseDate = new Date(date_pregnancy);
-      var today = new Date();
-
-      $('#mother_info').show();
-      $('#mother_edagest').html(Math.floor(days/7)+" semanas "+(days%7)+ " días.<br /> Método: "+method);
-      displayMotherSequence();
-      $('#gest_grp').hide();
-      $('#submit_control').show();
     }
+
+    $('#seq_grp').show();
+    $('#calc_control').show();
+    $('#child_birthdate').html(beneficiary.birth_date);
+    $('#child_info').show();
+    $('#child_agedays').html(parseInt(age_in_days/360)+" años.");
   }
-  
+
+  // Show controls for childs
   if( beneficiary.group_id == 3 ) { // Niños
     child_age = age_in_days;
     var found = false;
@@ -406,24 +525,30 @@ function init() {
         break;
       }
     }
-    
+
     if(found) {
       for(var i=0;i<capture_sequence.child[idx].variables.length; i++) {
-	$('#'+capture_sequence.child[idx].variables[i]+'_grp').show();
+        $('#'+capture_sequence.child[idx].variables[i]+'_grp').show();
       }
       seq = capture_sequence.child[idx].seq;
     } else {
-      // TODO: Do nothing (for now)
+      // Child is older. Just record visit.
     }
-    
+    if(transactions.length==0) { // First record in sequence
+      $('#enrn_grp').show();
+      $('#tiponac_grp').show();
+    }
+
     $('#child_info').show();
     $('#child_birthdate').html(beneficiary.birth_date);
-    $('#child_agedays').html(parseInt(age_in_days/30)+" meses "+(age_in_days%30)+" días.");
+    $('#child_agedays').html(parseInt(age_in_days/360)+" años "+parseInt(age_in_days/30)%12+" meses "+(age_in_days%30)+" días.");
     $('#submit_control').show();
   }
   $('.errormsg').hide();
 }
+/** END: Platform initialization functions **/
 
+/** BEGIN: Data validation and event recording **/
 function addEntry() {
 
   var patientData = {};
@@ -566,12 +691,12 @@ function addEntry() {
       $('#lactan_grp .errormsg').show();
     }
   }
-  
+
   // Stop execution if any errors found
   if(errors) {
     return;
   }
-  
+
   if(emboff!==null) {
     patientData.emboff = parseInt(emboff);
   }
@@ -588,9 +713,13 @@ function addEntry() {
     //window.alert(lang.default_alert);
   }
 }
-</script>
-</head>
-<body onLoad="init()" id="index">
+/** END: Data validation and event recording **/
+  </script>
+  <!-- END: View logic. //-->
+
+  </head>
+  <body onLoad="init()" id="index">
+  <!-- B: View HTML. //-->
     <form class="pure-form pure-form-aligned">
           <fieldset id="questions">
             <div class="pure-control-group" id="child_info">
@@ -609,6 +738,20 @@ function addEntry() {
                 <option value="2">FPP</option>
               </select>
               <div id="pregDate" class="date-input-inline"></div>
+              <p id="user_msg" class="errormsg"></p>
+            </div>
+            <div class="pure-control-group" id="seq_grp">
+              <label for="seq">Control:</label>
+              <select id="seq">
+                <option value="">Seleccione una opción</option>
+                <option value="1">Primera visita</option>
+                <option value="2">Segunda visita</option>
+                <option value="3">Tercera visita</option>
+                <option value="4">Cuarta visita</option>
+                <option value="5">Quinta visita</option>
+                <option value="6">Post parto</option>
+              </select>
+              <p class="errormsg">ERROR: Debe seleccionar una opción</p>
             </div>
             <div class="pure-control-group" id="peso_grp">
               <label for="peso">Peso:</label>
@@ -661,7 +804,7 @@ function addEntry() {
               <p class="errormsg">ERROR: Debe seleccionar una opción</p>
             </div>
             <div class="pure-control-group" id="antipar_grp">
-              <label for="antipar">Antiparasitarios: Mebandazole</label>
+              <label for="antipar">Antiparasitarios: Mebendazole</label>
               <select id="antipar">
                 <option value="">Seleccione una opción</option>
                 <option value="1">Sí</option>
@@ -760,9 +903,10 @@ function addEntry() {
               </select>
               <p class="errormsg">ERROR: Debe seleccionar una opción</p>
             </div>
-            <div class="pure-controls" id="calc_control"><input type="button" class="pure-button pure-button-primary" value="Calcular Edad Gestacional" onClick="calcEmb()"></button></div>
-            <div class="pure-controls" id="submit_control"><input type="button" class="pure-button pure-button-primary" value="Registrar visita" onClick="addEntry()"></button></div>
+            <div class="pure-controls" id="calc_control"><input type="button" class="pure-button pure-button-primary" value="Calcular Edad Gestacional" onClick="calcEmb()" /></div>
+            <div class="pure-controls" id="submit_control"><input type="button" class="pure-button pure-button-primary" value="Registrar visita" onClick="addEntry()" /></div>
           </fieldset>
       </form>
-</body>
+  <!-- END: View HTML. //-->
+  </body>
 </html>

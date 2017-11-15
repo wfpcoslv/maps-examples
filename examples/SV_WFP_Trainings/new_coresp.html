@@ -21,6 +21,11 @@
 #obj_dump {
   word-wrap: break-word;
 }
+.errormsg {
+  text-align: center;
+  display: none;
+  color: rgb(150, 0, 0);
+}
     </style>
 
     <!-- Para pruebas incluír siempre el archivo test_data.js //-->
@@ -38,21 +43,51 @@
     <script type="text/javascript">
 var nutrimiles = null;
 function addEntry() {
-  
-  var data = null;
-  data = {
-    "deinf" : $('#deinf').val(),
-    "alimsal" : $('#alimsal').val(),
-    "habvid" : $('#habvid').val()
+
+  var errors = false;
+  $('.errormsg').hide();
+
+  var data = {};
+
+
+  if($('#deinf').is(":visible")) {
+    if($('#deinf').val()!="") {
+      patientData.deinf = parseInt($('#deinf').val());
+    } else {
+      errors = errors | true;
+      $('#deinf_grp .errormsg').show();
+    }
   }
-  
+  if($('#alimsal').is(":visible")) {
+    if($('#alimsal').val()!="") {
+      patientData.alimsal = parseInt($('#alimsal').val());
+    } else {
+      errors = errors | true;
+      $('#alimsal_grp .errormsg').show();
+    }
+  }
+  if($('#habvid').is(":visible")) {
+    if($('#habvid').val()!="") {
+      patientData.habvid = parseInt($('#habvid').val());
+    } else {
+      errors = errors | true;
+      $('#habvid_grp .errormsg').show();
+    }
+  }
+
+  // Stop execution if any errors found
+  if(errors) {
+    return;
+  }
+
   newEvent = nutrimiles.prepareEvent(data); // Validación de datos
-  
+
   if(newEvent) {
     nutrimiles.createTransaction(newEvent);
   } else {
     window.alert(lang.default_alert);
   }
+
 }
 
 $(function() {
@@ -79,28 +114,34 @@ function init() {
   <body onLoad="init()">
     <form class="pure-form pure-form-aligned">
       <fieldset id="questions">
-	<h3>Marque las capacitaciones recibidas</h3>
-	<div class="pure-control-group" id="deinf_grp">
-	  <label for="deinf">Estimulación del Desarrollo Infantil:</label>
-	  <select id="deinf">
-	    <option value="1">Sí</option>
-	    <option value="2">No</option>
-	  </select>
-	</div>
-	<div class="pure-control-group" id="deinf_grp">
-	  <label for="alimsal">Alimentación Saludable</label>
-	  <select id="alimsal">
-	    <option value="1">Sí</option>
-	    <option value="2">No</option>
-	  </select>
-	</div>
-	<div class="pure-control-group" id="deinf_grp">
-	  <label for="habvid">Habilidades para la vida</label>
-	  <select id="habvid">
-	    <option value="1">Sí</option>
-	    <option value="2">No</option>
-	  </select>
-	</div>
+        <h3>Marque las capacitaciones recibidas</h3>
+        <div class="pure-control-group" id="deinf_grp">
+          <label for="deinf">Estimulación del Desarrollo Infantil:</label>
+          <select id="deinf">
+            <option value="">Seleccione una opción:</option>
+            <option value="1">Sí</option>
+            <option value="2">No</option>
+          </select>
+          <p class="errormsg">ERROR: Debe seleccionar una opción.</p>
+        </div>
+        <div class="pure-control-group" id="deinf_grp">
+          <label for="alimsal">Alimentación Saludable</label>
+          <select id="alimsal">
+            <option value="">Seleccione una opción:</option>
+            <option value="1">Sí</option>
+            <option value="2">No</option>
+          </select>
+          <p class="errormsg">ERROR: Debe seleccionar una opción.</p>
+        </div>
+        <div class="pure-control-group" id="deinf_grp">
+          <label for="habvid">Habilidades para la vida</label>
+          <select id="habvid">
+            <option value="">Seleccione una opción:</option>
+            <option value="1">Sí</option>
+            <option value="2">No</option>
+          </select>
+          <p class="errormsg">ERROR: Debe seleccionar una opción.</p>
+        </div>
         <div class="pure-controls"><input type="button" class="pure-button pure-button-primary" value="Guardar" onClick="addEntry()"></button></div>
       </fieldset>
     </form>
