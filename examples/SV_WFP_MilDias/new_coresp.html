@@ -148,7 +148,8 @@ var capture_sequence = {
           'influenza',
           'folico',
           'hierro',
-          'calcio'
+          'calcio',
+          'proxv'
         ]
       },
       { 'days': 108,
@@ -159,7 +160,8 @@ var capture_sequence = {
           'antitetanica',
           'folico',
           'hierro',
-          'calcio'
+          'calcio',
+          'proxv'
         ]
       },
       { 'days': 162,
@@ -168,7 +170,8 @@ var capture_sequence = {
           'peso',
           'folico',
           'hierro',
-          'calcio'
+          'calcio',
+          'proxv'
         ]
       },
       { 'days': 216,
@@ -179,7 +182,8 @@ var capture_sequence = {
           'ggh',
           'folico',
           'hierro',
-          'calcio'
+          'calcio',
+          'proxv'
         ]
       },
       { 'days': 270,
@@ -189,7 +193,8 @@ var capture_sequence = {
           'talla',
           'folico',
           'hierro',
-          'calcio'
+          'calcio',
+          'proxv'
         ]
       },
       { 'days': 270,
@@ -197,7 +202,8 @@ var capture_sequence = {
         'variables': [
           'tiponac',
           'enrn',
-          'hierro'
+          'hierro',
+          'proxv'
         ]
       }
     ],
@@ -210,111 +216,119 @@ var capture_sequence = {
           'tiponac',
           'enrn',
           'lactan',
-          'esquemavac'
+          'esquemavac',
+          'proxv'
         ]
       },
-      { 'days': 30,
+      { 'days': 60,
         'seq': 2,
         'variables': [
           'peso',
           'talla',
           'lactan',
-          'esquemavac'
+          'esquemavac',
+          'proxv'
         ]
       },
-      { 'days': 60,
+      { 'days': 90,
         'seq': 3,
         'variables': [
           'peso',
           'talla',
-          'esquemavac'
+          'esquemavac',
+          'proxv'
         ]
       },
-      { 'days': 120,
+      { 'days': 150,
         'seq': 4,
         'variables': [
           'peso',
           'talla',
-          'esquemavac'
+          'esquemavac',
+          'proxv'
         ]
       },
-      { 'days': 180,
+      { 'days': 210,
         'seq': 5,
         'variables': [
           'peso',
           'talla',
           'esquemavac',
-          'vita',
-          'vitsf'
+          'vitsf',
+          'proxv'
         ]
       },
-      { 'days': 240,
+      { 'days': 270,
         'seq': 6,
         'variables': [
           'peso',
           'talla',
           'esquemavac',
-          'vita'
+          'vitsf',
+          'proxv'
         ]
       },
-      { 'days': 300,
+      { 'days': 330,
         'seq': 7,
         'variables': [
           'peso',
           'talla',
           'esquemavac',
-          'vita'
+          'vitsf',
+          'proxv'
         ]
       },
-      { 'days': 360,
+      { 'days': 420,
         'seq': 8,
         'variables': [
           'peso',
           'talla',
           'esquemavac',
+          'vita',
           'vitsf',
-          'antipar'
+          'antipar',
+          'proxv'
         ]
       },
-      { 'days': 350,
+      { 'days': 510,
         'seq': 9,
         'variables': [
           'peso',
           'talla',
-          'esquemavac'
+          'vitsf',
+          'esquemavac',
+          'proxv'
         ]
       },
-      { 'days': 540,
+      { 'days': 600,
         'seq': 10,
         'variables': [
           'peso',
           'talla',
           'esquemavac',
           'vitsf',
-          'antipar'
+          'antipar',
+          'proxv'
         ]
       },
-      { 'days': 630,
+      { 'days': 690,
         'seq': 11,
         'variables': [
           'peso',
           'talla',
-          'esquemavac'
+          'esquemavac',
+          'proxv'
         ]
       },
-      { 'days': 720,
+      { 'days': 1200,
         'seq': 12,
         'variables': [
           'peso',
           'talla',
           'esquemavac',
-          'vitsf',
-          'antipar'
-        ]
-      },
-      { 'days': 1200,
-        'seq': 13,
-        'variables': [
+          'vita',
+          'antipar',
+          'proxv'
         ]
       }
     ]
@@ -371,6 +385,9 @@ function displayMotherSequence() {
 
   for(var i=0;i<capture_sequence.mother[idx].variables.length; i++) {
     $('#'+capture_sequence.mother[idx].variables[i]+'_grp').show();
+  }
+  if(idx==6) {
+    ('#mother_info').hide()
   }
 
   seq = capture_sequence.mother[idx].seq;
@@ -436,7 +453,11 @@ function calcEmb() {
   var today = new Date();
 
   $('#mother_info').show();
-  $('#mother_edagest').html(Math.floor(days/7)+" semanas "+(days%7)+ " días.<br /> Calculado por "+method);
+  if(days<277) {
+    $('#mother_edagest').html(Math.floor(days/7)+" semanas "+(days%7)+ " días.<br /> Calculado por "+method);
+  } else { // No mostrar edad gestacional si supera los 9 meses
+    $('#mother_info').hide();
+  }
   displayMotherSequence();
   $('#gest_grp').hide();
   $('#seq_grp').hide();
@@ -691,6 +712,14 @@ function addEntry() {
       $('#lactan_grp .errormsg').show();
     }
   }
+  if($('#proxv').is(":visible")) {
+    if($('#proxv').val()!="") {
+      patientData.lactan = parseInt($('#proxv').val());
+    } else {
+      errors = errors | true;
+      $('#proxv_grp .errormsg').show();
+    }
+  }
 
   // Stop execution if any errors found
   if(errors) {
@@ -769,6 +798,16 @@ function addEntry() {
                 <option value="">Seleccione una opción</option>
                 <option value="1">Intrashospitalario</option>
                 <option value="2">Intradomiciliar</option>
+              </select>
+              <p class="errormsg">ERROR: Debe seleccionar una opción</p>
+            </div>
+            <div class="pure-control-group" id="enrn_grp">
+              <label for="enrn">Estado nutricional RN</label>
+              <select id="enrn">
+                <option value="">Seleccione una opción</option>
+                <option value="1">Bajo peso</option>
+                <option value="2">Normal</option>
+                <option value="2">Arriba de lo normal</option>
               </select>
               <p class="errormsg">ERROR: Debe seleccionar una opción</p>
             </div>
@@ -851,16 +890,6 @@ function addEntry() {
               </select>
               <p class="errormsg">ERROR: Debe seleccionar una opción</p>
             </div>
-            <div class="pure-control-group" id="enrn_grp">
-              <label for="enrn">Estado nutricional RN</label>
-              <select id="enrn">
-                <option value="">Seleccione una opción</option>
-                <option value="1">Bajo peso</option>
-                <option value="2">Normal</option>
-                <option value="2">Arriba de lo normal</option>
-              </select>
-              <p class="errormsg">ERROR: Debe seleccionar una opción</p>
-            </div>
             <div class="pure-control-group" id="folico_grp">
               <label for="folico">Ácido fólico</label>
               <select id="folico">
@@ -902,6 +931,25 @@ function addEntry() {
                 <option value="2">No</option>
               </select>
               <p class="errormsg">ERROR: Debe seleccionar una opción</p>
+            </div>
+            <div class="pure-control-group" id="proxv_grp">
+              <label for="proxv">Próxima visita:</label>
+              <select id="proxv">
+                <option value="">Seleccione una opción</option>
+                <option value="1">Enero</option>
+                <option value="2">Febrero</option>
+                <option value="3">Marzo</option>
+                <option value="4">Abril</option>
+                <option value="5">Mayo</option>
+                <option value="6">Junio</option>
+                <option value="7">Julio</option>
+                <option value="8">Agosto</option>
+                <option value="9">Septiembre</option>
+                <option value="10">Octubre</option>
+                <option value="11">Noviembre</option>
+                <option value="12">Diciembre</option>
+              </select>
+              <p class="errormsg">ERROR: Debe seleccionar el mes de la próxima consulta</p>
             </div>
             <div class="pure-controls" id="calc_control"><input type="button" class="pure-button pure-button-primary" value="Calcular Edad Gestacional" onClick="calcEmb()" /></div>
             <div class="pure-controls" id="submit_control"><input type="button" class="pure-button pure-button-primary" value="Registrar visita" onClick="addEntry()" /></div>

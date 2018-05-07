@@ -20,13 +20,13 @@ Language.prototype.listOption = function(listname, currval) {
   for(var i in this.options) {
     if(this.options[i].name == listname) {
       for(var j in this.options[i].options) {
-	if(this.options[i].options[j].v == currval) {
-	  return this.options[i].options[j].t;
-	}
+        if(this.options[i].options[j].v == currval) {
+          return this.options[i].options[j].t;
+        }
       }
     }
   }
   return currval;
 };
-  
+
 var lang = new Language();

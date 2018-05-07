@@ -27,6 +27,7 @@ message Event {
     uint32  antitetanica = 23;
     uint32  influenza = 24;
     uint32  ggh = 25;
+    uint32  proxv = 26;
   }
 
   // Fixed Fields (always collected)

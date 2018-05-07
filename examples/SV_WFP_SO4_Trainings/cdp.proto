@@ -1,0 +1,19 @@
+syntax = "proto3";
+package nutrimiles;
+
+message Event {
+  message DetailedData {
+    uint32     scp   = 8;
+  }
+
+  // fixed fields
+  uint32    timestamp = 1;
+  string    location = 2;
+
+  // variable fields
+  uint32    id = 3;
+  uint32    beneficiaryId = 4;
+  uint32    transactionId = 5;
+  string    date = 6;
+  DetailedData data = 7;
+}

@@ -86,6 +86,38 @@ $(function() {
 });
 
 /*
+ * Genera texto de etiqueta para niveles de desnutrición peso/edad.
+ */
+function label_text_weight_age(value) {
+  label = ""; // No se ha definido valor para etiqueta > 2 desviaciones estándar
+  if( value<=2 && value>=-2 ) {
+    label = "Normal";
+  } else if( value<-2 && value>=-3) {
+    label = "Desnutrición";
+  } else if( value<-3) {
+    label = "Desnutrición severa";
+  }
+  return label;
+}
+
+/*
+ * Genera texto de etiqueta para niveles de retardo de talla talla/edad
+ */
+function label_text_height_age(value) {
+  label = "";
+  if (value>2) {
+    label = "Talla alta"
+  } else if( value<=2 && value>=-2 ) {
+    label = "Normal";
+  } else if( value<-2 && value>=-3) {
+    label = "Retardo en el crecimiento";
+  } else if( value<-3) {
+    label = "Retardo severo en el crecimiento";
+  }
+  return label;
+}
+
+/*
  * init() se llama cada vez que se actualizan las transacciones.
  */
 function init() {
@@ -150,11 +182,13 @@ function init() {
       }
     }
 
+    //$('#obj_dump').html(new Date());
     for (i=0;i<transactions.length;i++) {
       currentVisit = transactions[i];
       // Solo continuar si es una visita médica
       //if(typeof currentVisit.data.peso !== 'undefined') {
         var row_date = new Date(Date.parse(currentVisit.date))
+        $('#obj_dump').html($('#obj_dump').html()+";"+currentVisit.date);
         var visit_content =
           '<div data-role="collapsible"><h3>VISITA '+row_date.getFullYear()+"-"+
           (row_date.getMonth()+1)+"-"+row_date.getDate()+'</h3>';
@@ -162,7 +196,9 @@ function init() {
         if(currentUser.firstname != "MONITOR") {
 
           for(var name in currentVisit.data) {
-            if( name == "edadias") {
+            if( name == "seq") {
+              visit_content += '<strong>Visita</strong>: '+(i+1)+"<br />";
+            } else if( name == "edadias") {
               visit_content += '<strong>'+lang.translate(name)+'</strong>: '+parseInt(currentVisit.data[name]/360)+" años "+parseInt(currentVisit.data[name]/30)+" meses "+(currentVisit.data[name]%30)+ " días<br />";
             } else if( name == "emboff") {
               var days = currentVisit.data[name];
@@ -198,13 +234,13 @@ function init() {
                     lhfa_girls_z[currentVisit.data.edadias].SD0,
                     lhfa_girls_z[currentVisit.data.edadias].SD1
                   );
-                visit_content += "<strong>T/E:</strong> "+te+" "+((te>=2) ? "[Arriba de lo normal]" : ((te<=-2) ? "[Retardo Talla]" : "[Normal]" ) )+"</br>";
+                visit_content += "<strong>T/E:</strong> "+te+" ["+label_text_height_age(te)+"]</br>";
                 var pe = calculate_z_deviation(
                     currentVisit.data.peso,
                     wfa_girls_z[currentVisit.data.edadias].SD0,
                     wfa_girls_z[currentVisit.data.edadias].SD1
                   );
-                visit_content += "<strong>P/E:</strong> "+pe+" "+((pe>=2) ? "[Sobrepeso]" : ((pe<=-2) ? "[Desnutrición]" : "[Normal]" ) )+"</br>";
+                visit_content += "<strong>P/E:</strong> "+pe+" ["+label_text_weight_age(pe)+"]</br>";
                 var pt = find_z_deviation_height(
                     wfh_girls_z,
                     currentVisit.data.talla,
@@ -218,13 +254,13 @@ function init() {
                     lhfa_boys_z[currentVisit.data.edadias].SD0,
                     lhfa_boys_z[currentVisit.data.edadias].SD1
                   );
-                visit_content += "<strong>T/E:</strong> "+te+" "+((te>=2) ? "[Arriba de lo normal]" : ((te<=-2) ? "[Retardo Talla]" : "[Normal]" ) )+"</br>";
+                visit_content += "<strong>T/E:</strong> "+te+" ["+label_text_height_age(te)+"]</br>";
                 var pe = calculate_z_deviation(
                     currentVisit.data.peso,
                     wfa_boys_z[currentVisit.data.edadias].SD0,
                     wfa_boys_z[currentVisit.data.edadias].SD1
                   );
-                visit_content += "<strong>P/E:</strong> "+pe+" "+((pe>=2) ? "[Sobrepeso]" : ((pe<=-2) ? "[Desnutrición]" : "[Normal]" ) )+"</br>";
+                visit_content += "<strong>P/E:</strong> "+pe+" ["+label_text_weight_age(pe)+"]</br>";
                 var pt = find_z_deviation_height(
                     wfh_boys_z,
                     currentVisit.data.talla,
@@ -243,13 +279,13 @@ function init() {
                     lhfa_girls_z[currentVisit.data.edadias].SD0,
                     lhfa_girls_z[currentVisit.data.edadias].SD1
                   );
-                visit_content += "<strong>T/E:</strong> "+te+" "+((te>=2) ? "[Arriba de lo normal]" : ((te<=-2) ? "[Retardo Talla]" : "[Normal]" ) )+"</br>";
+                visit_content += "<strong>T/E:</strong> "+te+" ["+label_text_height_age(te)+"]</br>";
                 var pe = calculate_z_deviation(
                     currentVisit.data.peso,
                     wfa_girls_z[currentVisit.data.edadias].SD0,
                     wfa_girls_z[currentVisit.data.edadias].SD1
                   );
-                visit_content += "<strong>P/E:</strong> "+pe+" "+((pe>=2) ? "[Sobrepeso]" : ((pe<=-2) ? "[Desnutrición]" : "[Normal]" ) )+"</br>";
+                visit_content += "<strong>P/E:</strong> "+pe+" ["+label_text_weight_age(pe)+"]</br>";
                 var pt = find_z_deviation_length(
                     wfl_girls_z,
                     currentVisit.data.talla,
@@ -263,13 +299,13 @@ function init() {
                     lhfa_boys_z[currentVisit.data.edadias].SD0,
                     lhfa_boys_z[currentVisit.data.edadias].SD1
                   );
-                visit_content += "<strong>T/E:</strong> "+te+" "+((te>=2) ? "[Arriba de lo normal]" : ((te<=-2) ? "[Retardo Talla]" : "[Normal]" ) )+"</br>";
+                visit_content += "<strong>T/E:</strong> "+te+" ["+label_text_height_age(te)+"]</br>";
                 var pe = calculate_z_deviation(
                     currentVisit.data.peso,
                     wfa_boys_z[currentVisit.data.edadias].SD0,
                     wfa_boys_z[currentVisit.data.edadias].SD1
                   );
-                visit_content += "<strong>P/E:</strong> "+pe+" "+((pe>=2) ? "[Sobrepeso]" : ((pe<=-2) ? "[Desnutrición]" : "[Normal]" ) )+"</br>";
+                visit_content += "<strong>P/E:</strong> "+pe+" ["+label_text_weight_age(pe)+"]</br>";
                 var pt = find_z_deviation_length(
                     wfl_boys_z,
                     currentVisit.data.talla,

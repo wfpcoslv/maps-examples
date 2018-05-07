@@ -26,6 +26,27 @@ var beneficiaryData = {
       {
         "type": 1,
         "userID": 1,
+        "date": "2018-01-16 14:00:00",
+        "deviceID": 112233,
+        "location": {
+          "latitude": 1,
+          "longitude": 1
+        },
+        "data": {
+          "seq": 1,
+          "peso": 2.95,
+          "talla": 49,
+          "tiponac": 1,
+          "enrn": 2,
+          "lactan": 1,
+          "esquemavac": 1,
+          "edadias": 7
+        },
+        "validated": true
+      },
+      {
+        "type": 1,
+        "userID": 1,
         "date": "2017-04-10 00:00:00",
         "deviceID": 112233,
         "location": {

@@ -60,4 +60,7 @@ endif
 
 # output/$(project).zip: Generates the zipfile to deploy
 output/$(project).zip: prepare
+	# Remove test data
+	cd tmp; rm test_data.js; touch test_data.js;
+	# Zip results
 	cd tmp; zip -r9 ../output/$(project).zip *
