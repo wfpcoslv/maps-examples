@@ -11,3 +11,17 @@ C:\Users\pmamg\Documents\Visual Studio 2008\Projects\APITest\APITest\obj\Debug\A
 C:\Users\pmamg\Documents\Visual Studio 2008\Projects\APITest\APITest\obj\Debug\APITest.exe
 C:\Users\pmamg\Documents\Visual Studio 2008\Projects\APITest\APITest\obj\Debug\APITest.xml
 C:\Users\pmamg\Documents\Visual Studio 2008\Projects\APITest\APITest\obj\Debug\APITest.pdb
+I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\APITest\obj\Debug\APITest.exe
+I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\APITest\obj\Debug\APITest.xml
+I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\APITest\obj\Debug\APITest.pdb
+I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\APITest\bin\Debug\APITest.exe
+I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\APITest\bin\Debug\APITest.pdb
+I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\APITest\bin\Debug\APITest.xml
+I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\APITest\bin\Debug\Newtonsoft.Json.dll
+I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\APITest\bin\Debug\Newtonsoft.Json.pdb
+I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\APITest\bin\Debug\Newtonsoft.Json.xml
+I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\APITest\obj\Debug\ResolveAssemblyReference.cache
+I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\APITest\obj\Debug\WindowsApplication1.Resources.resources
+I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\APITest\obj\Debug\APITest.vbproj.GenerateResource.Cache
+I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\APITest\obj\Debug\WindowsApplication1.DataLoader.resources
+I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\APITest\obj\Debug\WindowsApplication1.Individual.resources
