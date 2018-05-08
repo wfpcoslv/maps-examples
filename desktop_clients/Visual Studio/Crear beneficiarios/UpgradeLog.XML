@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="APITest">
+</Property><Property Name="Archivo de la solución" Value="I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\APITest.sln">
+</Property><Property Name="Archivo de opciones de usuario" Value="I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\APITest.suo">
+</Property><Property Name="Date" Value="Monday, May 07, 2018">
+</Property><Property Name="Time" Value="12:43 PM">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="APITest.sln" Description="La copia I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\Backup\APITest.sln del archivo se ha realizado correctamente">
+</Event><Event ErrorLevel="0" Project="" Source="APITest.suo" Description="La copia I:\Development\maps-examples\desktop_clients\Visual Studio\Crear beneficiarios\Backup\APITest.suo del archivo se ha realizado correctamente">
+</Event><Event ErrorLevel="0" Project="" Source="APITest.sln" Description="La solución se convirtió correctamente">
+</Event><Event ErrorLevel="3" Project="" Source="APITest.sln" Description="Converted">
+</Event></UpgradeLog>
