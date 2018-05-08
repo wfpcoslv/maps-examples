@@ -56,6 +56,7 @@ lang_es.seq =                "Secuencia de visita"
 lang_es.emboff =             "Edad gestacional"
 lang_es.peso =               "Peso (kg)"
 lang_es.talla =              "Talla (cm)"
+lang_es.edadias =            "Edad"
 
 // Opciones de selección comunes
 lang_es.SI_NO = [
@@ -75,7 +76,7 @@ lang_es.TIPO_NAC = [
 lang_es.RSP_HEMOGLOB = [
     { 'v': 1, 't': "Hay Anemia"},
     { 'v': 2, 't': "No hay Anemia"},
-    { 'v': 3, 't': "No se realizó el exámen"},
+    { 'v': 9, 't': "No se realizó el exámen"},
 ];
 lang_es.RSP_ENRN = [
     { 'v': 1, 't': "Bajo peso"},

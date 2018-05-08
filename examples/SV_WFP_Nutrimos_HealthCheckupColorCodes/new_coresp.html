@@ -1,0 +1,299 @@
+<!--
+Copyright (C) 2017 World Food Programme - All Rights Reserved.
+
+This file is part of "MAPS Co-responsibilities Examples".
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Implementation examples originally written by Mario Gómez.
+For more info about this examples contact at <mario.gomez@wfp.org>
+
+//-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./pure-min.css">
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.inline-png-1.4.5.min.css" />
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.theme-1.4.5.min.css" />
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.icons-1.4.5.min.css" />
+    <style type="text/css">
+.ui-page { margin-top: 60px; }
+#msg {
+  font-size: 1.2em;
+}
+.tooltip {
+  font-size: 0.5em;
+  font-color: rgb(25,25,125);
+}
+#obj_dump {
+  word-wrap: break-word;
+}
+    </style>
+    <!-- Para pruebas incluír siempre el archivo test_data.js //-->
+    <script type="text/javascript" src="test_data.js?rev=1"></script>
+
+    <!-- Preservar el orden de inclusión de los
+         siguientes archivos de plataforma. //-->
+    <script language="JavaScript" src="js/Nutrimiles.js"></script>
+    <script language="JavaScript" src="js/lang.js"></script>
+    <script language="JavaScript" src="js/lang_es.js"></script>
+
+    <!-- Incluír los archivos de soporte de Javascript //-->
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+
+<script type="text/javascript" language="JavaScript">
+var nutrimiles = null;
+
+function calculateRation(events) {
+  var given_scp = 0;
+  var allowed_scp = 0;
+	for (i=0;i<events.length;i++) {
+    if(events[i].data.scpReceived) {
+      given_scp += events[i].data.scpReceived
+    } else {
+      allowed_scp += 5; // User is allowed to get 5 units by visit
+    }
+	}
+	return allowed_scp - given_scp;
+}
+
+$(function() {
+  init();
+});
+
+function init() {
+
+  if(nutrimiles == null)
+  {
+    nutrimiles = new Nutrimiles();
+  }
+
+  if(nutrimiles.status()!=1) {
+    // Critical error found, stop.
+    window.alert(lang.default_alert);
+    return;
+  }
+
+  console.log("NMI - new event...");
+
+/* from beneficiary.js
+  var BENEFICIARY_GROUP_ID = 1;
+  var BENEFICIARY_AGE = 5;
+*/
+
+  var htmlToDisplay = '';
+  var currentUser = nutrimiles.getUserInformations();
+  var beneficiaryInfo = nutrimiles.getBeneficiaryInformations();
+
+  if(currentUser.role == "Tienda") { // Hardcoded Store id.
+    // Store User Interface
+    
+    var allowedRations = calculateRation(nutrimiles.getTransactions())
+    // Units to register
+    if(allowedRations > 0) {
+      htmlToDisplay += '<p>'+lang.is_allowed_to_get+allowedRations
+        +lang.units_csp+'</p>';
+      htmlToDisplay += '<div class="pure-control-group"><label for="scp_received">'+
+        lang.scp_given+'</label><input id="scp_received" type="number" placeholder="'+
+        lang.in_scp+'"></div>';
+  
+      htmlToDisplay += '<div class="pure-controls"><input type="button" class="pure-button pure-button-primary" value="'+lang.add_entry+'" onClick="addEntry()"></button></div>';
+    } else {
+      htmlToDisplay += '<p>'+lang.not_allowed+'</p>';
+    }
+  } else if(currentUser.role == "Monitor de Campo") {
+    
+    htmlToDisplay += '<div class="pure-control-group"><label for="nextVisit">Registrar Nacimiento</label>'+
+    '<select id="gaveBirth">'+
+    '<option value="">N/A</option>'+
+    '<option value="1">Enero</option>'+
+    '<option value="2">Febrero</option>'+
+    '<option value="3">Marzo</option>'+
+    '<option value="4">Abril</option>'+
+    '<option value="5">Mayo</option>'+
+    '<option value="6">Junio</option>'+
+    '<option value="7">Julio</option>'+
+    '<option value="8">Agosto</option>'+
+    '<option value="9">Septiembre</option>'+
+    '<option value="10">Octubre</option>'+
+    '<option value="11">Noviembre</option>'+
+    '<option value="12">Diciembre</option>'+
+    '</select></div>';
+    
+    htmlToDisplay += '<div class="pure-control-group"><label for="nextVisit">Registrar justificación por no-visita</label>'+
+    '<select id="excuse">'+
+    '<option value="">N/A</option>'+
+    '<option value="1">Enfermedad</option>'+
+    '<option value="2">Muerte de un familiar</option>'+
+    '<option value="3">Otro justificado</option>'+
+    '<option value="3">Otro no-justificado</option>'+
+    '</select></div>';
+    
+    htmlToDisplay += '<div class="pure-control-group"><label for="nextVisit">Registrar muerte infantil</label>'+
+    '<select id="childDeath">'+
+    '<option value="">N/A</option>'+
+    '<option value="1">Muerte Ante-parto</option>'+
+    '<option value="2">Muerte neonatal</option>'+
+    '<option value="3">No sabe</option>'+
+    '</select></div>';
+    
+    htmlToDisplay += '<div class="pure-controls"><input type="button" class="pure-button pure-button-primary" value="'+lang.add_entry+'" onClick="addEntry()"></button></div>';
+  } else { 
+      // weight - all
+    htmlToDisplay += 
+      '<div class="pure-control-group"><label for="weight">'+lang.weight+
+      '</label><input id="weight" type="number" step="0.01"  placeholder="'+
+      lang.in_weight+'"></div>';
+  
+    switch(beneficiaryInfo.group_id) {
+      case 1: // Mother
+      case 2:
+        // height
+        htmlToDisplay += '<div class="pure-control-group"><label for="height">'+
+        lang.height+'</label><input id="height" type="number" step="any" placeholder="'+
+        lang.in_height+'"></div>';
+        
+        // Gestational age
+        htmlToDisplay += 
+        '<div class="pure-control-group"><label for="gestational_age">'+
+        lang.gest_age+'</label><input id="gestational_age" type="number" placeholder="'+lang.in_gest_age+
+        '"></div>';
+        
+        // Intrauterine growth
+        htmlToDisplay += '<div class="pure-control-group"><label for="intrauterine_growth">'+
+        lang.intra_growth+'</label><input id="intrauterine_growth" type="number" step="any" placeholder="'+
+        lang.in_intra_growth+'"></div>';
+        break;
+      case 3:
+      case 3:
+        // Child under 5
+        if (age_days(beneficiaryInfo.birth_date) > 720)
+        {
+          // Over 2
+          // Only Height
+          htmlToDisplay += '<div class="pure-control-group"><label for="height">'+
+          lang.height+'</label><input id="height" type="number" step="any" placeholder="'+
+          lang.in_height+'"></div>';
+        } else {
+          // child <= 2
+          // Lenght
+          htmlToDisplay += '<div class="pure-control-group"><label for="length">'+
+          lang.lenght+'</label><input id="length" type="number" step="any" placeholder="'+
+          lang.in_lenght+'"></div>';
+          // Circumference
+          htmlToDisplay += '<div class="pure-control-group"><label for="head_circumference">'+
+          lang.circum+'</label><input id="head_circumference" type="number" step="any" placeholder="'+
+          lang.in_circum+'"></div>';
+        }
+        break;
+    }
+    
+  htmlToDisplay += '<div class="pure-control-group"><label for="nextVisit">Próxima Visita</label>'+
+  '<select id="nextVisit">'+
+  '<option value="Enero">Enero</option>'+
+  '<option value="Febrero">Febrero</option>'+
+  '<option value="Marzo">Marzo</option>'+
+  '<option value="Abril">Abril</option>'+
+  '<option value="Mayo">Mayo</option>'+
+  '<option value="Junio">Junio</option>'+
+  '<option value="Julio">Julio</option>'+
+  '<option value="Agosto">Agosto</option>'+
+  '<option value="Septiembre">Septiembre</option>'+
+  '<option value="Octubre">Octubre</option>'+
+  '<option value="Noviembre">Noviembre</option>'+
+  '<option value="Diciembre">Diciembre</option>'+
+  '</select></div>';
+  
+  htmlToDisplay += '<div class="pure-controls"><input type="button" class="pure-button pure-button-primary" value="'+lang.add_entry+'" onClick="addEntry()"></button></div>';
+  }
+  document.getElementById("questions").innerHTML = htmlToDisplay;
+  
+  //$('#obj_dump').html(JSON.stringify(beneficiaryInfo));
+}
+
+function addEntry() {
+  var patientData = null;
+  var currentUser = nutrimiles.getUserInformations();
+  var beneficiaryInfo = nutrimiles.getBeneficiaryInformations();
+  
+  if(currentUser.role == "Tienda") { // Hardcoded Store id.
+    patientData = {
+      "scpReceived": document.getElementById("scp_received").value
+      };
+  } else if(currentUser.role == "Monitor de Campo") {
+    patientData = {
+      "training" : 1
+    };
+    if($('#gaveBirth').val()!="") {
+      patientData.gaveBirth = $('#gaveBirth').val();
+    }
+    if($('#excuse').val()!="") {
+      patientData.excuse = $('#excuse').val();
+    }
+    if($('#childDeath').val()!="") {
+      patientData.childDeath = $('#childDeath').val();
+    }
+  } else {
+    patientData = {
+      "weight": document.getElementById("weight").value,
+      "age": age_days(nutrimiles.getBeneficiaryInformations().birth_date),
+      "nextVisit": $('#nextVisit').val()
+      };
+    switch(beneficiaryInfo.group_id) {
+      case 1: // Mother
+      case 2: // Mother
+        patientData.height = document.getElementById("height").value;
+        patientData.gestationalAge = document.getElementById("gestational_age").value;
+        patientData.intrauterineGrowth = document.getElementById("intrauterine_growth").value;
+        break;
+      case 3:
+        // Child under 5
+        if (age_days(beneficiaryInfo.birth_date) > 720)
+        {
+          patientData.height = document.getElementById("height").value;
+        } else {
+          patientData.length = document.getElementById("length").value;
+          patientData.headCircumference = document.getElementById("head_circumference").value;
+        }
+        break;
+    }
+  }
+
+  newEvent = nutrimiles.prepareEvent(patientData);
+
+  //window.alert(JSON.stringify(newEvent));
+
+  // we add the event to the list, to help java code to recreate input.js
+  if(newEvent) {
+    nutrimiles.createTransaction(newEvent);
+  } else {
+    window.alert(lang.default_alert);
+  }
+}
+</script>
+</head>
+<body onLoad="init()">
+    <form class="pure-form pure-form-aligned">
+          <fieldset id="questions">
+          </fieldset>
+      </form>
+      <div class="ui-grid-solo">
+        <div class="ui-block-a" id="obj_dump"></div>
+      </div>
+</body>
+</html>
