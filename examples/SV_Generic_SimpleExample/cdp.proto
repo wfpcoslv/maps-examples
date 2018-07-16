@@ -5,6 +5,7 @@ message Event {
 	message DetailedData {
 		uint32     data1 = 7001;
 		uint32     data2 = 9002;
+		float       peso = 9003;
 	}
 
 	// fixed fields
