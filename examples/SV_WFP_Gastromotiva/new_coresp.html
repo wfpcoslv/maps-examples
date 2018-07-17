@@ -41,7 +41,252 @@
     <script type="text/javascript" src="js/jquery-2.1.1/jquery.min.js"></script>
     <script type="text/javascript" src="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
     <script type="text/javascript">
+var max_records = 5;
+
+var var_list = [
+  'hig',
+  'soc',
+  'hue',
+  'bas',
+  'pan',
+  'nut',
+  'for',
+  'ser'
+];
+
+var lf_list = [
+  'higa',
+  'higt',
+  'soca',
+  'soct',
+  'huea',
+  'huet',
+  'basa',
+  'bast',
+  'pana',
+  'pant',
+  'nuta',
+  'nutt',
+  'fora',
+  'fort',
+  'sera',
+  'sert',
+  'cond'
+];
+
+var hf_list = [
+  'asis'
+];
+
+var student_followup = {
+  'scores' : {
+    'hig' : { 'act': 0.0, 'tst': 0.0 },
+    'soc' : { 'act': 0.0, 'tst': 0.0 },
+    'hue' : { 'act': 0.0, 'tst': 0.0 },
+    'bas' : { 'act': 0.0, 'tst': 0.0 },
+    'pan' : { 'act': 0.0, 'tst': 0.0 },
+    'nut' : { 'act': 0.0, 'tst': 0.0 },
+    'for' : { 'act': 0.0, 'tst': 0.0 },
+    'ser' : { 'act': 0.0, 'tst': 0.0 }
+  },
+ 'cond' : 0.0
+};
+
 var nutrimiles = null;
+var transactions = null;
+var currentUser = null;
+var asis = null;
+
+function oldestChunk(list,backlog) {
+  var oldest = backlog.length-1;
+
+  // TODO: empty list returns -1
+  for(key in list) {
+    if(list[key].pos<oldest) {
+      oldest = list[key].pos;
+    }
+  }
+  return oldest;
+}
+
+function chunk_size(pos, ocurrences) {
+  var size = 0;
+  for(key in occurrences) {
+    if(ocurrences[key].pos == pos) {
+      size++;
+    }
+  }
+  return size;
+}
+
+function find_pos(key_txt, ocurrences) {
+  var pos = 0;
+  if(key_txt in ocurrences) {
+    pos = ocurrences[key_txt].pos;
+  }
+  return pos;
+}
+
+function extract_chunk(pos, ocurrences) {
+  var chunk = [];
+  for(key in ocurrences) {
+    if(ocurrences[key].pos == pos) {
+      chunk.push({'key': key, 'val': ocurrences[key].val});
+    }
+  }
+  return chunk;
+}
+
+function merge_chunk(data, chunk) {
+  for(var i=0;i<chunk.length;i++) {
+    data[chunk[i].key] = chunk[i].val;
+  }
+  return data;
+}
+
+/*
+ * buildRecord builds a new record for the transaction log
+ * trying to recover the oldest records in the circular buffer
+ * to prevent them get lost in the log.
+ */
+function buildRecord(newData, lofreq, hifreq, maxdata, oldlog) {
+  // Calculate maximum number of variables by event
+  var block_size = maxdata-hifreq.length;
+
+  var data = {};
+
+  if(block_size<1) {
+    console.log("ERROR: Not enought memory. Adjust hifreq parameter.");
+    return null;
+  }
+
+  // First check if we are adding hi-freq data
+  var hifreq_detected = false;
+  var lofreq_detected = false;
+
+  for(key in newData) {
+    for(var i=0;i<hifreq.length;i++) {
+      if (key == hifreq[i]) {
+        hifreq_detected = true;
+        break;
+      }
+    }
+    for(var i=0;i<lofreq.length;i++) {
+      if (key == lofreq[i]) {
+        lofreq_detected = true;
+        break;
+      }
+    }
+  }
+
+  // We need to look out for the newest version of each indicator
+  // However we want to ignore existing indicators from the list.
+  // First: Extract the latest ocurrence of each low-frequency
+  // indicator.
+  var lf_ocurrences = {};
+  var lf_oldest = oldlog.length-1;
+  var lf_in_log = false;
+  for(var i=0;i<lofreq.length;i++) {
+    for(var j=oldlog.length-1;j>=0;j--) {
+      if(lofreq[i] in oldlog[j].data) {
+        lf_ocurrences[lofreq[i]] = { 'val': oldlog[j].data[lofreq[i]], 'pos':j };
+        lf_in_log |= true;
+        if(j<=lf_oldest) {
+          lf_oldest = j;
+        }
+        break;
+      }
+    }
+  }
+
+  // Just add High-Frequency data
+  for(var i=0;i<hifreq.length;i++) {
+    if(hifreq_detected) {
+      data[hifreq[i]] = newData[hifreq[i]];
+    } else {
+      for(var j=(oldlog.length-1);j>=0;j--) {
+        if(hifreq[i] in oldlog[j].data) {
+          // Automatically add newer high-frequency
+          // records
+          data[hifreq[i]] = oldlog[j].data[hifreq[i]];
+          break;
+        }
+      }
+    }
+  }
+  // Now we add the low-frequency data
+  if(!lofreq_detected) {
+    // If no low-frequency data is detected
+    // just copy the oldest chunk. (If exists)
+    if(lf_in_log) {
+      var chunk = extract_chunk(lf_oldest, lf_ocurrences);
+      data = merge_chunk(data, chunk);
+    }
+  } else {
+    // If there  alredy is an entry in the lf_in_log
+    // get the chunk and update it.
+    // Note: For now if there is multiple old freq data
+    // only the latest one is stored.
+    // TODO: generate an algorithm that looks for the best
+    // Tradeoff between backlog size and fragmentation
+    for(var i=0;i<lofreq.length;i++) {
+      var key = lofreq[i];
+      if(key in newData) {
+        if(key in lf_ocurrences) {
+          // There is already data on a previous chunk
+          // Update and move it to the front
+          var chunk_pos = find_pos(key, lf_ocurrences);
+          var chunk = extract_chunk(chunk_pos, lf_ocurrences);
+          data = merge_chunk(data, chunk);
+          data[key] = newData[key];
+        } else {
+          // Check if newest chunk is full
+          var chunk = extract_chunk(oldlog.length-1, lf_ocurrences);
+          if(chunk.length < block_size) {
+            // There is space available in the newest chunk
+            data = merge_chunk(data, chunk);
+            // Update and go
+            data[lofreq[i]] = newData[lofreq[i]];
+          } else {
+            // newest chunk is full just add the data
+            // to add a new chunk
+            data[lofreq[i]] = newData[lofreq[i]];
+          }
+        }
+      }
+    }
+  }
+
+  return data;
+}
+
+function lookup(log) {
+  for(i=0;i<var_list.length;i++) {
+    for(j=0;j<log.length;j++) {
+      act_name = var_list[i]+'a';
+      if(act_name in log[j].data) {
+        student_followup.scores[var_list[i]].act = log[j].data[act_name]/10.0;
+      }
+
+      tst_name = var_list[i]+'t';
+      if(tst_name in log[j].data) {
+        student_followup.scores[var_list[i]].tst = log[j].data[tst_name]/10.0;
+      }
+    }
+  }
+}
+
+function asis_lookup(log) {
+  var max_asis = 0;
+  for(j=0;j<log.length;j++) {
+    if('asis' in log[j].data && log[j].data['asis']>=max_asis) {
+      max_asis = log[j].data['asis'];
+    }
+  }
+  return max_asis;
+}
+
+
 function addEntry() {
 
   var errors = false;
@@ -49,19 +294,57 @@ function addEntry() {
 
   var data = {};
 
+  if($('#cap').val()=="") {
+    errors |= true;
+    $('#cap_grp .errormsg').show();
+  }
+
+  if($('#eval').val()=="") {
+    errors |= true;
+    $('#eval_grp .errormsg').show();
+  }
+
+  if($('#score').val()=="") {
+    errors |= true;
+    $('#score_grp .errormsg').show();
+  } else {
+    var score = $('#score').val();
+    if(score<0 || score>10) {
+      errors |= true;
+      $('#score_grp .errormsg').show();
+    }
+  }
+
+  if($('#cap').val()!="cond" && $('#eval').val()=="na") {
+      $('#eval_grp .errormsg').html("N/A solo es valido para Conducta");
+      $('#eval_grp .errormsg').show();
+  }
+
   // Stop execution if any errors found
   if(errors) {
     return;
   }
 
-  newEvent = nutrimiles.prepareEvent(data); // Validación de datos
+  // Fix option for "conducta"
+  if($('#cap').val()=="cond" && $('#eval').val()!="na") {
+    $('#eval').find('option[value=na]').prop('selected', 'selected');
+  }
+
+  if($('#cap').val()=="cond") {
+    data["cond"] = $('#score').val();
+  } else {
+    data[$('#cap').val()+$('#eval').val()] = $('#score').val()*100;
+  }
+
+  var record = buildRecord(data, lf_list, hf_list, max_records, transactions);
+
+  newEvent = nutrimiles.prepareEvent(record); // Validación de datos
 
   if(newEvent) {
     nutrimiles.createTransaction(newEvent);
   } else {
     window.alert(lang.default_alert);
   }
-
 }
 
 $(function() {
@@ -80,6 +363,12 @@ function init() {
     window.alert(lang.default_alert);
     return;
   }
+  transactions = nutrimiles.getTransactions();
+  currentUser = nutrimiles.getUserInformations();
+
+  asis = asis_lookup(transactions);
+
+  lookup(transactions);
 
   console.log("NMI - new event...");
 }
@@ -89,34 +378,38 @@ function init() {
     <form class="pure-form pure-form-aligned">
       <fieldset id="questions">
         <h3>Marque las capacitaciones recibidas</h3>
-        <div class="pure-control-group" id="deinf_grp">
-          <label for="deinf">Estimulación del Desarrollo Infantil:</label>
-          <select id="deinf">
+        <div class="pure-control-group" id="cap_grp">
+          <label for="cap">Capacitación:</label>
+          <select id="cap">
             <option value="">Seleccione una opción:</option>
-            <option value="1">Sí</option>
-            <option value="2">No</option>
+            <option value="hig">Higiene e Inocuidad de Alimentos</option>
+            <option value="soc">Sociedad</option>
+            <option value="hue">Huertos Urbanos</option>
+            <option value="bas">Bases de la Gastronomía</option>
+            <option value="pan">Panadería</option>
+            <option value="nut">Nutrición</option>
+            <option value="for">Formación Profesional</option>
+            <option value="ser">Servicio al Cliente</option>
+            <option value="cond">Conducta</option>
           </select>
           <p class="errormsg">ERROR: Debe seleccionar una opción.</p>
         </div>
-        <div class="pure-control-group" id="deinf_grp">
-          <label for="alimsal">Alimentación Saludable</label>
-          <select id="alimsal">
+        <div class="pure-control-group" id="eval_grp">
+          <label for="eval">Tipo de evaluación</label>
+          <select id="eval">
             <option value="">Seleccione una opción:</option>
-            <option value="1">Sí</option>
-            <option value="2">No</option>
+            <option value="a">Actividad</option>
+            <option value="t">Examen</option>
+            <option value="na">No Aplica</option>
           </select>
           <p class="errormsg">ERROR: Debe seleccionar una opción.</p>
         </div>
-        <div class="pure-control-group" id="deinf_grp">
-          <label for="habvid">Habilidades para la vida</label>
-          <select id="habvid">
-            <option value="">Seleccione una opción:</option>
-            <option value="1">Sí</option>
-            <option value="2">No</option>
-          </select>
-          <p class="errormsg">ERROR: Debe seleccionar una opción.</p>
+        <div class="pure-controls" id="score_grp">
+          <label for="score">Calificación</label>
+          <input type="number" id="score" name="score" step="0.1" min="1" max="10" />
+          <p class="errormsg">ERROR: Debe ingresar una nota.</p>
         </div>
-        <div class="pure-controls"><input type="button" class="pure-button pure-button-primary" value="Guardar" onClick="addEntry()"></div>
+        <div class="pure-controls"><input type="button" class="pure-button pure-button-primary" value="Guardar" onClick="addEntry()" /></div>
       </fieldset>
     </form>
   </body>

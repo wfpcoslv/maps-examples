@@ -34,6 +34,10 @@
     <script type="text/javascript" src="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
     <script type="text/javascript">
 
+var nutrimiles = null;
+var transactions = null;
+var currentUser = null;
+var asis = null;
 var max_records = 5;
 
 var var_list = [
@@ -84,18 +88,13 @@ var student_followup = {
  'cond' : 0.0
 };
 
-var nutrimiles = null;
-var transactions = null;
-var currentUser = null;
-var asis = null;
-
 $(function() {
   init();
 });
 
 function oldestChunk(list,backlog) {
   var oldest = backlog.length-1;
-  
+
   // TODO: empty list returns -1
   for(key in list) {
     if(list[key].pos<oldest) {
@@ -103,6 +102,41 @@ function oldestChunk(list,backlog) {
     }
   }
   return oldest;
+}
+
+function chunk_size(pos, ocurrences) {
+  var size = 0;
+  for(key in occurrences) {
+    if(ocurrences[key].pos == pos) {
+      size++;
+    }
+  }
+  return size;
+}
+
+function find_pos(key_txt, ocurrences) {
+  var pos = 0;
+  if(key_txt in ocurrences) {
+    pos = ocurrences[key_txt].pos;
+  }
+  return pos;
+}
+
+function extract_chunk(pos, ocurrences) {
+  var chunk = [];
+  for(key in ocurrences) {
+    if(ocurrences[key].pos == pos) {
+      chunk.push({'key': key, 'val': ocurrences[key].val});
+    }
+  }
+  return chunk;
+}
+
+function merge_chunk(data, chunk) {
+  for(var i=0;i<chunk.length;i++) {
+    data[chunk[i].key] = chunk[i].val;
+  }
+  return data;
 }
 
 /*
@@ -146,10 +180,12 @@ function buildRecord(newData, lofreq, hifreq, maxdata, oldlog) {
   // indicator.
   var lf_ocurrences = {};
   var lf_oldest = oldlog.length-1;
+  var lf_in_log = false;
   for(var i=0;i<lofreq.length;i++) {
     for(var j=oldlog.length-1;j>=0;j--) {
       if(lofreq[i] in oldlog[j].data) {
         lf_ocurrences[lofreq[i]] = { 'val': oldlog[j].data[lofreq[i]], 'pos':j };
+        lf_in_log |= true;
         if(j<=lf_oldest) {
           lf_oldest = j;
         }
@@ -158,51 +194,58 @@ function buildRecord(newData, lofreq, hifreq, maxdata, oldlog) {
     }
   }
 
-  var hf_ocurrences = {}; // We don't need to know wich one is oldest
+  // Just add High-Frequency data
   for(var i=0;i<hifreq.length;i++) {
-    for(var j=oldlog.length-1;j>=0;j--) {
-      if(hifreq[i] in oldlog[j].data) {
-        // Automatically add newer high-frequency
-        // records
-        data[hifreq[i]] = oldlog[j].data[hifreq[i]];
-        break;
-      }
-    }
-  }
-
-  var chunks = Math.ceil(lofreq.length/block_size);
-  console.log("Full variable list should fit in "+chunks+" chunks.");
-
-  if(hifreq_detected == true) {
-    // Because the resulting data only contain high-frequency variables
-    // we can look for them an overwrite them.
-    for(key in data) {
-      if(key in newData) {
-        data[key] = newData[key];
-      }
-    }
-    if(lofreq_detected == true) {
-      // We need to check if all of the new low-frequency data:
-      // Recover chunk and put it up-front.
+    if(hifreq_detected) {
+      data[hifreq[i]] = newData[hifreq[i]];
     } else {
-      // Add the oldest variables from the dataset
-      var oldest_record = oldestChunk(lf_ocurrences,oldlog);
-      for(key in lf_ocurrences) {
-        if(lf_ocurrences[key].pos==oldest_record) {
-          data[key] = lf_ocurrences[key].val;
+      for(var j=(oldlog.length-1);j>=0;j--) {
+        if(hifreq[i] in oldlog[j].data) {
+          // Automatically add newer high-frequency
+          // records
+          data[hifreq[i]] = oldlog[j].data[hifreq[i]];
+          break;
         }
       }
     }
+  }
+  // Now we add the low-frequency data
+  if(!lofreq_detected) {
+    // If no low-frequency data is detected
+    // just copy the oldest chunk. (If exists)
+    if(lf_in_log) {
+      var chunk = extract_chunk(lf_oldest, lf_ocurrences);
+      data = merge_chunk(data, chunk);
+    }
   } else {
-    if(lofreq_detected == true) {
-
-    } else {
-      // Everything is new. Just add the data.
-      for(var i=0;i<lofreq.length;i++) {
-        for(key in newData) {
-          if(key == lofreq[i]) {
-            data[key] = newData[key];
-            break;
+    // If there  alredy is an entry in the lf_in_log
+    // get the chunk and update it.
+    // Note: For now if there is multiple old freq data
+    // only the latest one is stored.
+    // TODO: generate an algorithm that looks for the best
+    // Tradeoff between backlog size and fragmentation
+    for(var i=0;i<lofreq.length;i++) {
+      var key = lofreq[i];
+      if(key in newData) {
+        if(key in lf_ocurrences) {
+          // There is already data on a previous chunk
+          // Update and move it to the front
+          var chunk_pos = find_pos(key, lf_ocurrences);
+          var chunk = extract_chunk(chunk_pos, lf_ocurrences);
+          data = merge_chunk(data, chunk);
+          data[key] = newData[key];
+        } else {
+          // Check if newest chunk is full
+          var chunk = extract_chunk(oldlog.length-1, lf_ocurrences);
+          if(chunk.length < block_size) {
+            // There is space available in the newest chunk
+            data = merge_chunk(data, chunk);
+            // Update and go
+            data[lofreq[i]] = newData[lofreq[i]];
+          } else {
+            // newest chunk is full just add the data
+            // to add a new chunk
+            data[lofreq[i]] = newData[lofreq[i]];
           }
         }
       }
@@ -281,6 +324,8 @@ function init() {
   transactions = nutrimiles.getTransactions();
   currentUser = nutrimiles.getUserInformations();
 
+  $('#obj_dump').html(JSON.stringify(transactions));
+  
   var total_scores = 0;
   asis = asis_lookup(transactions);
   var notas = 0;
@@ -362,6 +407,7 @@ function init() {
       <div class="ui-grid-solo">
         <div class="ui-block-a" id="obj_dump"></div>
       </div>
+      <div><br /><br /><br /><br /></div>
     </div>
   </body>
 </html>

@@ -21,7 +21,6 @@ message Event {
     uint32     sera  = 23;
     uint32     sert  = 24;
     uint32     cond  = 25;
-    uint32     asis  = 26;
   }
 
   // fixed fields
@@ -32,6 +31,6 @@ message Event {
   uint32    id = 3;
   uint32    beneficiaryId = 4;
   uint32    transactionId = 5;
-  string    date = 4;
-  DetailedData data = 8;
+  string    date = 6;
+  DetailedData data = 7;
 }

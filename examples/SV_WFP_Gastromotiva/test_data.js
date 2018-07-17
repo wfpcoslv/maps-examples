@@ -40,7 +40,23 @@ var beneficiaryData = {
     "version": 1
     },
   "events" :
-    [
+    [ 
+      {
+        "type": 1,
+        "userID": 1,
+        "date": "2016-11-15T13:33:40.919Z",
+        "deviceID": 112233,
+        "location": {
+          "latitude": 1,
+          "longitude": 1
+        },
+        "data": {
+          "higt" : 90,
+          "soca" : 70,
+          "soct" : 70
+        },
+        "validated": true
+      } /*
       {
         "type": 1,
         "userID": 1,
@@ -274,6 +290,6 @@ var beneficiaryData = {
           "bast" : 95
         },
         "validated": true
-      }
+      } */
     ]
 };
