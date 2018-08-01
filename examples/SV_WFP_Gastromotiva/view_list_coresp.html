@@ -135,13 +135,13 @@ function addEntry() {
     errors |= true;
     $('#asis_grp .errormsg').show();
   } else {
-    var asis = $('#asis').val();
-    if(asis<1 || asis>40) {
+    var asis_new = $('#asis').val();
+    if(asis_new<1 || asis_new>40) {
       errors |= true;
       $('#asis_grp .errormsg').show();
     } else {
-      if(asis!= 1) {
-        newData.asis = asis;
+      if(asis_new!= 1) {
+        newData.asis = asis_new;
       }
     }
   }
@@ -261,7 +261,7 @@ function init() {
         <p><strong>Asistencia:</strong> <span id="asis_txt"></span>/40</p>
         <div class="pure-controls" id="asis_grp">
           <label for="asis">Ingresar Asistencia</label>
-          <input type="number" id="asis" name="score" step="1" min="1" max="40" value="1" />
+          <input type="number" id="asis" name="asis" step="1" min="1" max="40" value="1" />
           <p class="errormsg">ERROR: La asistencia debe ingresarse con un valor entre 1 y 40.</p>
         </div>
         <p><a href="#" onclick="javascript:addEntry()" class="button" id="asis_btn" data-role="button">Marcar Asistencia</a></p>

@@ -51,6 +51,7 @@ var beneficiaryData = {
           "longitude": 1
         },
         "data": {
+          "asis" : 2,
           "higt" : 90,
           "soca" : 70,
           "soct" : 70
