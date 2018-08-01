@@ -131,6 +131,19 @@ function addEntry() {
     'asis': (asis+1)
   };
 
+  if($('#asis').val()=="") {
+    errors |= true;
+    $('#asis_grp .errormsg').show();
+  } else {
+    var asis = $('#asis').val();
+    if(asis<1 || asis>40) {
+      errors |= true;
+      $('#asis_grp .errormsg').show();
+    } else {
+      newData.asis = asis;
+    }
+  }
+  
   var record = buildRecord(newData, lf_list, hf_list, max_records, transactions);
 
   // Stop execution if any errors found
@@ -192,6 +205,7 @@ function init() {
   $('#final_score').html((total_scores/notas).toFixed(1));
 
   $('#asis_txt').html(asis);
+  $('#asis_grp .errormsg').hide();
 }
     </script>
   </head>
@@ -243,6 +257,11 @@ function init() {
           </tfoot>
         </table>
         <p><strong>Asistencia:</strong> <span id="asis_txt"></span>/40</p>
+        <div class="pure-controls" id="asis_grp">
+          <label for="asis">Ingresar Asistencia</label>
+          <input type="number" id="asis" name="score" step="1" min="1" max="40" value="1" />
+          <p class="errormsg">ERROR: La asistencia debe ingresarse con un valor entre 1 y 40.</p>
+        </div>
         <p><a href="#" onclick="javascript:addEntry()" class="button" id="asis_btn" data-role="button">Marcar Asistencia</a></p>
       </div>
       <div class="ui-grid-solo">
