@@ -5,6 +5,7 @@
 output/
 tmp/
 publish/
+bin/
 Debug/
 Release/
 codep.desc
