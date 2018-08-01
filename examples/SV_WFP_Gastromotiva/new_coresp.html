@@ -33,8 +33,8 @@
 
     <!-- Preservar el orden de inclusión de los
          siguientes archivos de plataforma. //-->
-    <script type="text/javascript" src="js/MAPSApi-0.1/Nutrimiles.js?rev=3"></script>
-    <script type="text/javascript" src="js/MAPSApi-0.1/lang.js"></script>
+    <script type="text/javascript" src="js/MAPSAPI-0.2/Nutrimiles.js?rev=3"></script>
+    <script type="text/javascript" src="js/MAPSAPI-0.2/lang.js"></script>
     <script type="text/javascript" src="lang_es.js"></script>
 
     <!-- Incluír los archivos de soporte de Javascript //-->
@@ -96,169 +96,6 @@ var nutrimiles = null;
 var transactions = null;
 var currentUser = null;
 var asis = null;
-
-function oldestChunk(list,backlog) {
-  var oldest = backlog.length-1;
-
-  // TODO: empty list returns -1
-  for(key in list) {
-    if(list[key].pos<oldest) {
-      oldest = list[key].pos;
-    }
-  }
-  return oldest;
-}
-
-function chunk_size(pos, ocurrences) {
-  var size = 0;
-  for(key in occurrences) {
-    if(ocurrences[key].pos == pos) {
-      size++;
-    }
-  }
-  return size;
-}
-
-function find_pos(key_txt, ocurrences) {
-  var pos = 0;
-  if(key_txt in ocurrences) {
-    pos = ocurrences[key_txt].pos;
-  }
-  return pos;
-}
-
-function extract_chunk(pos, ocurrences) {
-  var chunk = [];
-  for(key in ocurrences) {
-    if(ocurrences[key].pos == pos) {
-      chunk.push({'key': key, 'val': ocurrences[key].val});
-    }
-  }
-  return chunk;
-}
-
-function merge_chunk(data, chunk) {
-  for(var i=0;i<chunk.length;i++) {
-    data[chunk[i].key] = chunk[i].val;
-  }
-  return data;
-}
-
-/*
- * buildRecord builds a new record for the transaction log
- * trying to recover the oldest records in the circular buffer
- * to prevent them get lost in the log.
- */
-function buildRecord(newData, lofreq, hifreq, maxdata, oldlog) {
-  // Calculate maximum number of variables by event
-  var block_size = maxdata-hifreq.length;
-
-  var data = {};
-
-  if(block_size<1) {
-    console.log("ERROR: Not enought memory. Adjust hifreq parameter.");
-    return null;
-  }
-
-  // First check if we are adding hi-freq data
-  var hifreq_detected = false;
-  var lofreq_detected = false;
-
-  for(key in newData) {
-    for(var i=0;i<hifreq.length;i++) {
-      if (key == hifreq[i]) {
-        hifreq_detected = true;
-        break;
-      }
-    }
-    for(var i=0;i<lofreq.length;i++) {
-      if (key == lofreq[i]) {
-        lofreq_detected = true;
-        break;
-      }
-    }
-  }
-
-  // We need to look out for the newest version of each indicator
-  // However we want to ignore existing indicators from the list.
-  // First: Extract the latest ocurrence of each low-frequency
-  // indicator.
-  var lf_ocurrences = {};
-  var lf_oldest = oldlog.length-1;
-  var lf_in_log = false;
-  for(var i=0;i<lofreq.length;i++) {
-    for(var j=oldlog.length-1;j>=0;j--) {
-      if(lofreq[i] in oldlog[j].data) {
-        lf_ocurrences[lofreq[i]] = { 'val': oldlog[j].data[lofreq[i]], 'pos':j };
-        lf_in_log |= true;
-        if(j<=lf_oldest) {
-          lf_oldest = j;
-        }
-        break;
-      }
-    }
-  }
-
-  // Just add High-Frequency data
-  for(var i=0;i<hifreq.length;i++) {
-    if(hifreq_detected) {
-      data[hifreq[i]] = newData[hifreq[i]];
-    } else {
-      for(var j=(oldlog.length-1);j>=0;j--) {
-        if(hifreq[i] in oldlog[j].data) {
-          // Automatically add newer high-frequency
-          // records
-          data[hifreq[i]] = oldlog[j].data[hifreq[i]];
-          break;
-        }
-      }
-    }
-  }
-  // Now we add the low-frequency data
-  if(!lofreq_detected) {
-    // If no low-frequency data is detected
-    // just copy the oldest chunk. (If exists)
-    if(lf_in_log) {
-      var chunk = extract_chunk(lf_oldest, lf_ocurrences);
-      data = merge_chunk(data, chunk);
-    }
-  } else {
-    // If there  alredy is an entry in the lf_in_log
-    // get the chunk and update it.
-    // Note: For now if there is multiple old freq data
-    // only the latest one is stored.
-    // TODO: generate an algorithm that looks for the best
-    // Tradeoff between backlog size and fragmentation
-    for(var i=0;i<lofreq.length;i++) {
-      var key = lofreq[i];
-      if(key in newData) {
-        if(key in lf_ocurrences) {
-          // There is already data on a previous chunk
-          // Update and move it to the front
-          var chunk_pos = find_pos(key, lf_ocurrences);
-          var chunk = extract_chunk(chunk_pos, lf_ocurrences);
-          data = merge_chunk(data, chunk);
-          data[key] = newData[key];
-        } else {
-          // Check if newest chunk is full
-          var chunk = extract_chunk(oldlog.length-1, lf_ocurrences);
-          if(chunk.length < block_size) {
-            // There is space available in the newest chunk
-            data = merge_chunk(data, chunk);
-            // Update and go
-            data[lofreq[i]] = newData[lofreq[i]];
-          } else {
-            // newest chunk is full just add the data
-            // to add a new chunk
-            data[lofreq[i]] = newData[lofreq[i]];
-          }
-        }
-      }
-    }
-  }
-
-  return data;
-}
 
 function lookup(log) {
   for(i=0;i<var_list.length;i++) {
@@ -331,9 +168,9 @@ function addEntry() {
   }
 
   if($('#cap').val()=="cond") {
-    data["cond"] = $('#score').val();
+    data["cond"] = $('#score').val()*10;
   } else {
-    data[$('#cap').val()+$('#eval').val()] = $('#score').val()*100;
+    data[$('#cap').val()+$('#eval').val()] = $('#score').val()*10;
   }
 
   var record = buildRecord(data, lf_list, hf_list, max_records, transactions);
