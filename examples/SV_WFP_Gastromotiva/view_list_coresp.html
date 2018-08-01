@@ -140,7 +140,9 @@ function addEntry() {
       errors |= true;
       $('#asis_grp .errormsg').show();
     } else {
-      newData.asis = asis;
+      if(asis!= 1) {
+        newData.asis = asis;
+      }
     }
   }
   
