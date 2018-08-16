@@ -233,4 +233,28 @@ Public Class DataLoader
             Application.Exit()
         End If
     End Sub
+
+    Private Sub Button1_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnUpdateNext.Click
+        Dim newId As Int32
+        Dim data As JObject
+
+        If Me._cursorPos < TextFileTable.Rows.Count Then
+            txtCurrentPos.Text = (Me._cursorPos + 1).ToString()
+
+            data = RowAsJObject(TextFileTable.Rows(Me._cursorPos))
+            data.Add("id", TextFileTable.Rows(Me._cursorPos)("MAPSId").ToString())
+            newId = api.UpdateBeneficiary(data)
+            If newId > 0 Then
+                TextFileTable.Rows(Me._cursorPos)("MAPSId") = newId
+                Me.updated = Me.updated Or True
+            End If
+
+            Me._cursorPos = Me._cursorPos + 1
+        End If
+        If Me._cursorPos = TextFileTable.Rows.Count Then
+            btnTryNext.Enabled = False
+            btnTryAll.Enabled = False
+        End If
+        btnSaveOutput.Enabled = Me.updated
+    End Sub
 End Class

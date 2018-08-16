@@ -48,6 +48,54 @@ Public Class MAPSAPI
     Public Function IsConnected() As Boolean
         Return Me._connected
     End Function
+    Public Function UpdateBeneficiary(ByVal data As JObject) As Int32
+        Dim newId = -1
+        Dim jsonTxt As String
+        Dim buffer As Byte()
+        Dim objHttpWebRequest As System.Net.HttpWebRequest
+        Dim requestURL As String
+        Dim requestStream As System.IO.Stream
+        Dim webResponse As System.Net.WebResponse
+        Dim textReader As System.IO.StreamReader
+        Dim tokenRsp As JObject
+
+        ' Texto en JSON
+        jsonTxt = data.ToString(Newtonsoft.Json.Formatting.None)
+        ' Texto en Bytes para enviar en el cuerpo de la solicitud
+        buffer = System.Text.Encoding.Unicode.GetBytes(jsonTxt)
+
+        ' Importante: la siguiente línea ignora el origen del certificado.
+        System.Net.ServicePointManager.ServerCertificateValidationCallback = AddressOf AcceptAllCertifications
+
+        ' Petición de ingreso de beneficiario en URL:
+        ' https://maps-staging.wfp.famoco.com/backoffice/swagger-ui/index.html#!/beneficiary-resource/createBeneficiaryUsingPOST
+        requestURL = "https://" + Me._authServer + "/backoffice/api/beneficiaries"
+        objHttpWebRequest = System.Net.HttpWebRequest.Create(requestURL)
+        objHttpWebRequest.Method = "PUT"
+        objHttpWebRequest.ContentType = "application/json"
+        objHttpWebRequest.Accept = "application/json"
+        ' Utilizamos el token obtenido anteriormente
+        objHttpWebRequest.Headers.Add("Authorization", "Bearer " + Me.Token)
+
+        Try
+            ' Enviamos la data en JSON como cuerpo de la petición
+            requestStream = objHttpWebRequest.GetRequestStream()
+            requestStream.Write(buffer, 0, buffer.Length)
+            requestStream.Close()
+
+            ' Obtenemos la respuesta, devuelve un objeto de características similares
+            ' a las enviadas en la petición
+            webResponse = objHttpWebRequest.GetResponse()
+            textReader = New System.IO.StreamReader(webResponse.GetResponseStream)
+            tokenRsp = JsonConvert.DeserializeObject(textReader.ReadToEnd())
+
+            newId = CInt(tokenRsp.GetValue("id").ToString())
+        Catch ex As Exception
+            newId = -1
+        End Try
+
+        Return newId
+    End Function
 
     Public Function AddBeneficiary(ByVal data As JObject) As Int32
         Dim newId = -1

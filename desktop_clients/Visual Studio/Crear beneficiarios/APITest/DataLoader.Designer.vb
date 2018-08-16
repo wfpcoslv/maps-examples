@@ -37,6 +37,7 @@ Partial Class DataLoader
         Me.txtTotalRows = New System.Windows.Forms.TextBox
         Me.txtCurrentPos = New System.Windows.Forms.TextBox
         Me.Label4 = New System.Windows.Forms.Label
+        Me.btnUpdateNext = New System.Windows.Forms.Button
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DataSet1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -67,7 +68,7 @@ Partial Class DataLoader
         '
         Me.btnLoadFile.Location = New System.Drawing.Point(232, 4)
         Me.btnLoadFile.Name = "btnLoadFile"
-        Me.btnLoadFile.Size = New System.Drawing.Size(75, 23)
+        Me.btnLoadFile.Size = New System.Drawing.Size(61, 23)
         Me.btnLoadFile.TabIndex = 3
         Me.btnLoadFile.Text = "Abrir CSV"
         Me.btnLoadFile.UseVisualStyleBackColor = True
@@ -92,9 +93,9 @@ Partial Class DataLoader
         'btnTryNext
         '
         Me.btnTryNext.Enabled = False
-        Me.btnTryNext.Location = New System.Drawing.Point(333, 4)
+        Me.btnTryNext.Location = New System.Drawing.Point(299, 4)
         Me.btnTryNext.Name = "btnTryNext"
-        Me.btnTryNext.Size = New System.Drawing.Size(124, 23)
+        Me.btnTryNext.Size = New System.Drawing.Size(108, 23)
         Me.btnTryNext.TabIndex = 7
         Me.btnTryNext.Text = "Intentar siguiente"
         Me.btnTryNext.UseVisualStyleBackColor = True
@@ -102,9 +103,9 @@ Partial Class DataLoader
         'btnTryAll
         '
         Me.btnTryAll.Enabled = False
-        Me.btnTryAll.Location = New System.Drawing.Point(463, 4)
+        Me.btnTryAll.Location = New System.Drawing.Point(532, 4)
         Me.btnTryAll.Name = "btnTryAll"
-        Me.btnTryAll.Size = New System.Drawing.Size(124, 23)
+        Me.btnTryAll.Size = New System.Drawing.Size(93, 23)
         Me.btnTryAll.TabIndex = 8
         Me.btnTryAll.Text = "Intentar todos"
         Me.btnTryAll.UseVisualStyleBackColor = True
@@ -112,9 +113,9 @@ Partial Class DataLoader
         'btnSaveOutput
         '
         Me.btnSaveOutput.Enabled = False
-        Me.btnSaveOutput.Location = New System.Drawing.Point(593, 4)
+        Me.btnSaveOutput.Location = New System.Drawing.Point(631, 4)
         Me.btnSaveOutput.Name = "btnSaveOutput"
-        Me.btnSaveOutput.Size = New System.Drawing.Size(124, 23)
+        Me.btnSaveOutput.Size = New System.Drawing.Size(86, 23)
         Me.btnSaveOutput.TabIndex = 9
         Me.btnSaveOutput.Text = "Guardar Salida"
         Me.btnSaveOutput.UseVisualStyleBackColor = True
@@ -165,11 +166,21 @@ Partial Class DataLoader
         Me.Label4.TabIndex = 14
         Me.Label4.Text = "Para reiniciar abra de nuevo el archivo. (No olvide guardar)"
         '
+        'btnUpdateNext
+        '
+        Me.btnUpdateNext.Location = New System.Drawing.Point(413, 4)
+        Me.btnUpdateNext.Name = "btnUpdateNext"
+        Me.btnUpdateNext.Size = New System.Drawing.Size(113, 23)
+        Me.btnUpdateNext.TabIndex = 15
+        Me.btnUpdateNext.Text = "Actualizar siguiente"
+        Me.btnUpdateNext.UseVisualStyleBackColor = True
+        '
         'DataLoader
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(726, 204)
+        Me.Controls.Add(Me.btnUpdateNext)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.txtCurrentPos)
         Me.Controls.Add(Me.txtTotalRows)
@@ -206,4 +217,5 @@ Partial Class DataLoader
     Friend WithEvents txtTotalRows As System.Windows.Forms.TextBox
     Friend WithEvents txtCurrentPos As System.Windows.Forms.TextBox
     Friend WithEvents Label4 As System.Windows.Forms.Label
+    Friend WithEvents btnUpdateNext As System.Windows.Forms.Button
 End Class
