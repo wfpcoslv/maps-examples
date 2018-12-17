@@ -1,0 +1,253 @@
+<!DOCTYPE html> <!-- Se recomienda utilizar HTML5 //-->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./resources/css/Pure-0.6.1/pure-min.css">
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.inline-png-1.4.5.min.css" />
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.theme-1.4.5.min.css" />
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.icons-1.4.5.min.css" />
+    <link rel="stylesheet" href="./js/jquery.mobile.datepicker/jquery.mobile.datepicker.css" />
+    <link rel="stylesheet" href="./js/jquery.mobile.datepicker/jquery.mobile.datepicker.theme.css" />
+    <style type="text/css">
+.ui-page { margin-top: 60px; }
+#msg {
+  font-size: 1.2em;
+}
+.tooltip {
+  font-size: 0.5em;
+  font-color: rgb(25,25,125);
+}
+#obj_dump {
+  word-wrap: break-word;
+}
+.errormsg {
+  text-align: center;
+  display: none;
+  color: rgb(150, 0, 0);
+}
+    </style>
+
+    <!-- Para pruebas incluír siempre el archivo test_data.js //-->
+    <script type="text/javascript" src="test_data.js?rev=1"></script>
+
+    <!-- Preservar el orden de inclusión de los
+         siguientes archivos de plataforma. //-->
+    <script type="text/javascript" src="js/MAPSAPI-0.2/Nutrimiles.js?rev=3"></script>
+    <script type="text/javascript" src="js/MAPSAPI-0.2/lang.js"></script>
+    <script type="text/javascript" src="lang_es.js"></script>
+
+    <!-- Incluír los archivos de soporte de Javascript //-->
+    <script type="text/javascript" src="js/jquery-2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script type="text/javascript">
+var max_records = 5;
+
+var var_list = [
+  'hig',
+  'soc',
+  'hue',
+  'bas',
+  'pan',
+  'nut',
+  'for',
+  'ser'
+];
+
+var lf_list = [
+  'higa',
+  'higt',
+  'soca',
+  'soct',
+  'huea',
+  'huet',
+  'basa',
+  'bast',
+  'pana',
+  'pant',
+  'nuta',
+  'nutt',
+  'fora',
+  'fort',
+  'sera',
+  'sert',
+  'cond'
+];
+
+var hf_list = [
+  'asis'
+];
+
+var student_followup = {
+  'scores' : {
+    'hig' : { 'act': 0.0, 'tst': 0.0 },
+    'soc' : { 'act': 0.0, 'tst': 0.0 },
+    'hue' : { 'act': 0.0, 'tst': 0.0 },
+    'bas' : { 'act': 0.0, 'tst': 0.0 },
+    'pan' : { 'act': 0.0, 'tst': 0.0 },
+    'nut' : { 'act': 0.0, 'tst': 0.0 },
+    'for' : { 'act': 0.0, 'tst': 0.0 },
+    'ser' : { 'act': 0.0, 'tst': 0.0 }
+  },
+ 'cond' : 0.0
+};
+
+var nutrimiles = null;
+var transactions = null;
+var currentUser = null;
+var asis = null;
+
+function lookup(log) {
+  for(i=0;i<var_list.length;i++) {
+    for(j=0;j<log.length;j++) {
+      act_name = var_list[i]+'a';
+      if(act_name in log[j].data) {
+        student_followup.scores[var_list[i]].act = log[j].data[act_name]/10.0;
+      }
+
+      tst_name = var_list[i]+'t';
+      if(tst_name in log[j].data) {
+        student_followup.scores[var_list[i]].tst = log[j].data[tst_name]/10.0;
+      }
+    }
+  }
+}
+
+function asis_lookup(log) {
+  var max_asis = 0;
+  for(j=0;j<log.length;j++) {
+    if('asis' in log[j].data && log[j].data['asis']>=max_asis) {
+      max_asis = log[j].data['asis'];
+    }
+  }
+  return max_asis;
+}
+
+
+function addEntry() {
+
+  var errors = false;
+  $('.errormsg').hide();
+
+  var data = {};
+
+  if($('#cap').val()=="") {
+    errors |= true;
+    $('#cap_grp .errormsg').show();
+  }
+
+  if($('#eval').val()=="") {
+    errors |= true;
+    $('#eval_grp .errormsg').show();
+  }
+
+  if($('#score').val()=="") {
+    errors |= true;
+    $('#score_grp .errormsg').show();
+  } else {
+    var score = $('#score').val();
+    if(score<0 || score>10) {
+      errors |= true;
+      $('#score_grp .errormsg').show();
+    }
+  }
+
+  if($('#cap').val()!="cond" && $('#eval').val()=="na") {
+      $('#eval_grp .errormsg').html("N/A solo es valido para Conducta");
+      $('#eval_grp .errormsg').show();
+  }
+
+  // Stop execution if any errors found
+  if(errors) {
+    return;
+  }
+
+  // Fix option for "conducta"
+  if($('#cap').val()=="cond" && $('#eval').val()!="na") {
+    $('#eval').find('option[value=na]').prop('selected', 'selected');
+  }
+
+  if($('#cap').val()=="cond") {
+    data["cond"] = $('#score').val()*10;
+  } else {
+    data[$('#cap').val()+$('#eval').val()] = $('#score').val()*10;
+  }
+
+  var record = buildRecord(data, lf_list, hf_list, max_records, transactions);
+
+  newEvent = nutrimiles.prepareEvent(record); // Validación de datos
+
+  if(newEvent) {
+    nutrimiles.createTransaction(newEvent);
+  } else {
+    window.alert(lang.default_alert);
+  }
+}
+
+$(function() {
+  //init();
+});
+
+function init() {
+
+  if(nutrimiles == null)
+  {
+    nutrimiles = new Nutrimiles();
+  }
+
+  if(nutrimiles.status()!=1) {
+    // Critical error found, stop.
+    window.alert(lang.default_alert);
+    return;
+  }
+  transactions = nutrimiles.getTransactions();
+  currentUser = nutrimiles.getUserInformations();
+
+  asis = asis_lookup(transactions);
+
+  lookup(transactions);
+
+  console.log("NMI - new event...");
+}
+    </script>
+  </head>
+  <body onLoad="init()">
+    <form class="pure-form pure-form-aligned">
+      <fieldset id="questions">
+        <h3>Marque las capacitaciones recibidas</h3>
+        <div class="pure-control-group" id="cap_grp">
+          <label for="cap">Capacitación:</label>
+          <select id="cap">
+            <option value="">Seleccione una opción:</option>
+            <option value="hig">Higiene e Inocuidad de Alimentos</option>
+            <option value="soc">Sociedad</option>
+            <option value="hue">Huertos Urbanos</option>
+            <option value="bas">Bases de la Gastronomía</option>
+            <option value="pan">Panadería</option>
+            <option value="nut">Nutrición</option>
+            <option value="for">Formación Profesional</option>
+            <option value="ser">Servicio al Cliente</option>
+            <option value="cond">Conducta</option>
+          </select>
+          <p class="errormsg">ERROR: Debe seleccionar una opción.</p>
+        </div>
+        <div class="pure-control-group" id="eval_grp">
+          <label for="eval">Tipo de evaluación</label>
+          <select id="eval">
+            <option value="">Seleccione una opción:</option>
+            <option value="a">Actividad</option>
+            <option value="t">Examen</option>
+            <option value="na">No Aplica</option>
+          </select>
+          <p class="errormsg">ERROR: Debe seleccionar una opción.</p>
+        </div>
+        <div class="pure-controls" id="score_grp">
+          <label for="score">Calificación</label>
+          <input type="number" id="score" name="score" step="0.1" min="1" max="10" />
+          <p class="errormsg">ERROR: Debe ingresar una nota.</p>
+        </div>
+        <div class="pure-controls"><input type="button" class="pure-button pure-button-primary" value="Guardar" onClick="addEntry()" /></div>
+      </fieldset>
+    </form>
+  </body>
+</html>

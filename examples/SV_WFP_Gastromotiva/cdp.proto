@@ -1,0 +1,36 @@
+syntax = "proto3";
+package nutrimiles;
+
+message Event {
+  message DetailedData {
+    uint32     asis  =  8;
+    uint32     higa  =  9;
+    uint32     higt  = 10;
+    uint32     soca  = 11;
+    uint32     soct  = 12;
+    uint32     huea  = 13;
+    uint32     huet  = 14;
+    uint32     basa  = 15;
+    uint32     bast  = 16;
+    uint32     pana  = 17;
+    uint32     pant  = 18;
+    uint32     nuta  = 19;
+    uint32     nutt  = 20;
+    uint32     fora  = 21;
+    uint32     fort  = 22;
+    uint32     sera  = 23;
+    uint32     sert  = 24;
+    uint32     cond  = 25;
+  }
+
+  // fixed fields
+  uint32    timestamp = 1;
+  string    location = 2;
+
+  // variable fields
+  uint32    id = 3;
+  uint32    beneficiaryId = 4;
+  uint32    transactionId = 5;
+  string    date = 6;
+  DetailedData data = 7;
+}

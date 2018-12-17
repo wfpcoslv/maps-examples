@@ -47,7 +47,7 @@ function addEntry() {
   var errors = false;
   $('.errormsg').hide();
 
-  var data = {};
+  var patientData = {};
 
 
   if($('#deinf').is(":visible")) {
@@ -80,7 +80,7 @@ function addEntry() {
     return;
   }
 
-  newEvent = nutrimiles.prepareEvent(data); // Validación de datos
+  newEvent = nutrimiles.prepareEvent(patientData); // Validación de datos
 
   if(newEvent) {
     nutrimiles.createTransaction(newEvent);

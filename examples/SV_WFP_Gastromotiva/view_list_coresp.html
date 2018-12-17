@@ -1,0 +1,275 @@
+<!DOCTYPE html> <!-- Se recomienda utilizar HTML5 //-->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.inline-png-1.4.5.min.css" />
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.theme-1.4.5.min.css" />
+    <link rel="stylesheet" href="./js/jquery.mobile-1.4.5/jquery.mobile.icons-1.4.5.min.css" />
+    <style type="text/css">
+.ui-page { margin-top: 60px; }
+#msg {
+  font-size: 1.2em;
+}
+.tooltip {
+  font-size: 0.5em;
+  font-color: rgb(25,25,125);
+}
+#obj_dump {
+  word-wrap: break-word;
+}
+    </style>
+
+    <!-- Para pruebas incluír siempre el archivo test_data.js //-->
+    <script type="text/javascript" src="test_data.js?rev=1"></script>
+
+    <!-- Preservar el orden de inclusión de los
+         siguientes archivos de plataforma. //-->
+    <script type="text/javascript" src="js/MAPSAPI-0.2/Nutrimiles.js?rev=3"></script>
+    <script type="text/javascript" src="js/MAPSAPI-0.2/lang.js"></script>
+    <script type="text/javascript" src="lang_es.js"></script>
+
+    <!-- Incluír los archivos de soporte de Javascript //-->
+    <script type="text/javascript" src="js/jquery-2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script type="text/javascript">
+
+var nutrimiles = null;
+var transactions = null;
+var currentUser = null;
+var asis = null;
+var max_records = 5;
+
+var var_list = [
+  'hig',
+  'soc',
+  'hue',
+  'bas',
+  'pan',
+  'nut',
+  'for',
+  'ser'
+];
+
+var lf_list = [
+  'higa',
+  'higt',
+  'soca',
+  'soct',
+  'huea',
+  'huet',
+  'basa',
+  'bast',
+  'pana',
+  'pant',
+  'nuta',
+  'nutt',
+  'fora',
+  'fort',
+  'sera',
+  'sert'
+];
+
+var hf_list = [
+  'asis'
+];
+
+var student_followup = {
+  'scores' : {
+    'hig' : { 'act': 0.0, 'tst': 0.0 },
+    'soc' : { 'act': 0.0, 'tst': 0.0 },
+    'hue' : { 'act': 0.0, 'tst': 0.0 },
+    'bas' : { 'act': 0.0, 'tst': 0.0 },
+    'pan' : { 'act': 0.0, 'tst': 0.0 },
+    'nut' : { 'act': 0.0, 'tst': 0.0 },
+    'for' : { 'act': 0.0, 'tst': 0.0 },
+    'ser' : { 'act': 0.0, 'tst': 0.0 }
+  },
+ 'cond' : 0.0
+};
+
+$(function() {
+  init();
+});
+
+function lookup(log) {
+  for(i=0;i<var_list.length;i++) {
+    for(j=0;j<log.length;j++) {
+      act_name = var_list[i]+'a';
+      if(act_name in log[j].data) {
+        student_followup.scores[var_list[i]].act = log[j].data[act_name]/10.0;
+      }
+
+      tst_name = var_list[i]+'t';
+      if(tst_name in log[j].data) {
+        student_followup.scores[var_list[i]].tst = log[j].data[tst_name]/10.0;
+      }
+
+      if('cond' in log[j].data) {
+        student_followup.cond = log[j].data.cond/10.0;
+      }
+    }
+  }
+}
+
+function asis_lookup(log) {
+  var max_asis = 0;
+  for(j=0;j<log.length;j++) {
+    if('asis' in log[j].data && log[j].data['asis']>=max_asis) {
+      max_asis = log[j].data['asis'];
+    }
+  }
+  return max_asis;
+}
+
+function addEntry() {
+
+  var errors = false;
+  $('.errormsg').hide();
+
+  var newData = {
+    'asis': (asis+1)
+  };
+
+  if($('#asis').val()=="") {
+    errors |= true;
+    $('#asis_grp .errormsg').show();
+  } else {
+    var asis_new = $('#asis').val();
+    if(asis_new<1 || asis_new>40) {
+      errors |= true;
+      $('#asis_grp .errormsg').show();
+    } else {
+      if(asis_new!= 1) {
+        newData.asis = asis_new;
+      }
+    }
+  }
+  
+  var record = buildRecord(newData, lf_list, hf_list, max_records, transactions);
+
+  // Stop execution if any errors found
+  if(errors) {
+    return;
+  }
+
+  newEvent = nutrimiles.prepareEvent(record); // Validación de datos
+
+  if(newEvent) {
+    nutrimiles.createTransaction(newEvent);
+  } else {
+    window.alert(lang.default_alert);
+  }
+
+}
+
+function init() {
+
+  if(nutrimiles == null)
+  {
+    nutrimiles = new Nutrimiles();
+  }
+
+  if(nutrimiles.status()!=1) {
+    // Critical error found, stop.
+    window.alert(lang.default_alert);
+    return;
+  }
+
+  var htmlToDisplay = '';
+  transactions = nutrimiles.getTransactions();
+  currentUser = nutrimiles.getUserInformations();
+
+  //$('#obj_dump').html(JSON.stringify(transactions));
+  
+  var total_scores = 0;
+  asis = asis_lookup(transactions);
+  var notas = 0;
+  
+  lookup(transactions);
+
+  for( score in student_followup.scores) {
+    $('#'+score+'_row td.act_score').html(student_followup.scores[score].act.toFixed(1));
+    $('#'+score+'_row td.tst_score').html(student_followup.scores[score].tst.toFixed(1));
+    $('#'+score+'_row td.avg_score').html(((student_followup.scores[score].act+student_followup.scores[score].tst)/2).toFixed(1));
+
+    total_scores += (student_followup.scores[score].act+student_followup.scores[score].tst)/2;
+
+    notas += 1;
+
+  }
+
+  total_scores += student_followup.cond;
+  notas += 1;
+
+  $('#cond_score').html(student_followup.cond);
+
+  $('#final_score').html((total_scores/notas).toFixed(1));
+
+  $('#asis_txt').html(asis);
+  $('#asis_grp .errormsg').hide();
+}
+    </script>
+  </head>
+  <body onLoad="init()">
+    <div data-role="page" id="content">
+      <div class="ui-grid-solo">
+        <div class="ui-block-a" id="text_header">Progreso de Calificaciones</div>
+      </div>
+      <div role="main" class="ui-content" id="main_content">
+        <table id="results">
+          <thead>
+            <tr>
+              <th>Asignatura</th><th>Actividad</th><th>Examen</th><th>Nota</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="hig_row">
+              <td>Higiene e Inocuidad de Alimentos</td><td class="act_score"></td><td class="tst_score"></td><td class="avg_score"></td>
+            </tr>
+            <tr id="soc_row">
+              <td>Sociedad</td><td class="act_score"></td><td class="tst_score"></td><td class="avg_score"></td>
+            </tr>
+            <tr id="hue_row">
+              <td>Huertos Urbanos</td><td class="act_score"></td><td class="tst_score"></td><td class="avg_score"></td>
+            </tr>
+            <tr id="bas_row">
+              <td>Bases de la Gastronomía</td><td class="act_score"></td><td class="tst_score"></td><td class="avg_score"></td>
+            </tr>
+            <tr id="pan_row">
+              <td>Panadería</td><td class="act_score"></td><td class="tst_score"></td><td class="avg_score"></td>
+            </tr>
+            <tr id="nut_row">
+              <td>Nutrición</td><td class="act_score"></td><td class="tst_score"></td><td class="avg_score"></td>
+            </tr>
+            <tr id="for_row">
+              <td>Formación Profesional</td><td class="act_score"></td><td class="tst_score"></td><td class="avg_score"></td>
+            </tr>
+            <tr id="ser_row">
+              <td>Servicio al Cliente</td><td class="act_score"></td><td class="tst_score"></td><td class="avg_score"></td>
+            </tr>
+            <tr>
+              <td colspan="3">Conducta</td><td id="cond_score"></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3">Promedio final:</td><td id="final_score"></td>
+            </tr>
+          </tfoot>
+        </table>
+        <p><strong>Asistencia:</strong> <span id="asis_txt"></span>/40</p>
+        <div class="pure-controls" id="asis_grp">
+          <label for="asis">Ingresar Asistencia</label>
+          <input type="number" id="asis" name="asis" step="1" min="1" max="40" value="1" />
+          <p class="errormsg">ERROR: La asistencia debe ingresarse con un valor entre 1 y 40.</p>
+        </div>
+        <p><a href="#" onclick="javascript:addEntry()" class="button" id="asis_btn" data-role="button">Marcar Asistencia</a></p>
+      </div>
+      <div class="ui-grid-solo">
+        <div class="ui-block-a" id="obj_dump"></div>
+      </div>
+      <div><br /><br /><br /><br /></div>
+    </div>
+  </body>
+</html>
